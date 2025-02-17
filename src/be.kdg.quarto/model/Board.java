@@ -38,4 +38,8 @@ public class Board {
     public void setSelectedPieceType(PieceType selectedPieceType) {
         SelectedPieceType = selectedPieceType;
     }
+
+    public void addPiece(int pos, PieceType pieceType) {
+        //todo: make
+    }
 }

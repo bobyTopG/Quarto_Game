@@ -67,6 +67,11 @@ public class Move {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+
+    public float getDuration() {
+        // todo: this is a placeholder return value
+        return 0f;
+    }
 }
 //player: Player
 //posX: int
