@@ -17,62 +17,61 @@ public class Game {
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
-                new Ai("Open Ai", AiLevel.HARD));
+                new Ai("Open Ai", AiLevel.HARD , new PlayingStrategy("S1")));
     }
 
     public Game(Player ai, Player human) {
         this.ai = ai;
         this.human = human;
-        this.board = new Board();
+       // this.board = new Board();
 
-    }
-
-    public void newPiece() {
-        Random random = new Random();
-        if (!pieceType.isEmpty()) {
-            board.setSelectedPieceType(pieceType.get(random.nextInt(pieceType.size())));
-            pieceType.remove(board.getSelectedPieceType());
-        }
-    }
-
-    private void switchTurns() {
-        if (currentPlayer == ai) {
-            currentPlayer = human;
-        } else {
-            currentPlayer = ai;
-        }
-    }
-
-    public List<AiLevel> getAiLevels() {
-        return Arrays.asList(AiLevel.values());
-    }
-
-    public void removeFromFillBoard() {
-        board.remove(board.getSelectedPieceType());
     }
 
     public Player getAi() {
         return ai;
     }
 
+    public void setAi(Player ai) {
+        this.ai = ai;
+    }
+
     public Player getHuman() {
         return human;
+    }
+
+    public void setHuman(Player human) {
+        this.human = human;
     }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
     public Board getBoard() {
         return board;
     }
 
-
-    public void moveAiOrHuman(Player currentPlayer) {
-
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
-    // methods with business logic
+    public Board getPieceBoard() {
+        return pieceBoard;
+    }
 
-    // necessary getters and setters
+    public void setPieceBoard(Board pieceBoard) {
+        this.pieceBoard = pieceBoard;
+    }
+
+    public List<PieceType> getPieceType() {
+        return pieceType;
+    }
+
+    public void setPieceType(List<PieceType> pieceType) {
+        this.pieceType = pieceType;
+    }
 }

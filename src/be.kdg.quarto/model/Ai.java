@@ -2,11 +2,13 @@ package src.be.kdg.quarto.model;
 
 public class Ai extends Player{
     private AiLevel difficultyLevel;
+    private PlayingStrategy strategy;
 
 
-    public Ai(String name , AiLevel difficultyLevel) {
+    public Ai(String name , AiLevel difficultyLevel , PlayingStrategy strategy) {
         super(name);
         setDifficultyLevel(difficultyLevel);
+        this.strategy = strategy;
     }
 
 
