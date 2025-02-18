@@ -1,41 +1,54 @@
 package src.be.kdg.quarto.model;
 
+import src.be.kdg.quarto.model.enums.Color;
+import src.be.kdg.quarto.model.enums.Fill;
+import src.be.kdg.quarto.model.enums.Height;
+import src.be.kdg.quarto.model.enums.Shape;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Board {
-    private  List<PieceType> pieceTypes = new ArrayList<>(Arrays.asList(PieceType.values()));
-    private int BOARD_SIZE = 16;
-    private  PieceType SelectedPieceType;
+    private static final int BOARD_SIZE = 16;
+    private List<Piece> availablePieces;
+    private Piece selectedPiece;
 
-    public Board(List<PieceType> pieceTypes, int BOARD_SIZE, PieceType selectedPieceType) {
-        this.pieceTypes = pieceTypes;
-        this.BOARD_SIZE = BOARD_SIZE;
-        SelectedPieceType = selectedPieceType;
+    public Board() {
+        this.availablePieces = generateAllPieces();
+        this.selectedPiece = null; // No piece selected initially
     }
 
-    public List<PieceType> getPieceTypes() {
-        return pieceTypes;
+    private List<Piece> generateAllPieces() {
+        List<Piece> pieces = new ArrayList<>();
+        for (Color color : Color.values()) {
+            for (Height height : Height.values()) {
+                for (Fill fill : Fill.values()) {
+                    for (Shape shape : Shape.values()) {
+                        pieces.add(new Piece(color, height, fill, shape));
+                    }
+                }
+            }
+        }
+        return pieces;
     }
 
-    public void setPieceTypes(List<PieceType> pieceTypes) {
-        this.pieceTypes = pieceTypes;
+    public List<Piece> getAvailablePieces() {
+        return new ArrayList<>(availablePieces); // Return a copy to prevent modification
     }
 
-    public int getBOARD_SIZE() {
+    public void removePiece(Piece piece) {
+        availablePieces.remove(piece);
+    }
+
+    public Piece getSelectedPiece() {
+        return selectedPiece;
+    }
+
+    public void setSelectedPiece(Piece selectedPiece) {
+        this.selectedPiece = selectedPiece;
+    }
+
+    public static int getBoardSize() {
         return BOARD_SIZE;
-    }
-
-    public void setBOARD_SIZE(int BOARD_SIZE) {
-        this.BOARD_SIZE = BOARD_SIZE;
-    }
-
-    public PieceType getSelectedPieceType() {
-        return SelectedPieceType;
-    }
-
-    public void setSelectedPieceType(PieceType selectedPieceType) {
-        SelectedPieceType = selectedPieceType;
     }
 }

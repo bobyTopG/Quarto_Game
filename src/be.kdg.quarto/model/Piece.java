@@ -1,25 +1,41 @@
 package src.be.kdg.quarto.model;
 
+import src.be.kdg.quarto.model.enums.Color;
+import src.be.kdg.quarto.model.enums.Fill;
+import src.be.kdg.quarto.model.enums.Height;
+import src.be.kdg.quarto.model.enums.Shape;
+
 public class Piece {
-   PieceType type;
+    private final Color color;
+    private final Height height;
+    private final Fill fill;
+    private final Shape shape;
 
-    private int position = 0;
-
-    public Piece(int position , PieceType type) {
-        this.position = position;
-        this.type = type;
+    public Piece(Color color, Height height, Fill fill, Shape shape) {
+        this.color = color;
+        this.height = height;
+        this.fill = fill;
+        this.shape = shape;
     }
 
-
-    public int getPosition() {
-        return position;
+    public Color getColor() {
+        return color;
     }
 
-    public PieceType getType() {
-        return type;
+    public Height getHeight() {
+        return height;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public Fill getFill() {
+        return fill;
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    @Override
+    public String toString() {
+        return color + " " + height + " " + fill + " " + shape;
     }
 }

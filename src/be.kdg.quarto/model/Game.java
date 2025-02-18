@@ -1,30 +1,25 @@
 package src.be.kdg.quarto.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import src.be.kdg.quarto.model.enums.AiLevel;
+
 import java.util.List;
-import java.util.Random;
 
 public class Game {
-
     private Player ai;
     private Player human;
     private Player currentPlayer;
     private Board board;
-    private Board pieceBoard;
-    List<PieceType> pieceType = new ArrayList<>(Arrays.asList(PieceType.values()));
-
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
-                new Ai("Open Ai", AiLevel.HARD , new PlayingStrategy("S1")));
+                new Ai("Open Ai", AiLevel.HARD, new PlayingStrategy("S1")));
     }
 
     public Game(Player ai, Player human) {
         this.ai = ai;
         this.human = human;
-       // this.board = new Board();
-
+        this.board = new Board(); // Ensure board is initialized
+        this.currentPlayer = human; // Default to human starting
     }
 
     public Player getAi() {
@@ -59,19 +54,8 @@ public class Game {
         this.board = board;
     }
 
-    public Board getPieceBoard() {
-        return pieceBoard;
-    }
-
-    public void setPieceBoard(Board pieceBoard) {
-        this.pieceBoard = pieceBoard;
-    }
-
-    public List<PieceType> getPieceType() {
-        return pieceType;
-    }
-
-    public void setPieceType(List<PieceType> pieceType) {
-        this.pieceType = pieceType;
+    // Get available pieces from the board
+    public List<Piece> getAvailablePieces() {
+        return board.getAvailablePieces();
     }
 }
