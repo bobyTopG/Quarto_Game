@@ -12,4 +12,12 @@ public class Human extends Player {
     private void setPassword(String password) {
         this.password = password;
     }
+
+    public boolean checkIfPasswordMatch(String password) {
+        return this.password.equals(password);
+    }
+
+    public void loginPlayer(String password) {
+        // todo: make this
+    }
 }
