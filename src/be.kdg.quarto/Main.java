@@ -1,7 +1,6 @@
-package src.be.kdg.quarto.Quarto;
+package src.be.kdg.quarto;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import src.be.kdg.quarto.model.Game;
 
