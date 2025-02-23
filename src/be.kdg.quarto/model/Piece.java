@@ -1,9 +1,9 @@
-package src.be.kdg.quarto.model;
+package be.kdg.quarto.model;
 
-import src.be.kdg.quarto.model.enums.Color;
-import src.be.kdg.quarto.model.enums.Fill;
-import src.be.kdg.quarto.model.enums.Height;
-import src.be.kdg.quarto.model.enums.Shape;
+import be.kdg.quarto.model.enums.Color;
+import be.kdg.quarto.model.enums.Fill;
+import be.kdg.quarto.model.enums.Height;
+import be.kdg.quarto.model.enums.Shape;
 
 public class Piece {
     private final Color color;

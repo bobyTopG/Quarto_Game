@@ -1,14 +1,15 @@
-package src.be.kdg.quarto.model;
+package be.kdg.quarto.model;
 
 import java.util.Date;
 
 public class Move {
-    Player player;
-    int position;
-    Piece piece;
-    Piece selectedPiece;
-    Date startTime;
-    Date endTime;
+
+   private Player player;
+   private int position;
+   private Piece piece;
+   private Piece selectedPiece;
+   private Date startTime;
+   private Date endTime;
 
 
     public Move(Player player, int position, Piece piece, Piece selectedPiece, Date startTime, Date endTime) {
@@ -73,10 +74,3 @@ public class Move {
         return 0f;
     }
 }
-//player: Player
-//posX: int
-//posY: int
-//piece: Piece
-//chosenPiece: Piece
-//startTime: dateTime
-//endTime: dateTime

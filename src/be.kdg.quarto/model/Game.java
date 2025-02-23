@@ -1,6 +1,6 @@
-package src.be.kdg.quarto.model;
+package be.kdg.quarto.model;
 
-import src.be.kdg.quarto.model.enums.AiLevel;
+import be.kdg.quarto.model.enums.AiLevel;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class Game {
     public Game(Player ai, Player human) {
         this.ai = ai;
         this.human = human;
-        this.board = new Board(); // Ensure board is initialized
-        this.currentPlayer = human; // Default to human starting
+        this.board = new Board();
+        this.currentPlayer = human;
     }
 
     public Player getAi() {
@@ -54,7 +54,6 @@ public class Game {
         this.board = board;
     }
 
-    // Get available pieces from the board
     public List<Piece> getAvailablePieces() {
         return board.getAvailablePieces();
     }

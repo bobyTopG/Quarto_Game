@@ -1,9 +1,9 @@
-package src.be.kdg.quarto.model;
+package be.kdg.quarto.model;
 
-import src.be.kdg.quarto.model.enums.Color;
-import src.be.kdg.quarto.model.enums.Fill;
-import src.be.kdg.quarto.model.enums.Height;
-import src.be.kdg.quarto.model.enums.Shape;
+import be.kdg.quarto.model.enums.Color;
+import be.kdg.quarto.model.enums.Fill;
+import be.kdg.quarto.model.enums.Height;
+import be.kdg.quarto.model.enums.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class Board {
 
     public Board() {
         this.availablePieces = generateAllPieces();
-        this.selectedPiece = null; // No piece selected initially
+        this.selectedPiece = null;
     }
 
     private List<Piece> generateAllPieces() {
@@ -33,7 +33,7 @@ public class Board {
     }
 
     public List<Piece> getAvailablePieces() {
-        return new ArrayList<>(availablePieces); // Return a copy to prevent modification
+        return new ArrayList<>(availablePieces);
     }
 
     public void removePiece(Piece piece) {

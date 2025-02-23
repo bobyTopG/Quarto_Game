@@ -1,4 +1,4 @@
-package src.be.kdg.quarto.model;
+package be.kdg.quarto.model;
 
 public class Tile {
     private int index;
