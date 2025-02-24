@@ -1,7 +1,6 @@
 package be.kdg.quarto.model;
 
 
-
 import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
@@ -10,6 +9,7 @@ import be.kdg.quarto.model.enums.Fill;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Game {
@@ -17,7 +17,13 @@ public class Game {
     private Player human;
     private Player currentPlayer;
     private Board board;
+
+    public HashMap<Piece, String> getImages() {
+        return images;
+    }
+
     private List<Piece> pieces;
+    HashMap<Piece, String> images = new HashMap<>();
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
@@ -31,9 +37,8 @@ public class Game {
         pieces = new ArrayList<>();
         this.currentPlayer = human;
         cratePieces();
+
     }
-
-
 
     public void cratePieces() {
         for (Color color : Color.values()) {
@@ -45,6 +50,12 @@ public class Game {
                     }
                 }
             }
+        }
+
+        for (int i = 0; i < pieces.size(); i++) {
+            String title = null;
+            title ="/"+ pieces.get(i).getFill() + "_" + pieces.get(i).getShape() + "_" + pieces.get(i).getColor() + "_" + pieces.get(i).getHeight() + ".PNG";
+            images.put(pieces.get(i), title);
         }
     }
 

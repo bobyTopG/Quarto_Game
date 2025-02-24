@@ -103,6 +103,7 @@ public class GameView extends BorderPane {
         HBox hbox = new HBox();
         hbox.setSpacing(250);
         hbox.setPadding(new Insets(10, 10, 10, 10));
+        board.enableBoard();
         hbox.getChildren().addAll(vbox, board);
 
         GridPane grid = new GridPane();

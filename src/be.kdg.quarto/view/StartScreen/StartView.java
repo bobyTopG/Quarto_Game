@@ -8,13 +8,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class StartView extends BorderPane {
 
     private Label label;
-    private Button newGame, continueButton, leaderBoard, statistics ,quit;
+    private Button newGame, continueButton, leaderBoard, statistics, quit;
     private BoardView board;
 
     public StartView() {
@@ -104,14 +106,15 @@ public class StartView extends BorderPane {
         VBox vbox = new VBox();
         vbox.setSpacing(20);
         vbox.setPadding(new Insets(10, 10, 20, 20));
-        vbox.getChildren().addAll( newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.getChildren().addAll(newGame, continueButton, leaderBoard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
         StackPane stackPane = new StackPane();
-        stackPane.getChildren().add(board);
-        HBox hBox = new HBox(250 , vbox ,board);
+        board.disableBoard();
+        stackPane.getChildren().addAll(board);
+        HBox hBox = new HBox(250, vbox, stackPane);
         setAlignment(label, Pos.CENTER);
         setTop(label);
-       setCenter(hBox);
+        setCenter(hBox);
     }
 
     public Button getContinueButton() {
