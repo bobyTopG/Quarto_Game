@@ -11,12 +11,20 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class BoardView extends Pane {
     private Rectangle background;
     private Circle frame;
     private GridPane spaces;
+    private List<SpaceView> spaceViews =new ArrayList<>();
 
+
+    public List<SpaceView> getSpaceViews() {
+        return spaceViews;
+    }
 
     public BoardView() {
         initialiseNodes();
