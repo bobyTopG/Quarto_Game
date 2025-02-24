@@ -22,4 +22,5 @@ public class Ai extends Player{
         this.difficultyLevel = difficultyLevel;
     }
 
+
 }
