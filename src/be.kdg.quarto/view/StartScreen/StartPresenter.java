@@ -2,10 +2,13 @@ package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
+import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsView.StatisticsView;
 
 
 import java.util.ArrayList;
@@ -32,6 +35,13 @@ public class StartPresenter {
             GameView gameView = new GameView();
             view.getScene().setRoot(gameView);
             new GamePresenter(model,gameView);
+        });
+
+
+        view.getStatistics().setOnAction(event -> {
+            StatisticsView statisticsView = new StatisticsView();
+            view.getScene().setRoot(statisticsView);
+            new StatisticsPresenter(statisticsView, new Statistics());
         });
     }
 
