@@ -1,28 +1,53 @@
 package be.kdg.quarto.view.PieceView;
 
-import be.kdg.quarto.model.Piece;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
 
-public class PieceView extends StackPane{
-    private ImageView piece;
+public class PieceView extends GridPane {
+    private Label label;
+    private PieceView piece;
     private Rectangle pieceRect;
 
-    public PieceView(){
+    public PieceView() {
         initialiseNodes();
         layoutNodes();
     }
 
+    public PieceView getPiece() {
+        return piece;
+    }
+
+
     private void initialiseNodes() {
-        pieceRect = new Rectangle(20,20);
-        piece = new ImageView();
+        label = new Label("Piece: ");
+        pieceRect = new Rectangle(50, 50);
+        piece = new PieceView();
+
+    }
+
+    public Rectangle getPieceRect() {
+        return pieceRect;
     }
 
     private void layoutNodes() {
-        getChildren().addAll(pieceRect, piece);
+
+        pieceRect.setFill(Color.WHITE);
+        pieceRect.setArcHeight(20);
+        pieceRect.setArcWidth(20);
+        pieceRect.setStroke(Color.BLACK);
+
+        StackPane stackPane = new StackPane(pieceRect , piece);
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.getChildren().addAll(label, stackPane);
+        getChildren().add(hbox);
     }
 }

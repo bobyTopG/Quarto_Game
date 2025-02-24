@@ -14,10 +14,10 @@ import javafx.scene.text.FontWeight;
 
 public class GameView extends BorderPane {
 
-    private Label piece, turn, timer;
+    private PieceView piece;
+    private Label  turn, timer;
     private Button quarto, placePiece, choosePiece, settings;
     private BoardView board;
-    PieceView pieceView;
 
 
     public GameView() {
@@ -27,7 +27,7 @@ public class GameView extends BorderPane {
 
     private void initialiseNodes() {
         board = new BoardView();
-        piece = new Label("Piece: ");
+        piece = new PieceView();
         turn = new Label("Your Turn");
         timer = new Label("00:00:00");
         quarto = new Button("Quarto");
@@ -87,7 +87,7 @@ public class GameView extends BorderPane {
         );
 
 
-        turn.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        turn.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         quarto.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         placePiece.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         choosePiece.setFont(Font.font("Arial", FontWeight.BOLD, 24));
@@ -112,9 +112,9 @@ public class GameView extends BorderPane {
 
         StackPane pane = new StackPane();
         Rectangle r = new Rectangle(120,40);
-        r.setArcWidth(25);
-        r.setArcHeight(25);
-        r.setFill(Color.web("#17EBC1"));
+        r.setArcWidth(20);
+        r.setArcHeight(20);
+        r.setFill(Color.web("#2dbdfa"));
 
         turn.setTextFill(Color.WHITE);
         pane.getChildren().addAll(r, turn);
