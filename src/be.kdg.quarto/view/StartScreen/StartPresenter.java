@@ -4,6 +4,8 @@ import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.GamePresenter;
+import be.kdg.quarto.view.GameScreen.GameView;
 
 
 import java.util.ArrayList;
@@ -26,9 +28,14 @@ public class StartPresenter {
     }
 
     private void addEventHandlers() {
+        view.getNewGame().setOnAction(event -> {
+            GameView gameView = new GameView();
+            view.getScene().setRoot(gameView);
+            new GamePresenter(model,gameView);
+        });
     }
 
     private void updateView() {
-
+        view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
     }
 }

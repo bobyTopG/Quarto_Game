@@ -103,13 +103,38 @@ public class StartView extends BorderPane {
 
         VBox vbox = new VBox();
         vbox.setSpacing(20);
-        vbox.setPadding(new Insets(10, 10, 10, 10));
-        vbox.getChildren().addAll(label, newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.setPadding(new Insets(10, 10, 20, 20));
+        vbox.getChildren().addAll( newGame, continueButton, leaderBoard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(board);
-        HBox hBox = new HBox(100 , vbox,board);
+        HBox hBox = new HBox(250 , vbox ,board);
+        setAlignment(label, Pos.CENTER);
+        setTop(label);
        setCenter(hBox);
     }
 
+    public Button getContinueButton() {
+        return continueButton;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public Button getLeaderBoard() {
+        return leaderBoard;
+    }
+
+    public Button getNewGame() {
+        return newGame;
+    }
+
+    public Button getQuit() {
+        return quit;
+    }
+
+    public Button getStatistics() {
+        return statistics;
+    }
 }

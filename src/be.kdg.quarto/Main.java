@@ -13,10 +13,9 @@ public class Main extends javafx.application.Application {
         Game model = new Game();
         StartView view = new StartView();
         primaryStage.setScene(new Scene(view));
-        view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
         new StartPresenter(model, view);
-        primaryStage.setHeight(400);
-        primaryStage.setWidth(550);
+        primaryStage.setHeight(500);
+        primaryStage.setWidth(700);
         primaryStage.show();
     }
 

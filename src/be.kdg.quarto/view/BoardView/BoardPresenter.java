@@ -21,6 +21,7 @@ public class BoardPresenter {
     }
 
     private void addEventHandlers() {
+
     }
 
     private void updateView() {

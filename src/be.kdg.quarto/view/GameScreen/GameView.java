@@ -1,4 +1,129 @@
 package be.kdg.quarto.view.GameScreen;
 
-public class GameView {
+import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.PieceView.PieceView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+
+public class GameView extends BorderPane {
+
+    private Label piece, turn, timer;
+    private Button quarto, placePiece, choosePiece, settings;
+    private BoardView board;
+    PieceView pieceView;
+
+
+    public GameView() {
+        initialiseNodes();
+        layoutNodes();
+    }
+
+    private void initialiseNodes() {
+        board = new BoardView();
+        piece = new Label("Piece: ");
+        turn = new Label("Your Turn");
+        timer = new Label("00:00:00");
+        quarto = new Button("Quarto");
+        placePiece = new Button("Place Piece");
+        choosePiece = new Button("Choose Piece");
+        settings = new Button("Settings");
+    }
+
+    public BoardView getBoard() {
+        return board;
+    }
+
+    private void layoutNodes() {
+
+        quarto.setStyle(
+                "-fx-background-color: #28a745; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-color: #000000; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-border-radius: 20;"
+        );
+
+        choosePiece.setStyle(
+                "-fx-background-color: #d2941f; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-color: #070501; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-border-radius: 20;"
+        );
+
+        placePiece.setStyle(
+                "-fx-background-color: #2dbdfa; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-color: #000000; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-border-radius: 20;"
+        );
+
+        settings.setStyle(
+                "-fx-background-color: #686a6a; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-color: #000000; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-border-radius: 20;"
+        );
+
+
+        turn.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        quarto.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        placePiece.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        choosePiece.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        settings.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+
+
+        VBox vbox = new VBox();
+        vbox.setSpacing(25);
+        vbox.setPadding(new Insets(10, 10, 10, 10));
+        vbox.getChildren().addAll(quarto, placePiece, choosePiece, settings);
+        vbox.setAlignment(Pos.CENTER);
+
+        HBox hbox = new HBox();
+        hbox.setSpacing(250);
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.getChildren().addAll(vbox, board);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10, 10, 10, 10));
+
+        StackPane pane = new StackPane();
+        Rectangle r = new Rectangle(120,40);
+        r.setArcWidth(25);
+        r.setArcHeight(25);
+        r.setFill(Color.web("#17EBC1"));
+
+        turn.setTextFill(Color.WHITE);
+        pane.getChildren().addAll(r, turn);
+
+        grid.add(pane, 0, 0);
+        grid.add(piece, 3, 0);
+        grid.add(timer, 30, 0);
+
+        setTop(grid);
+        setCenter(hbox);
+    }
 }
