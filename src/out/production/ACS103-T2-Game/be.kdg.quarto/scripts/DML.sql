@@ -1,0 +1,40 @@
+-- Insert sample data into the player table
+INSERT INTO player (name, password) VALUES
+                                        ('Alice', 'eqweefwr3fewf'),
+                                        ('Bob', 'eqwdf3qwefcweaf'),
+                                        ('Charlie', 'e3fewdfwervr3wfe'),
+                                        ('David', 'r3wferfwerer3wfer');
+
+-- Insert sample data into the game_session table
+INSERT INTO game_session (player_id1, player_id2, start_time, end_time, total_turns) VALUES
+                                                                                         (1, 2, '2024-07-26 10:00:00', '2024-07-26 11:30:00', 30),
+                                                                                         (3, 1, '2024-07-26 12:00:00', '2024-07-26 13:00:00', 25),
+                                                                                         (2, 4, '2024-07-26 14:00:00', '2024-07-26 15:00:00', 40);
+
+-- Insert sample data into the board table
+INSERT INTO board (game_session_id) VALUES
+                                        (1),
+                                        (2),
+                                        (3);
+
+-- Insert sample data into the piece table
+INSERT INTO piece (board_id, pos, color, size, fill, shape) VALUES
+                                                                (1, 1, 'black', 'medium', 'solid', 'circle'),
+                                                                (1, 2, 'white', 'medium', 'solid', 'square'),
+                                                                (1, 3, 'black', 'medium', 'solid', 'circle'),
+                                                                (2, 1, 'black', 'small', 'hollow', 'circle'),
+                                                                (2, 2, 'white', 'small', 'hollow', 'square'),
+                                                                (3, 1, 'white', 'large', 'solid', 'square'),
+                                                                (3, 2, 'black', 'large', 'hollow', 'circle');
+
+-- Insert sample data into the move table
+INSERT INTO move (game_session_id, player_id, piece_id, move_start_time, move_end_time) VALUES
+                                                                                            (1, 1, 1, '2024-07-26 10:05:00', '2024-07-26 10:06:00'),
+                                                                                            (1, 2, 2, '2024-07-26 10:10:00', '2024-07-26 10:11:00'),
+                                                                                            (1, 1, 3, '2024-07-26 10:15:00', '2024-07-26 10:16:00'),
+                                                                                            (2, 3, 4, '2024-07-26 12:05:00', '2024-07-26 12:06:00'),
+                                                                                            (2, 1, 5, '2024-07-26 12:10:00', '2024-07-26 12:11:00'),
+                                                                                            (3, 2, 6, '2024-07-26 14:05:00', '2024-07-26 14:06:00'),
+                                                                                            (3, 4, 7, '2024-07-26 14:10:00', '2024-07-26 14:11:00');
+
+SELECT * FROM game_session;
