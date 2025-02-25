@@ -24,7 +24,7 @@ public class StartPresenter {
     public StartPresenter(Game model, StartView view) {
         this.model = model;
         this.view = view;
-        new BoardPresenter(model,view.getBoard());
+        new BoardPresenter(model, view.getBoard());
         addEventHandlers();
         updateView();
 
@@ -34,15 +34,15 @@ public class StartPresenter {
         view.getNewGame().setOnAction(event -> {
             GameView gameView = new GameView();
             view.getScene().setRoot(gameView);
-            new GamePresenter(model,gameView);
+            new GamePresenter(model, gameView);
         });
 
 
-        /*view.getStatistics().setOnAction(event -> {
+        view.getStatistics().setOnAction(event -> {
             StatisticsView statisticsView = new StatisticsView();
             view.getScene().setRoot(statisticsView);
             new StatisticsPresenter(statisticsView, new Statistics());
-        });*/
+        });
     }
 
     private void updateView() {
