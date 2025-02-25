@@ -38,11 +38,11 @@ public class StartPresenter {
         });
 
 
-        view.getStatistics().setOnAction(event -> {
+        /*view.getStatistics().setOnAction(event -> {
             StatisticsView statisticsView = new StatisticsView();
             view.getScene().setRoot(statisticsView);
             new StatisticsPresenter(statisticsView, new Statistics());
-        });
+        });*/
     }
 
     private void updateView() {
