@@ -1,0 +1,12 @@
+Index: module-info.java
+===================================================================
+diff --git a/module-info.java b/module-info.java
+deleted file mode 100644
+--- a/module-info.java	(revision 564d5d829d8b7eb3cd4cffcf5b3331a101f5152e)
++++ /dev/null	(revision 564d5d829d8b7eb3cd4cffcf5b3331a101f5152e)
+@@ -1,5 +0,0 @@
+-open module ACS103.T2.Game {
+-    requires javafx.controls;
+-    requires javafx.media;
+-    requires java.desktop;
+-}
