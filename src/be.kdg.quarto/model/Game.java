@@ -11,12 +11,14 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class Game {
     private Player ai;
     private Player human;
     private Player currentPlayer;
     private Board board;
+    private Piece randomPiece;
 
     public HashMap<Piece, String> getImages() {
         return images;
@@ -54,9 +56,18 @@ public class Game {
 
         for (int i = 0; i < pieces.size(); i++) {
             String title = null;
-            title ="/"+ pieces.get(i).getFill() + "_" + pieces.get(i).getShape() + "_" + pieces.get(i).getColor() + "_" + pieces.get(i).getHeight() + ".PNG";
+            title = "/" + pieces.get(i).getFill() + "_" + pieces.get(i).getShape() + "_" + pieces.get(i).getColor() + "_" + pieces.get(i).getHeight() + ".PNG";
             images.put(pieces.get(i), title);
         }
+    }
+
+    public Piece getRandomPiece() {
+        return randomPiece;
+    }
+
+    public void selectRandomPiece() {
+        Random rand = new Random();
+        randomPiece = pieces.get(rand.nextInt(pieces.size()));
     }
 
     public List<Piece> getPieces() {

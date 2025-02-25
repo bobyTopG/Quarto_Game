@@ -46,6 +46,13 @@ public class BoardView extends Pane {
         frame.setFill(Color.TRANSPARENT);
         frame.setStroke(Color.WHITE);
         frame.setStrokeWidth(5);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                SpaceView spaceView = new SpaceView();
+                getSpaceViews().add(spaceView);
+                getSpaces().add(spaceView, i, j);
+            }
+        }
     }
 
     private void layoutNodes() {

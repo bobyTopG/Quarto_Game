@@ -11,8 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 
-public class PieceView extends GridPane {
-    private ImageView imageView;
+public class PieceView extends StackPane {
     private Label label;
     private Rectangle pieceRect;
 
@@ -22,27 +21,17 @@ public class PieceView extends GridPane {
     }
 
 
-    public ImageView getImageView() {
-        return imageView;
-    }
 
     private void initialiseNodes() {
         label = new Label("Piece: ");
         pieceRect = new Rectangle(50, 50);
-        imageView = new ImageView("/FULL_CIRCLE_BLACK_BIG.png");
+
     }
 
-    public Rectangle getPieceRect() {
-        return pieceRect;
-    }
 
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
 
     private void layoutNodes() {
-        imageView.setFitHeight(1);
-        imageView.setFitWidth(1);
+
 
         pieceRect.setFill(Color.WHITE);
         pieceRect.setArcHeight(20);
@@ -51,7 +40,6 @@ public class PieceView extends GridPane {
 
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(pieceRect);
-        stackPane.getChildren().add(imageView);
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
         hbox.setPadding(new Insets(10, 10, 10, 10));
