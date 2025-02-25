@@ -17,6 +17,12 @@ public class StatisticsPresenter {
     }
 
     private void addEventHandlers() {
+        view.getPlayerBtn().setOnAction(event -> {
+            view.getInfoLabel().setText("Player info");
+        });
+        view.getAiBtn().setOnAction(event -> {
+            view.getInfoLabel().setText("AI info");
+        });
     }
 
 }
