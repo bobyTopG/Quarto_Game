@@ -49,7 +49,8 @@ public class StartView extends BorderPane {
                         "-fx-background-radius: 20; " +
                         "-fx-border-color: #000000; " +
                         "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20;"
+                        "-fx-border-radius: 20; " +
+                        "-fx-cursor: hand;"
         );
 
         continueButton.setStyle(
@@ -60,7 +61,8 @@ public class StartView extends BorderPane {
                         "-fx-background-radius: 20; " +
                         "-fx-border-color: #070501; " +
                         "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20;"
+                        "-fx-border-radius: 20; " +
+                        "-fx-cursor: hand;"
         );
 
         leaderBoard.setStyle(
@@ -71,7 +73,8 @@ public class StartView extends BorderPane {
                         "-fx-background-radius: 20; " +
                         "-fx-border-color: #000000; " +
                         "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20;"
+                        "-fx-border-radius: 20; " +
+                        "-fx-cursor: hand;"
         );
 
         statistics.setStyle(
@@ -82,7 +85,8 @@ public class StartView extends BorderPane {
                         "-fx-background-radius: 20; " +
                         "-fx-border-color: #000000; " +
                         "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20;"
+                        "-fx-border-radius: 20; " +
+                        "-fx-cursor: hand;"
         );
 
         quit.setStyle(
@@ -93,7 +97,8 @@ public class StartView extends BorderPane {
                         "-fx-background-radius: 20; " +
                         "-fx-border-color: #070303; " +
                         "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20;"
+                        "-fx-border-radius: 20; " +
+                        "-fx-cursor: hand;"
         );
 
 
