@@ -9,6 +9,9 @@ import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
 import be.kdg.quarto.view.StatisticsView.StatisticsView;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 import java.util.ArrayList;
@@ -39,9 +42,20 @@ public class StartPresenter {
 
 
         view.getStatistics().setOnAction(event -> {
-            StatisticsView statisticsView = new StatisticsView();
-            view.getScene().setRoot(statisticsView);
-            new StatisticsPresenter(statisticsView, new Statistics());
+            StatisticsView statsView = new StatisticsView();
+            Stage statsStage = new Stage();
+            statsStage.initOwner(view.getScene().getWindow());
+            statsStage.initModality(Modality.APPLICATION_MODAL);
+            statsStage.setScene(new Scene(statsView));
+
+            statsStage.setTitle("Statistics");
+            statsStage.setWidth(400);
+            statsStage.setHeight(400);
+            statsStage.setResizable(false);
+
+            // view.getScene().setRoot(statisticsView);
+            new StatisticsPresenter(statsView, new Statistics());
+            statsStage.show();
         });
     }
 
