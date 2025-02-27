@@ -50,6 +50,10 @@ public class GameView extends BorderPane {
         return piece;
     }
 
+    public Label getTurn() {
+        return turn;
+    }
+
     private void layoutNodes() {
 
         quarto.setStyle(

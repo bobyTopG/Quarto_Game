@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.BoardView;
 
+import be.kdg.quarto.view.GameScreen.SelectView;
 import be.kdg.quarto.view.PieceView.PieceView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -36,5 +37,8 @@ public class SpaceView extends StackPane {
         circle.setFill(Color.TRANSPARENT);
         circle.setStroke(Color.WHITE);
         getChildren().addAll(circle);
+    }
+    public void remove(SelectView view) {
+        getChildren().remove(view);
     }
 }

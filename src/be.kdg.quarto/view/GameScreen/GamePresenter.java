@@ -8,8 +8,6 @@ import be.kdg.quarto.view.PieceView.PieceView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.List;
-
 public class GamePresenter {
 
     private Game model;
@@ -26,40 +24,77 @@ public class GamePresenter {
     }
 
     private void addEventHandlers() {
-        for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-            spaceView.getCircle().setOnMouseClicked(event -> {
-                if (!spaceView.isOwned()) {
-                    spaceView.setOwned();
-                    spaceView.getChildren().add(imageView);
-                    updateView();
-                }
-            });
+        if (model.getCurrentPlayer().equals(model.getHuman())) {
+            for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+                spaceView.getCircle().setDisable(false);
+                spaceView.getCircle().setOnMouseClicked(event -> humanTurn(spaceView));
+                updatePieceSelection();
+            }
+        }
+
+        else {
+
+
+            for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+                spaceView.getCircle().setDisable(true);
+            }
+
+            for (PieceView pieceView : view.getSelectView().getPieceView()) {
+                pieceView.getChildren().get(0).setOnMouseClicked(event -> {
+                    view.getTurn().setText("AI Turn!");
+                    pieceView.getChildren().clear();
+                    model.switchTurns();
+                    updatePieceSelection();
+                    addEventHandlers();
+                });
+            }
         }
     }
 
-    private void updateView() {
+
+    private void humanTurn(SpaceView spaceView) {
         piecePreview();
-        updatePieceSelection();
+        if (!spaceView.isOwned()) {
+            view.getTurn().setText("Your Turn!");
+            spaceView.setOwned();
+            spaceView.getChildren().add(imageView);
+            updateView();
+            model.switchTurns();
+            addEventHandlers();
+
+        }
+    }
+
+    private void aiTurn(PieceView pieceView) {
+
+    }
+
+
+    private void updateView() {
+
     }
 
     private void updatePieceSelection() {
-        view.getSelectView().getPieceViewList().clear();
+        view.getSelectView().getPieceView().clear();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 5; j++) {
                 PieceView pieceView = new PieceView();
-                view.getSelectView().getPieceViewList().add(pieceView);
+                view.getSelectView().getPieceView().add(pieceView);
                 view.getSelectView().add(pieceView, i, j);
             }
         }
 
-        for (int i = 0; i < view.getSelectView().getPieceViewList().size(); i++) {  //set images
-            PieceView pieceView = view.getSelectView().getPieceViewList().get(i);
-            Piece piece = model.getPieces().get(i);
-            ImageView iv = new ImageView(getPieceImage(piece));
-            iv.setFitHeight(40);
-            iv.setFitWidth(40);
-            pieceView.getChildren().add(iv);
+        for (int i = 0; i < view.getSelectView().getPieceView().size(); i++) {  //set images
+            PieceView pieceView = view.getSelectView().getPieceView().get(i);
+            if (!(model.getPieces().size() <= i)) {
+                Piece piece = model.getPieces().get(i);
+                ImageView iv = new ImageView(getPieceImage(piece));
+                iv.setFitHeight(40);
+                iv.setFitWidth(40);
+                pieceView.getChildren().add(iv);
+            }
         }
+
     }
 
 
@@ -70,7 +105,6 @@ public class GamePresenter {
             imageView = new ImageView(new Image(getPieceImage(piece)));
             imageView.setFitHeight(30);
             imageView.setFitWidth(30);
-
             view.getPiece().getChildren().add(imageView);
 
         }

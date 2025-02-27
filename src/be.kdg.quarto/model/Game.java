@@ -16,6 +16,9 @@ import java.util.Random;
 public class Game {
     private Player ai;
     private Player human;
+
+
+
     private Player currentPlayer;
     private Board board;
     private Piece randomPiece;
@@ -26,7 +29,7 @@ public class Game {
                 new Ai("Open Ai", AiLevel.HARD, new PlayingStrategy("S1")));
     }
 
-    public Game(Player ai, Player human) {
+    public Game(Player human, Player ai) {
         this.ai = ai;
         this.human = human;
         this.board = new Board();
@@ -47,6 +50,25 @@ public class Game {
             }
         }
 
+    }
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void switchTurns() {
+        currentPlayer = (currentPlayer == human) ? ai : human;
+    }
+
+    public Player getAi() {
+        return ai;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public Player getHuman() {
+        return human;
     }
 
     public Piece getRandomPiece() {

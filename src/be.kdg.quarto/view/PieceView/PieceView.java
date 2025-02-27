@@ -20,6 +20,9 @@ public class PieceView extends StackPane {
     }
 
 
+    public Rectangle getPieceRect() {
+        return pieceRect;
+    }
 
     private void initialiseNodes() {
         pieceRect = new Rectangle(50, 50);
@@ -27,9 +30,7 @@ public class PieceView extends StackPane {
     }
 
 
-
     private void layoutNodes() {
-
 
         pieceRect.setFill(Color.WHITE);
         pieceRect.setArcHeight(20);
