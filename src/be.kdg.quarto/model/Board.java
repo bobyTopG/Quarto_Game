@@ -11,25 +11,22 @@ import java.util.List;
 public class Board {
     private static final int BOARD_SIZE = 16;
     private List<Piece> availablePieces;
-    private Piece selectedPiece;
 
     public Board() {
-        this.availablePieces = generateAllPieces();
-        this.selectedPiece = null;
+        this.availablePieces = new ArrayList<>(BOARD_SIZE);
+        generateAllPieces();
     }
 
-    private List<Piece> generateAllPieces() {
-        List<Piece> pieces = new ArrayList<>();
+    private void generateAllPieces() {
         for (Color color : Color.values()) {
             for (Height height : Height.values()) {
                 for (Fill fill : Fill.values()) {
                     for (Shape shape : Shape.values()) {
-                        pieces.add(new Piece(color, height, fill, shape));
+                        availablePieces.add(new Piece(color, height, fill, shape));
                     }
                 }
             }
         }
-        return pieces;
     }
 
     public List<Piece> getAvailablePieces() {
@@ -40,15 +37,5 @@ public class Board {
         availablePieces.remove(piece);
     }
 
-    public Piece getSelectedPiece() {
-        return selectedPiece;
-    }
 
-    public void setSelectedPiece(Piece selectedPiece) {
-        this.selectedPiece = selectedPiece;
-    }
-
-    public static int getBoardSize() {
-        return BOARD_SIZE;
-    }
 }

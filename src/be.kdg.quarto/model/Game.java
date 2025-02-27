@@ -20,12 +20,6 @@ public class Game {
     private Board board;
     private Piece randomPiece;
 
-    public HashMap<Piece, String> getImages() {
-        return images;
-    }
-
-    private List<Piece> pieces;
-    HashMap<Piece, String> images = new HashMap<>();
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
@@ -36,7 +30,6 @@ public class Game {
         this.ai = ai;
         this.human = human;
         this.board = new Board();
-        pieces = new ArrayList<>();
         this.currentPlayer = human;
         cratePieces();
 
@@ -48,17 +41,12 @@ public class Game {
                 for (Height height : Height.values()) {
                     for (Shape shape : Shape.values()) {
                         Piece piece = new Piece(color, height, fill, shape);
-                        pieces.add(piece);
+                        board.getAvailablePieces().add(piece);
                     }
                 }
             }
         }
 
-        for (int i = 0; i < pieces.size(); i++) {
-            String title = null;
-            title = "/" + pieces.get(i).getFill() + "_" + pieces.get(i).getShape() + "_" + pieces.get(i).getColor() + "_" + pieces.get(i).getHeight() + ".PNG";
-            images.put(pieces.get(i), title);
-        }
     }
 
     public Piece getRandomPiece() {
@@ -67,46 +55,14 @@ public class Game {
 
     public void selectRandomPiece() {
         Random rand = new Random();
-        randomPiece = pieces.get(rand.nextInt(pieces.size()));
+        randomPiece = board.getAvailablePieces().get(rand.nextInt(board.getAvailablePieces().size()));
+      board.removePiece(randomPiece);
     }
 
     public List<Piece> getPieces() {
-        return pieces;
-    }
-
-    public Player getAi() {
-        return ai;
-    }
-
-    public void setAi(Player ai) {
-        this.ai = ai;
-    }
-
-    public Player getHuman() {
-        return human;
-    }
-
-    public void setHuman(Player human) {
-        this.human = human;
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public List<Piece> getAvailablePieces() {
         return board.getAvailablePieces();
     }
+
+
+
 }

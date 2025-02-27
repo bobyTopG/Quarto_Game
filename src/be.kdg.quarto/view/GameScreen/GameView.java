@@ -15,6 +15,7 @@ import javafx.scene.text.FontWeight;
 public class GameView extends BorderPane {
 
     private PieceView piece;
+    private SelectView selectView;
     private Label  turn, timer;
     private Button quarto, placePiece, choosePiece, settings;
     private BoardView board;
@@ -25,7 +26,12 @@ public class GameView extends BorderPane {
         layoutNodes();
     }
 
+    public SelectView getSelectView() {
+        return selectView;
+    }
+
     private void initialiseNodes() {
+        selectView = new SelectView();
         board = new BoardView();
         piece = new PieceView();
         turn = new Label("Your Turn");
@@ -100,15 +106,14 @@ public class GameView extends BorderPane {
 
         VBox vbox = new VBox();
         vbox.setSpacing(25);
-        vbox.setPadding(new Insets(10, 10, 10, 10));
+        vbox.setPadding(new Insets(10, 150, 10, 10));
         vbox.getChildren().addAll(quarto, placePiece, choosePiece, settings);
         vbox.setAlignment(Pos.CENTER);
 
         HBox hbox = new HBox();
-        hbox.setSpacing(250);
-        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setSpacing(50);
         board.enableBoard();
-        hbox.getChildren().addAll(vbox, board);
+        hbox.getChildren().addAll(vbox, board, selectView);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);

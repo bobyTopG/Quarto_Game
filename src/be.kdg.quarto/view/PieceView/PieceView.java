@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 
 
 public class PieceView extends StackPane {
-    private Label label;
     private Rectangle pieceRect;
 
     public PieceView() {
@@ -23,7 +22,6 @@ public class PieceView extends StackPane {
 
 
     private void initialiseNodes() {
-        label = new Label("Piece: ");
         pieceRect = new Rectangle(50, 50);
 
     }

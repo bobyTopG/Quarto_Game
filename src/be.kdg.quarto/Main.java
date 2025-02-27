@@ -15,7 +15,7 @@ public class Main extends javafx.application.Application {
         primaryStage.setScene(new Scene(view));
         new StartPresenter(model, view);
         primaryStage.setHeight(500);
-        primaryStage.setWidth(700);
+        primaryStage.setWidth(900);
         primaryStage.show();
     }
 

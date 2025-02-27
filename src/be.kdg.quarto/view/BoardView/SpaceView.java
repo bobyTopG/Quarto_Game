@@ -6,30 +6,31 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class SpaceView extends StackPane{
-    private ImageView imageView;
+public class SpaceView extends StackPane {
     private Circle circle;
-    public SpaceView () {
+    private boolean owned = false;
+
+    public SpaceView() {
         initialiseNodes();
         layoutNodes();
     }
 
     private void initialiseNodes() {
-        imageView = new ImageView();
         circle = new Circle(18);
-        imageView.setFitWidth(20);
-        imageView.setFitHeight(20);
     }
 
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
 
     public Circle getCircle() {
         return circle;
     }
 
+    public boolean isOwned() {
+        return owned;
+    }
 
+    public void setOwned() {
+        this.owned = true;
+    }
 
     private void layoutNodes() {
         circle.setFill(Color.TRANSPARENT);
