@@ -18,8 +18,12 @@ public class SelectView extends GridPane {
         pieceViewList = new ArrayList<>();
     }
 
-    public List<PieceView> getPieceView() {
+    public List<PieceView> getPieceViews() {
         return pieceViewList;
+    }
+
+    public void swap(PieceView pieceView , int index) {
+        pieceViewList.set(index, pieceView);
     }
 
     private void layoutNodes() {

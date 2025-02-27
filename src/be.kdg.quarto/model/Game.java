@@ -22,6 +22,7 @@ public class Game {
     private Player currentPlayer;
     private Board board;
     private Piece randomPiece;
+    private Piece selectedPiece;
 
 
     public Game() {
@@ -29,11 +30,19 @@ public class Game {
                 new Ai("Open Ai", AiLevel.HARD, new PlayingStrategy("S1")));
     }
 
+    public Piece getSelectedPiece() {
+        return selectedPiece;
+    }
+
+    public void setSelectedPiece(Piece selectedPiece) {
+        this.selectedPiece = selectedPiece;
+    }
+
     public Game(Player human, Player ai) {
         this.ai = ai;
         this.human = human;
         this.board = new Board();
-        this.currentPlayer = human;
+        this.currentPlayer = ai;
         cratePieces();
 
     }
@@ -72,13 +81,14 @@ public class Game {
     }
 
     public Piece getRandomPiece() {
+
         return randomPiece;
     }
 
     public void selectRandomPiece() {
         Random rand = new Random();
         randomPiece = board.getAvailablePieces().get(rand.nextInt(board.getAvailablePieces().size()));
-      board.removePiece(randomPiece);
+        board.removePiece(randomPiece);
     }
 
     public List<Piece> getPieces() {

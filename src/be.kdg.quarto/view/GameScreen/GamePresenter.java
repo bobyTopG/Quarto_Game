@@ -19,46 +19,52 @@ public class GamePresenter {
         this.view = view;
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
         new BoardPresenter(model, view.getBoard());
-        addEventHandlers();
+
+        updatePieceSelection();
         updateView();
+        addEventHandlers();
     }
 
     private void addEventHandlers() {
-        if (model.getCurrentPlayer().equals(model.getHuman())) {
-            for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-                spaceView.getCircle().setDisable(false);
-                spaceView.getCircle().setOnMouseClicked(event -> humanTurn(spaceView));
-                updatePieceSelection();
-            }
-        }
 
-        else {
-
-
+        if (model.getCurrentPlayer().equals(model.getAi())) {
             for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
                 spaceView.getCircle().setDisable(true);
+
+            }
+            for (PieceView pieceView : view.getSelectView().getPieceViews()) {
+                pieceView.setDisable(false);
+                try {
+                    pieceView.getChildren().getLast().setOnMouseClicked(event -> aiTurn(pieceView));
+                } catch (Exception e) {
+                }
+
             }
 
-            for (PieceView pieceView : view.getSelectView().getPieceView()) {
-                pieceView.getChildren().get(0).setOnMouseClicked(event -> {
-                    view.getTurn().setText("AI Turn!");
-                    pieceView.getChildren().clear();
-                    model.switchTurns();
-                    updatePieceSelection();
-                    addEventHandlers();
-                });
+        } else if (model.getCurrentPlayer().equals(model.getHuman())) {
+            for (PieceView pieceView : view.getSelectView().getPieceViews()) {
+                pieceView.setDisable(true);
+            }
+            for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+                spaceView.getCircle().setDisable(false);
+
+                spaceView.getCircle().setOnMouseClicked(event -> humanTurn(spaceView));
+
             }
         }
+        updateView();
     }
 
 
     private void humanTurn(SpaceView spaceView) {
-        piecePreview();
         if (!spaceView.isOwned()) {
             view.getTurn().setText("Your Turn!");
             spaceView.setOwned();
+            ImageView imageView = new ImageView(getPieceImage(model.getSelectedPiece()));
+            imageView.setFitHeight(30);
+            imageView.setFitWidth(30);
             spaceView.getChildren().add(imageView);
-            updateView();
+          view.getPiece().setPiece(null);
             model.switchTurns();
             addEventHandlers();
 
@@ -66,6 +72,12 @@ public class GamePresenter {
     }
 
     private void aiTurn(PieceView pieceView) {
+        view.getTurn().setText("AI Turn!");
+        pieceView.getChildren().clear();
+        piecePreview(pieceView);
+        model.setSelectedPiece(pieceView.getPiece());
+        model.switchTurns();
+        addEventHandlers();
 
     }
 
@@ -75,34 +87,34 @@ public class GamePresenter {
     }
 
     private void updatePieceSelection() {
-        view.getSelectView().getPieceView().clear();
+        view.getSelectView().getPieceViews().clear();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 5; j++) {
                 PieceView pieceView = new PieceView();
-                view.getSelectView().getPieceView().add(pieceView);
+                view.getSelectView().getPieceViews().add(pieceView);
                 view.getSelectView().add(pieceView, i, j);
             }
         }
 
-        for (int i = 0; i < view.getSelectView().getPieceView().size(); i++) {  //set images
-            PieceView pieceView = view.getSelectView().getPieceView().get(i);
+        for (int i = 0; i < view.getSelectView().getPieceViews().size(); i++) {  //set images
             if (!(model.getPieces().size() <= i)) {
                 Piece piece = model.getPieces().get(i);
-                ImageView iv = new ImageView(getPieceImage(piece));
-                iv.setFitHeight(40);
-                iv.setFitWidth(40);
-                pieceView.getChildren().add(iv);
+                PieceView pieceView = view.getSelectView().getPieceViews().get(i);
+                ImageView pieceImageView = new ImageView(getPieceImage(piece));
+                pieceImageView.setFitHeight(40);
+                pieceImageView.setFitWidth(40);
+                pieceView.getChildren().add(pieceImageView);
+                pieceView.setPiece(piece);
+
             }
         }
 
     }
 
 
-    private void piecePreview() {
+    private void piecePreview(PieceView pieceView) {
         if (!model.getPieces().isEmpty()) {
-            model.selectRandomPiece();
-            Piece piece = model.getRandomPiece();
-            imageView = new ImageView(new Image(getPieceImage(piece)));
+            imageView = new ImageView(new Image(getPieceImage(pieceView.getPiece())));
             imageView.setFitHeight(30);
             imageView.setFitWidth(30);
             view.getPiece().getChildren().add(imageView);
