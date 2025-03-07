@@ -31,29 +31,48 @@ public class GamePresenter {
     private void addEventHandlers() {
         boolean isAITurn = model.getCurrentPlayer().equals(model.getAi());
 
-        // Toggle interactivity based on turn
-        for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-            spaceView.getCircle().setDisable(isAITurn);
-            if (!isAITurn) {
-                spaceView.getCircle().setOnMouseClicked(event -> humanTurn(spaceView));
+        try {
+            for (PieceView pieceView : view.getSelectView().getPieceViews()) {
+                pieceView.setDisable(!isAITurn);
+                if (!isAITurn) {
+
+                    for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+                        spaceView.getCircle().setDisable(false);
+                        spaceView.getCircle().setOnMouseClicked(event -> {
+                            placePiece(spaceView);
+                        });
+                    }
+
+                    pieceView.getChildren().get(pieceView.getChildren().size() - 1)
+                            .setOnMouseClicked(event -> {
+                                pickPiece(pieceView);
+                            });
+                }
+                else {
+                    for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+                        spaceView.getCircle().setDisable(false);
+                        spaceView.getCircle().setOnMouseClicked(event -> {
+                            placePiece(spaceView);
+                        });
+                    }
+
+                    pieceView.getChildren().get(pieceView.getChildren().size() - 1)
+                            .setOnMouseClicked(event -> {
+                                pickPiece(pieceView);
+                            });
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
-        for (PieceView pieceView : view.getSelectView().getPieceViews()) {
-            pieceView.setDisable(!isAITurn);
-            if (isAITurn && !pieceView.getChildren().isEmpty()) {
-                pieceView.getChildren().get(pieceView.getChildren().size() - 1)
-                        .setOnMouseClicked(event -> aiTurn(pieceView));
-            }
-        }
-
-        updateView();
     }
 
-    private void humanTurn(SpaceView spaceView) {
+
+    private void placePiece(SpaceView spaceView) {
         if (spaceView.isOwned()) return; // Prevent overriding existing pieces
 
-        view.getTurn().setText("Your Turn!");
+        // view.getTurn().setText("Your Turn!");
         spaceView.setOwned();
 
         // Add selected piece image to the board
@@ -62,36 +81,36 @@ public class GamePresenter {
 
         // Clear preview section
         view.getPiece().getChildren().clear();
-        view.getPiece().setPiece(null);
+        view.getPiece().getChildren().add(new PieceView());
+        //view.getPiece().setPiece(null);
 
         // Switch turns
-        model.switchTurns();
+
+        updateView();
         addEventHandlers();
     }
 
-    private void aiTurn(PieceView pieceView) {
-        view.getTurn().setText("AI Turn!");
-
+    private void pickPiece(PieceView pieceView) {
         pieceView.getChildren().clear(); // Remove piece from selection
         piecePreview(pieceView); // Show preview
         model.setSelectedPiece(pieceView.getPiece());
-
         model.switchTurns();
+        updateView();
         addEventHandlers();
     }
 
     private void updateView() {
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
 
-        // Update piece selection availability
-        for (PieceView pieceView : view.getSelectView().getPieceViews()) {
-            pieceView.setDisable(isHumanTurn);
-        }
-
-        // Update board spaces availability
-        for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-            spaceView.getCircle().setDisable(!isHumanTurn);
-        }
+//        // Update piece selection availability
+//        for (PieceView pieceView : view.getSelectView().getPieceViews()) {
+//            pieceView.setDisable(isHumanTurn);
+//        }
+//
+//        // Update board spaces availability
+//        for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
+//            spaceView.getCircle().setDisable(!isHumanTurn);
+//        }
 
         // Update turn indicator
         view.getTurn().setText(isHumanTurn ? "Your Turn!" : "AI Turn!");
@@ -127,11 +146,13 @@ public class GamePresenter {
 
         view.getPiece().getChildren().clear(); // Clear old images
         imageView = createImageView(getPieceImage(pieceView.getPiece()), 30, 30);
-        view.getPiece().getChildren().add(imageView);
+        PieceView pieceView1 = new PieceView();
+        pieceView1.getChildren().add(imageView);
+        view.getPiece().getChildren().add(pieceView1);
     }
 
     private String getPieceImage(Piece piece) {
-        return "/" + piece.getFill() + "_" + piece.getShape() + "_" + piece.getColor() + "_" + piece.getHeight() + ".PNG";
+        return "/images/" + piece.getFill() + "_" + piece.getShape() + "_" + piece.getColor() + "_" + piece.getHeight() + ".PNG";
     }
 
     private ImageView createImageView(String path, double width, double height) {

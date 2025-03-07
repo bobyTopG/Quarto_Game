@@ -1,145 +1,81 @@
 package be.kdg.quarto.view.StartScreen;
 
-import be.kdg.quarto.model.Board;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.UiSettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 public class StartView extends BorderPane {
 
     private Label label;
     private Button newGame, continueButton, leaderBoard, statistics, quit;
     private BoardView board;
+    private UiSettings settings;
 
-    public StartView() {
+    private static final int BUTTON_SPACING = 20;
+    private static final int VBOX_LEFT_PADDING = 70;
+    private static final int VBOX_TOP_PADDING = 10;
+    private static final int VBOX_BOTTOM_PADDING = 20;
+    private static final int LABEL_TOP_PADDING = 50;
+    private static final int LABEL_LEFT_PADDING = 20;
+
+    public StartView(UiSettings settings) {
+        this.settings = settings;
         initialiseNodes();
         layoutNodes();
     }
 
     private void initialiseNodes() {
         board = new BoardView();
-        label = new Label("Quarto!");
-        newGame = new Button("New Game");
-        continueButton = new Button("Continue");
-        leaderBoard = new Button("Leaderboard");
-        statistics = new Button("Statistics");
-        quit = new Button("Quit");
+        label = createLabel("Quarto!");
+        newGame = createButton("New Game", "new-game");
+        continueButton = createButton("Continue", "continue-button");
+        leaderBoard = createButton("Leaderboard", "leaderboard-button");
+        statistics = createButton("Statistics", "statistics-button");
+        quit = createButton("Quit", "quit-button");
+        this.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
     }
 
-    public BoardView getBoard() {
-        return board;
+    private Label createLabel(String text) {
+        Label label = new Label(text);
+        label.setFont(javafx.scene.text.Font.font("Sigmar", javafx.scene.text.FontWeight.BOLD, 40));
+        return label;
+    }
+
+    private Button createButton(String text, String styleClass) {
+        Button button = new Button(text);
+        button.getStyleClass().add(styleClass);
+        return button;
     }
 
     private void layoutNodes() {
-        label.setFont(Font.font("Sigmar", FontWeight.BOLD, 40));
-
-        newGame.setStyle(
-                "-fx-background-color: #28a745; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        continueButton.setStyle(
-                "-fx-background-color: #d2941f; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #070501; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        leaderBoard.setStyle(
-                "-fx-background-color: #2dbdfa; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        statistics.setStyle(
-                "-fx-background-color: #2dbdfa; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        quit.setStyle(
-                "-fx-background-color: #f62626; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #070303; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-
-        continueButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        leaderBoard.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        statistics.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        quit.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-
-
-        VBox vbox = new VBox();
-        vbox.setSpacing(20);
-        vbox.setPadding(new Insets(10, 10, 20, 20));
+        VBox vbox = new VBox(BUTTON_SPACING);
+        vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
         vbox.getChildren().addAll(newGame, continueButton, leaderBoard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
+
         StackPane stackPane = new StackPane();
         board.disableBoard();
-        stackPane.getChildren().addAll(board);
+        stackPane.getChildren().add(board);
+
         HBox hBox = new HBox(250, vbox, stackPane);
+        label.setPadding(new Insets(10, 50, LABEL_TOP_PADDING, LABEL_LEFT_PADDING));
+
         setAlignment(label, Pos.CENTER);
         setTop(label);
         setCenter(hBox);
     }
 
-    public Button getContinueButton() {
-        return continueButton;
-    }
-
-    public Label getLabel() {
-        return label;
-    }
-
-    public Button getLeaderBoard() {
-        return leaderBoard;
+    // Getters
+    public BoardView getBoard() {
+        return board;
     }
 
     public Button getNewGame() {
         return newGame;
-    }
-
-    public Button getQuit() {
-        return quit;
     }
 
     public Button getStatistics() {

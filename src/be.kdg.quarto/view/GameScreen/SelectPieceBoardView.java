@@ -6,10 +6,10 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectView extends GridPane {
+public class SelectPieceBoardView extends GridPane {
     private List<PieceView> pieceViewList;
 
-    public SelectView() {
+    public SelectPieceBoardView() {
         initialiseNodes();
         layoutNodes();
     }

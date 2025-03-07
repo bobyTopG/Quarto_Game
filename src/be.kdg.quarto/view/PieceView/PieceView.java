@@ -47,7 +47,7 @@ public class PieceView extends StackPane {
 
     private void layoutNodes() {
 
-        pieceRect.setFill(Color.TRANSPARENT);
+        pieceRect.setFill(Color.WHITE);
         pieceRect.setArcHeight(20);
         pieceRect.setArcWidth(20);
         pieceRect.setStroke(Color.BLACK);

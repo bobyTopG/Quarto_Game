@@ -1,0 +1,84 @@
+/* styles.css */
+
+/* Styling the label */
+.label {
+    -fx-font-family: "Sigmar";
+    -fx-font-weight: bold;
+    -fx-font-size: 27px;
+}
+
+/* Common Button Style */
+.button {
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-background-radius: 20;
+    -fx-border-width: 2px;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+    -fx-text-fill: #ef0202;
+    -fx-pref-width: 200px;
+    -fx-padding: 10;
+}
+
+/* New Game Button */
+.new-game {
+    -fx-background-color: #28a745;
+    -fx-border-color: #000000;
+}
+
+/* Continue Button */
+.continue-button {
+    -fx-background-color: #d2941f;
+    -fx-border-color: #070501;
+}
+
+/* Leaderboard and Statistics Buttons */
+.leaderboard-button,
+.statistics-button {
+    -fx-background-color: #2dbdfa;
+    -fx-border-color: #000000;
+}
+
+/* Quit Button */
+.quit-button {
+    -fx-background-color: #f62626;
+    -fx-border-color: #070303;
+}
+
+.button {
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-background-radius: 20;
+    -fx-border-width: 2px;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px;
+    -fx-padding: 10;
+}
+
+/* Quarto Button */
+.quarto-button {
+    -fx-background-color: #28a745;
+    -fx-border-color: #000000;
+}
+
+/* Choose Piece Button */
+.choose-piece-button {
+    -fx-background-color: #d2941f;
+    -fx-border-color: #070501;
+}
+
+/* Place Piece Button */
+.place-piece-button {
+    -fx-background-color: #2dbdfa;
+    -fx-border-color: #000000;
+}
+
+/* Settings Button */
+.settings-button {
+    -fx-background-color: #f62626;
+    -fx-border-color: #000000;
+}
