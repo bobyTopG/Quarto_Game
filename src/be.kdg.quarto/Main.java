@@ -33,20 +33,11 @@ public class Main extends Application {
         primaryStage.setHeight(uiSettings.getLowestRes() / 4);
         primaryStage.setWidth(uiSettings.getLowestRes() / 4);
         primaryStage.setTitle(uiSettings.getApplicationName());
-        if (Files.exists(uiSettings.getApplicationIconPath())) {
-            try {
-                primaryStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
-            }
-            catch (MalformedURLException ex) {
-                // do nothing, if toURL-conversion fails, program can continue
-            }
-        } else { // do nothing, if ApplicationIcon is not available, program can continue
-        }
 
         primaryStage.setScene(scene);
         new StartPresenter(model, view);
         primaryStage.setHeight(500);
-        primaryStage.setWidth(1000);
+        primaryStage.setWidth(1100);
         primaryStage.show();
     }
 

@@ -1,11 +1,8 @@
-package be.kdg.quarto.view.PieceView;
+package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Piece;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -22,13 +19,6 @@ public class PieceView extends StackPane {
         layoutNodes();
     }
 
-    public Rectangle getPieceRect() {
-        return pieceRect;
-    }
-
-    public void setPieceRect(Rectangle pieceRect) {
-        this.pieceRect = pieceRect;
-    }
 
     public Piece getPiece() {
         return piece;

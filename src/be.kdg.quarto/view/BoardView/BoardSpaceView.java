@@ -1,15 +1,15 @@
 package be.kdg.quarto.view.BoardView;
 
-import be.kdg.quarto.view.GameScreen.SelectPieceBoardView;
+import be.kdg.quarto.view.GameScreen.SelectPieceView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class SpaceView extends StackPane {
+public class BoardSpaceView extends StackPane {
     private Circle circle;
     private boolean owned = false;
 
-    public SpaceView() {
+    public BoardSpaceView() {
         initialiseNodes();
         layoutNodes();
     }
@@ -36,7 +36,7 @@ public class SpaceView extends StackPane {
         circle.setStroke(Color.WHITE);
         getChildren().addAll(circle);
     }
-    public void remove(SelectPieceBoardView view) {
+    public void remove(SelectPieceView view) {
         getChildren().remove(view);
     }
 }

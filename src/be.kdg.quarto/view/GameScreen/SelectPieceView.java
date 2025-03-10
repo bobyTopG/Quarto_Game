@@ -1,15 +1,14 @@
 package be.kdg.quarto.view.GameScreen;
 
-import be.kdg.quarto.view.PieceView.PieceView;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectPieceBoardView extends GridPane {
+public class SelectPieceView extends GridPane {
     private List<PieceView> pieceViewList;
 
-    public SelectPieceBoardView() {
+    public SelectPieceView() {
         initialiseNodes();
         layoutNodes();
     }
@@ -22,9 +21,6 @@ public class SelectPieceBoardView extends GridPane {
         return pieceViewList;
     }
 
-    public void swap(PieceView pieceView , int index) {
-        pieceViewList.set(index, pieceView);
-    }
 
     private void layoutNodes() {
         setGridLinesVisible(true);

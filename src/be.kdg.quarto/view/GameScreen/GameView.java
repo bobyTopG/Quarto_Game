@@ -1,7 +1,6 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.view.BoardView.BoardView;
-import be.kdg.quarto.view.PieceView.PieceView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,7 +14,7 @@ import javafx.scene.text.FontWeight;
 public class GameView extends StackPane {
 
     private PieceView piece;
-    private SelectPieceBoardView selectView;
+    private SelectPieceView selectView;
     private Label turn, timer;
     private Button quarto, placePiece, choosePiece, settings;
     private BoardView board;
@@ -35,7 +34,7 @@ public class GameView extends StackPane {
     }
 
     // Getters
-    public SelectPieceBoardView getSelectView() {
+    public SelectPieceView getSelectView() {
         return selectView;
     }
 
@@ -52,7 +51,7 @@ public class GameView extends StackPane {
     }
 
     private void initialiseNodes() {
-        selectView = new SelectPieceBoardView();
+        selectView = new SelectPieceView();
         board = new BoardView();
         piece = new PieceView();
         turn = createLabel("Your Turn", 20, FontWeight.BOLD, Color.WHITE);

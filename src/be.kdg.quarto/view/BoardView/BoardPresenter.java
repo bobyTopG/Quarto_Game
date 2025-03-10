@@ -1,18 +1,7 @@
 package be.kdg.quarto.view.BoardView;
 
 import be.kdg.quarto.model.Game;
-import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.model.enums.Color;
-import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.enums.Height;
-import be.kdg.quarto.model.enums.Shape;
-import be.kdg.quarto.view.PieceView.PieceView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import be.kdg.quarto.view.GameScreen.PieceView;
 
 public class BoardPresenter {
 

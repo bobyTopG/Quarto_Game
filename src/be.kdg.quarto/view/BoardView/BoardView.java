@@ -1,9 +1,6 @@
 package be.kdg.quarto.view.BoardView;
 
-import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -20,11 +17,11 @@ public class BoardView extends Pane {
     private Rectangle background;
     private Circle frame;
     private GridPane spaces;
-    private List<SpaceView> spaceViews =new ArrayList<>();
+    private List<BoardSpaceView> boardSpaceViews =new ArrayList<>();
     StackPane stackPane = new StackPane();
 
-    public List<SpaceView> getSpaceViews() {
-        return spaceViews;
+    public List<BoardSpaceView> getSpaceViews() {
+        return boardSpaceViews;
     }
 
 
@@ -48,9 +45,9 @@ public class BoardView extends Pane {
         frame.setStrokeWidth(5);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                SpaceView spaceView = new SpaceView();
-                getSpaceViews().add(spaceView);
-                getSpaces().add(spaceView, i, j);
+                BoardSpaceView boardSpaceView = new BoardSpaceView();
+                getSpaceViews().add(boardSpaceView);
+                getSpaces().add(boardSpaceView, i, j);
             }
         }
     }
