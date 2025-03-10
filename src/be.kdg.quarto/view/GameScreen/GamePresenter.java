@@ -131,7 +131,7 @@ public class GamePresenter {
     }
 
     private String getPieceImage(Piece piece) {
-        return "/pieces/" + piece.getFill() + "_" + piece.getShape() + "_" + piece.getColor() + "_" + piece.getHeight() + ".PNG";
+        return "/images/pieces/" + piece.getFill() + "_" + piece.getShape() + "_" + piece.getColor() + "_" + piece.getHeight() + ".PNG";
     }
 
     private ImageView createImageView(String path, double width, double height) {
