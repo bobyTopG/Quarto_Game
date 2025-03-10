@@ -12,6 +12,7 @@ public class GamePresenter {
     private final Game model;
     private final GameView view;
     private ImageView imageView;
+    private boolean isPieceSelected = false;
 
     public GamePresenter(Game model, GameView view) {
         this.model = model;
@@ -29,97 +30,63 @@ public class GamePresenter {
     }
 
     private void addEventHandlers() {
-        boolean isAITurn = model.getCurrentPlayer().equals(model.getAi());
 
-        try {
-            for (PieceView pieceView : view.getSelectView().getPieceViews()) {
-                pieceView.setDisable(!isAITurn);
-                if (!isAITurn) {
+        view.getSelectView().getPieceViews().forEach(pieceView -> {
+            pieceView.setDisable(false);
+            pieceView.getChildren().get(pieceView.getChildren().size() - 1)
+                    .setOnMouseClicked(event -> pickPiece(pieceView));
+        });
 
-                    for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-                        spaceView.getCircle().setDisable(false);
-                        spaceView.getCircle().setOnMouseClicked(event -> {
-                            placePiece(spaceView);
-                        });
-                    }
+        view.getBoard().getSpaceViews().forEach(spaceView -> {
+            spaceView.getCircle().setDisable(false);
+            spaceView.getCircle().setOnMouseClicked(event ->
+                    placePiece(spaceView));
 
-                    pieceView.getChildren().get(pieceView.getChildren().size() - 1)
-                            .setOnMouseClicked(event -> {
-                                pickPiece(pieceView);
-                            });
-                }
-                else {
-                    for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-                        spaceView.getCircle().setDisable(false);
-                        spaceView.getCircle().setOnMouseClicked(event -> {
-                            placePiece(spaceView);
-                        });
-                    }
-
-                    pieceView.getChildren().get(pieceView.getChildren().size() - 1)
-                            .setOnMouseClicked(event -> {
-                                pickPiece(pieceView);
-                            });
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
+        });
     }
-
 
     private void placePiece(SpaceView spaceView) {
         if (spaceView.isOwned()) return; // Prevent overriding existing pieces
-
-        // view.getTurn().setText("Your Turn!");
+        isPieceSelected = false;
         spaceView.setOwned();
-
-        // Add selected piece image to the board
-        ImageView pieceImage = createImageView(getPieceImage(model.getSelectedPiece()), 30, 30);
-        spaceView.getChildren().add(pieceImage);
+        spaceView.getChildren().add(createImageView(getPieceImage(model.getSelectedPiece()), 30, 30));
 
         // Clear preview section
         view.getPiece().getChildren().clear();
         view.getPiece().getChildren().add(new PieceView());
-        //view.getPiece().setPiece(null);
-
-        // Switch turns
 
         updateView();
         addEventHandlers();
     }
 
     private void pickPiece(PieceView pieceView) {
+        isPieceSelected = true;
         pieceView.getChildren().clear(); // Remove piece from selection
-        piecePreview(pieceView); // Show preview
         model.setSelectedPiece(pieceView.getPiece());
+        piecePreview(pieceView);
         model.switchTurns();
         updateView();
         addEventHandlers();
     }
 
     private void updateView() {
+
+        view.getSelectView().getPieceViews().forEach(pieceView -> {
+            pieceView.setDisable(isPieceSelected);
+        });
+
+        view.getBoard().getSpaceViews().forEach(spaceView -> {
+            spaceView.getCircle().setDisable(!isPieceSelected);
+        });
+
+
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
-
-//        // Update piece selection availability
-//        for (PieceView pieceView : view.getSelectView().getPieceViews()) {
-//            pieceView.setDisable(isHumanTurn);
-//        }
-//
-//        // Update board spaces availability
-//        for (SpaceView spaceView : view.getBoard().getSpaceViews()) {
-//            spaceView.getCircle().setDisable(!isHumanTurn);
-//        }
-
-        // Update turn indicator
         view.getTurn().setText(isHumanTurn ? "Your Turn!" : "AI Turn!");
     }
 
     private void updatePieceSelection() {
         view.getSelectView().getPieceViews().clear();
 
-        // Create a 3x5 grid for pieces
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 5; j++) {
                 PieceView pieceView = new PieceView();
@@ -128,15 +95,11 @@ public class GamePresenter {
             }
         }
 
-        // Assign images to pieces
-        for (int i = 0; i < view.getSelectView().getPieceViews().size(); i++) {
-            if (i >= model.getPieces().size()) continue;
-
+        for (int i = 0; i < view.getSelectView().getPieceViews().size() && i < model.getPieces().size(); i++) {
             Piece piece = model.getPieces().get(i);
             PieceView pieceView = view.getSelectView().getPieceViews().get(i);
 
-            ImageView pieceImageView = createImageView(getPieceImage(piece), 40, 40);
-            pieceView.getChildren().add(pieceImageView);
+            pieceView.getChildren().add(createImageView(getPieceImage(piece), 40, 40));
             pieceView.setPiece(piece);
         }
     }
@@ -144,7 +107,7 @@ public class GamePresenter {
     private void piecePreview(PieceView pieceView) {
         if (model.getPieces().isEmpty()) return;
 
-        view.getPiece().getChildren().clear(); // Clear old images
+        view.getPiece().getChildren().clear();
         imageView = createImageView(getPieceImage(pieceView.getPiece()), 30, 30);
         PieceView pieceView1 = new PieceView();
         pieceView1.getChildren().add(imageView);
@@ -152,7 +115,7 @@ public class GamePresenter {
     }
 
     private String getPieceImage(Piece piece) {
-        return "/images/" + piece.getFill() + "_" + piece.getShape() + "_" + piece.getColor() + "_" + piece.getHeight() + ".PNG";
+        return String.format("/images/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
     }
 
     private ImageView createImageView(String path, double width, double height) {
