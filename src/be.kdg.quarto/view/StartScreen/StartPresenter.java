@@ -57,6 +57,10 @@ public class StartPresenter {
             new StatisticsPresenter(statsView, new Statistics());
             statsStage.show();
         });
+
+        view.getQuit().setOnAction(event -> {
+           System.exit(0);
+        });
     }
 
     private void updateView() {

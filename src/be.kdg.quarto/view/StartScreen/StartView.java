@@ -81,4 +81,8 @@ public class StartView extends BorderPane {
     public Button getStatistics() {
         return statistics;
     }
+
+    public Button getQuit() {
+        return quit;
+    }
 }
