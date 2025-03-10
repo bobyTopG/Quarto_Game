@@ -1,64 +1,84 @@
 -- DROP EXISTING TABLES
-DROP TABLE IF EXISTS piece CASCADE ;
-DROP TABLE IF EXISTS board CASCADE ;
-DROP TABLE IF EXISTS game_session CASCADE ;
-DROP TABLE IF EXISTS move CASCADE ;
-DROP TABLE IF EXISTS player CASCADE ;
+DROP TABLE IF EXISTS pieces CASCADE;
+DROP TABLE IF EXISTS boards CASCADE;
+DROP TABLE IF EXISTS game_sessions CASCADE;
+DROP TABLE IF EXISTS moves CASCADE;
+DROP TABLE IF EXISTS players CASCADE;
 
 -- CREATE TABLES
-CREATE TABLE player (
-                        player_id           SERIAL
-                            CONSTRAINT pk_player PRIMARY KEY,
-                        name                varchar(50)
-                            CONSTRAINT nn_name NOT NULL,
-                        password            varchar(50)
-                            CONSTRAINT nn_password NOT NULL
-
+CREATE TABLE players
+(
+    player_id INTEGER GENERATED ALWAYS AS IDENTITY
+        CONSTRAINT pk_player PRIMARY KEY,
+    name      VARCHAR(50)
+        CONSTRAINT nn_name NOT NULL,
+    password  VARCHAR(20)
+        CONSTRAINT nn_password NOT NULL
 );
 
-CREATE TABLE game_session (
-                              game_session_id       SERIAL
-                                  CONSTRAINT pk_game_session PRIMARY KEY,
-                              player_id1           INTEGER
-                                  CONSTRAINT fk_player_id1 REFERENCES player(player_id),
-                              player_id2           INTEGER
-                                  CONSTRAINT fk_player_id2 REFERENCES Player(player_id)
-                                  CONSTRAINT ck_player_id  CHECK (player_id2!= player_id1),
-                              start_time           timestamp,
-                              end_time             timestamp,
-                              total_turns          integer
-                                  CONSTRAINT ps_total_turns CHECK (total_turns > -1)
+-- CREATE TABLE human
+-- (
+--     id       INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 100 INCREMENT BY 1)
+--         CONSTRAINT pk_player PRIMARY KEY,
+--     name VARCHAR(20)
+--         CONSTRAINT nn_name NOT NULL,
+--     password VARCHAR(20)
+--         CONSTRAINT nn_password NOT NULL
+-- );
+--
+-- CREATE TABLE ai
+-- (
+--     id         INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+--         CONSTRAINT pk_player PRIMARY KEY,
+--     difficulty VARCHAR(20)
+-- );
 
+
+CREATE TABLE game_sessions
+(
+    game_session_id INTEGER GENERATED ALWAYS AS IDENTITY
+        CONSTRAINT pk_game_session PRIMARY KEY,
+    player1_id      INTEGER
+        CONSTRAINT fk_player1_id REFERENCES players (player_id),
+    player2_id      INTEGER
+        CONSTRAINT fk_player2_id REFERENCES players (player_id),
+    start_time      timestamp,
+    end_time        timestamp,
+    winner          INTEGER
+        CONSTRAINT ch_winner check ( winner IN (player1_id, player2_id) )
 );
 
-CREATE TABLE board (
-                       board_id            SERIAL
-                           CONSTRAINT pk_board PRIMARY KEY,
-                       game_session_id     INTEGER
-                           CONSTRAINT fk_game_session_id REFERENCES game_session(game_session_id)
+CREATE TABLE boards
+(
+    board_id        INTEGER GENERATED ALWAYS AS IDENTITY
+        CONSTRAINT pk_board PRIMARY KEY,
+    game_session_id INTEGER
+        CONSTRAINT fk_game_session_id REFERENCES game_sessions (game_session_id)
 );
 
-CREATE TABLE piece (
-                       piece_id            SERIAL
-                           CONSTRAINT pk_piece PRIMARY KEY,
-                       board_id            INTEGER
-                           CONSTRAINT fk_board_id REFERENCES board(board_id),
-                       pos                 integer,
-                       color               varchar(20),
-                       size                varchar(20),
-                       fill                varchar(20),
-                       shape               varchar(20)
+CREATE TABLE pieces
+(
+    piece_id INTEGER GENERATED ALWAYS AS IDENTITY
+        CONSTRAINT pk_piece PRIMARY KEY,
+    board_id INTEGER
+        CONSTRAINT fk_board_id REFERENCES boards (board_id),
+    pos      integer,
+    color    varchar(20),
+    size     varchar(20),
+    fill     varchar(20),
+    shape    varchar(20)
 );
 
-CREATE TABLE move (
-                      move_id             SERIAL
-                          CONSTRAINT pk_move PRIMARY KEY,
-                      game_session_id     INTEGER
-                          CONSTRAINT fk_game_session_id REFERENCES game_session(game_session_id),
-                      player_id           INTEGER
-                          CONSTRAINT fk_player_id REFERENCES player(player_id),
-                      piece_id            INTEGER
-                          CONSTRAINT fk_piece_id REFERENCES piece(piece_id),
-                      move_start_time     timestamp,
-                      move_end_time       timestamp
+CREATE TABLE moves
+(
+    move_id         INTEGER GENERATED ALWAYS AS IDENTITY
+        CONSTRAINT pk_move PRIMARY KEY,
+    game_session_id INTEGER
+        CONSTRAINT fk_game_session_id REFERENCES game_sessions (game_session_id),
+    player_id       INTEGER
+        CONSTRAINT fk_player_id REFERENCES players (player_id),
+    piece_id        INTEGER
+        CONSTRAINT fk_piece_id REFERENCES pieces (piece_id),
+    move_start_time timestamp,
+    move_end_time   timestamp
 );

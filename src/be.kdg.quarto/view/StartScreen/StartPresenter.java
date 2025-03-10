@@ -33,6 +33,9 @@ public class StartPresenter {
             view.getScene().setRoot(gameView);
             new GamePresenter(model,gameView);
         });
+        view.getQuit().setOnAction(event -> {
+            System.exit(0);
+        });
     }
 
     private void updateView() {
