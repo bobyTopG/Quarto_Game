@@ -1,2 +1,2 @@
-SELECT * FROM game_session;
+SELECT * FROM game_sessions;
 

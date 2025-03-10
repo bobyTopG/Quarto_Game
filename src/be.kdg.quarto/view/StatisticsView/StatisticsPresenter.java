@@ -35,13 +35,11 @@ public class StatisticsPresenter {
         });
 
         view.getBackBtn().setOnAction(event -> {
-            view.getInfoLabel().setText(view.getInfoLabel().getText() + " info");
             view.getBackBtn().setDisable(true);
             view.getNextBtn().setDisable(false);
         });
 
         view.getNextBtn().setOnAction(event -> {
-            view.getInfoLabel().setText(view.getInfoLabel().getText() + " graph");
             view.getBackBtn().setDisable(false);
             view.getNextBtn().setDisable(true);
         });
