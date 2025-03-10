@@ -15,16 +15,12 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class StartPresenter {
 
     private Game model;
     private StartView view;
-    private BoardView boardView = new BoardView();
 
 
     public StartPresenter(Game model, StartView view) {

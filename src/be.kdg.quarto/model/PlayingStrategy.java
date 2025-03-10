@@ -1,17 +1,21 @@
 package be.kdg.quarto.model;
 
-public class PlayingStrategy {
-    private String strategyName;
+public interface PlayingStrategy {
 
-    public PlayingStrategy(String strategyName) {
-        this.strategyName = strategyName;
-    }
 
-    public String getStrategyName() {
-        return strategyName;
-    }
-
-    public void setStrategyName(String strategyName) {
-        this.strategyName = strategyName;
-    }
+    Piece selectPiece();
+    String getName();
+//    private String strategyName;
+//
+//    public PlayingStrategy(String strategyName) {
+//        this.strategyName = strategyName;
+//    }
+//
+//    public String getStrategyName() {
+//        return strategyName;
+//    }
+//
+//    public void setStrategyName(String strategyName) {
+//        this.strategyName = strategyName;
+//    }
 }

@@ -65,18 +65,6 @@
     -fx-border-color: #000000;
 }
 
-/* Choose Piece Button */
-.choose-piece-button {
-    -fx-background-color: #d2941f;
-    -fx-border-color: #070501;
-}
-
-/* Place Piece Button */
-.place-piece-button {
-    -fx-background-color: #2dbdfa;
-    -fx-border-color: #000000;
-}
-
 /* Settings Button */
 .settings-button {
     -fx-background-color: #f62626;

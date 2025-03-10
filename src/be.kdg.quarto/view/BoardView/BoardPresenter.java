@@ -15,8 +15,6 @@ public class BoardPresenter {
         this.view = view;
         updateView();
         addEventHandlers();
-
-
     }
 
     private void addEventHandlers() {

@@ -11,9 +11,11 @@ import java.util.List;
 public class Board {
     private static final int BOARD_SIZE = 16;
     private List<Piece> availablePieces;
+    private List<Piece> placedPieces;
 
     public Board() {
         this.availablePieces = new ArrayList<>(BOARD_SIZE);
+        this.placedPieces = new ArrayList<>(BOARD_SIZE);
         generateAllPieces();
     }
 
@@ -37,5 +39,7 @@ public class Board {
         availablePieces.remove(piece);
     }
 
-
+    public List<Piece> getPlacedPieces() {
+        return placedPieces;
+    }
 }

@@ -13,6 +13,9 @@ public class Ai extends Player{
         this.strategy = strategy;
     }
 
+    public PlayingStrategy getStrategy() {
+        return strategy;
+    }
 
     public AiLevel getDifficultyLevel() {
         return difficultyLevel;

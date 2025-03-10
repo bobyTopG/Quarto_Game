@@ -13,34 +13,26 @@ public class Game {
     private final Player ai;
     private final Player human;
     private Player currentPlayer;
+
+    public Board getBoard() {
+        return board;
+    }
+
     private final Board board;
     private Piece selectedPiece;
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
-                new Ai("Open Ai", AiLevel.HARD, new PlayingStrategy("S1")));
+                new Ai("Open Ai", AiLevel.HARD, new RandomPlayingStrategy(null)));
     }
 
     public Game(Player human, Player ai) {
         this.human = human;
         this.ai = ai;
         this.board = new Board();
-        this.currentPlayer = ai;  // This could be parameterized
-        initializePieces();
+        this.currentPlayer = ai;
     }
 
-    // Properly named method
-    private void initializePieces() {
-        for (Color color : Color.values()) {
-            for (Fill fill : Fill.values()) {
-                for (Height height : Height.values()) {
-                    for (Shape shape : Shape.values()) {
-                        board.getAvailablePieces().add(new Piece(color, height, fill, shape));
-                    }
-                }
-            }
-        }
-    }
 
 
     public Player getCurrentPlayer() {
@@ -65,16 +57,9 @@ public class Game {
         this.selectedPiece = selectedPiece;
     }
 
-    public Piece selectRandomPiece() {
-        List<Piece> availablePieces = board.getAvailablePieces();
-        if (!availablePieces.isEmpty()) {
-            Random rand = new Random();
-            selectedPiece = availablePieces.get(rand.nextInt(availablePieces.size()));
-            board.removePiece(selectedPiece);
-            return selectedPiece;
-        }
-        else return null;
-    }
+
+
+
 
     public List<Piece> getPieces() {
         return board.getAvailablePieces();

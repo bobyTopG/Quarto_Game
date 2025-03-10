@@ -16,7 +16,7 @@ public class GameView extends StackPane {
     private PieceView piece;
     private SelectPieceView selectView;
     private Label turn, timer;
-    private Button quarto, placePiece, choosePiece, settings;
+    private Button quarto,settings;
     private BoardView board;
 
     // Constants for padding, spacing, and styling
@@ -57,8 +57,6 @@ public class GameView extends StackPane {
         turn = createLabel("Your Turn", 20, FontWeight.BOLD, Color.WHITE);
         timer = new Label("00:00:00");
         quarto = createButton("Quarto", "quarto-button");
-        placePiece = createButton("Place Piece", "place-piece-button");
-        choosePiece = createButton("Choose Piece", "choose-piece-button");
         settings = createButton("Settings", "settings-button");
 
         // Apply CSS stylesheet
