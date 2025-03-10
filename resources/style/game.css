@@ -1,0 +1,9 @@
+.quarto-button{
+    -fx-pref-width: 200px;
+}
+.settings-button{
+    -fx-pref-width: 250px;
+
+    -fx-background-color: #9B9B9B;
+    -fx-border-color: #000000;
+}

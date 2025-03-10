@@ -1,10 +1,8 @@
 package be.kdg.quarto;
 
-import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import be.kdg.quarto.model.Game;
 

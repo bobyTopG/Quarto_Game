@@ -19,7 +19,7 @@
             this.view = view;
             this.model = model;
             List<Image> images = findAICharacterImagesForButtons();
-            String pathToNotFound = "/resources/AICharacters/BoxedNotFound.png";
+            String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
             Image notFoundImage = new Image(pathToNotFound);
             view.initialise(images, AICharacters.getInstance().getCharacters(), notFoundImage); // Pass the images & characters to the view
             updateView();
@@ -32,7 +32,7 @@
             for (Ai ai : AiList) {
                 //we add Boxed because that is a prefix for the character's button
                 // + AIName + extension
-                String pathToCharacters = "/resources/AICharacters/Boxed";
+                String pathToCharacters = "/images/aiCharacters/Boxed";
                 String AIButtonsExtension = ".png";
                 String imagePath = pathToCharacters + ai.getName() + AIButtonsExtension;
                 Image image = new Image(getClass().getResource(imagePath).toString()); // Use getClass().getResource()

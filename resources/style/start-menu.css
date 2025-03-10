@@ -1,0 +1,14 @@
+.start-main-vbox{
+    -fx-spacing: 15px;
+}
+.main-title{
+    -fx-font-size: 64px;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+}
+
+.root-hbox{
+    -fx-spacing: 100px;
+}
+
+
+
