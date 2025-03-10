@@ -10,12 +10,15 @@ import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
 import be.kdg.quarto.view.StatisticsView.StatisticsView;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class StartPresenter {
 
@@ -59,7 +62,14 @@ public class StartPresenter {
         });
 
         view.getQuit().setOnAction(event -> {
-           System.exit(0);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Quit");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to exit?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                System.exit(0);
+            }
         });
     }
 
