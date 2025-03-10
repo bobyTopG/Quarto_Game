@@ -4,6 +4,7 @@ import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import be.kdg.quarto.model.Game;
 
@@ -12,7 +13,10 @@ public class Main extends javafx.application.Application {
     public void start(Stage primaryStage) {
         Game model = new Game();
         StartView view = new StartView();
-        primaryStage.setScene(new Scene(view));
+        Scene mainScene = new Scene(view);
+        primaryStage.setResizable(false);
+        mainScene.getStylesheets().add(getClass().getResource("/style/choose-ai-view.css").toExternalForm());
+        primaryStage.setScene(mainScene);
         new StartPresenter(model, view);
         primaryStage.setHeight(500);
         primaryStage.setWidth(900);

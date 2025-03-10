@@ -5,6 +5,8 @@ import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
+import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
@@ -35,9 +37,13 @@ public class StartPresenter {
 
     private void addEventHandlers() {
         view.getNewGame().setOnAction(event -> {
-            GameView gameView = new GameView();
-            view.getScene().setRoot(gameView);
-            new GamePresenter(model, gameView);
+            //GameView gameView = new GameView();
+            //view.getScene().setRoot(gameView);
+            //new GamePresenter(model, gameView);
+
+            ChooseAIView chooseAIView = new ChooseAIView();
+            view.getScene().setRoot(chooseAIView);
+            new ChooseAIPresenter(chooseAIView);
         });
 
 
