@@ -27,13 +27,13 @@ public class StatisticsView extends BorderPane {
         playerBtn = new Button("Player");
         aiBtn = new Button("AI");
 
-        HBox tBtnBox = new HBox();
-        tBtnBox.getChildren().addAll(playerBtn, aiBtn);
-        tBtnBox.setSpacing(10);
-        VBox topBox = new VBox();
-        topBox.getChildren().addAll(titleLabel, tBtnBox);
-
         infoLabel = new Label();
+
+        HBox centerBtnBox = new HBox();
+        centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
+        centerBtnBox.setSpacing(10);
+        VBox centerBox = new VBox();
+        centerBox.getChildren().addAll(centerBtnBox, infoLabel);
 
         closeBtn = new Button("Close");
         backBtn = new Button("Back");
@@ -46,8 +46,8 @@ public class StatisticsView extends BorderPane {
         bottomLayout.setLeft(closeBtn);
         bottomLayout.setRight(bBtnBox);
 
-        setTop(topBox);
-        setCenter(infoLabel);
+        setTop(titleLabel);
+        setCenter(centerBox);
         setBottom(bottomLayout);
     }
 
