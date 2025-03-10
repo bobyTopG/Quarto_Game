@@ -1,5 +1,5 @@
 package be.kdg.quarto.model.enums;
 
-public enum AILevel {
+public enum AiLevel {
     EASY, MEDIUM, HARD
 }

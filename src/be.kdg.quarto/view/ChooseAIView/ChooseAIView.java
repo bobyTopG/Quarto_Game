@@ -1,7 +1,7 @@
 package be.kdg.quarto.view.ChooseAIView;
 
-import be.kdg.quarto.model.AI;
-import be.kdg.quarto.model.enums.AILevel;
+import be.kdg.quarto.model.Ai;
+import be.kdg.quarto.model.enums.AiLevel;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,7 +17,7 @@ public class ChooseAIView extends BorderPane {
     private Button backButton, selectButton;
     private Image notFoundImage;
     private List<Image> AIImages; //order is important
-    private List<AI> AICharacters;
+    private List<Ai> AiCharacters;
     private Label chooseAILabel, nameLabel,
             descriptionLabel,difficultyHolderLabel, difficultyLabel;
 
@@ -77,22 +77,22 @@ public class ChooseAIView extends BorderPane {
             selectedCharacter.setImage(notFoundImage);
             nameLabel.setText("Unknown");
             difficultyLabel.setText("Secret");
-            changeDifficultyColor(AILevel.MEDIUM);
+            changeDifficultyColor(AiLevel.MEDIUM);
 
             descriptionLabel.setText("Coming Soon...");
             return;
         }
         //set the character that is the nth on the list
         selectedCharacter.setImage(AIImages.get(n));
-        nameLabel.setText(AICharacters.get(n).getName());
-        AILevel level = AICharacters.get(n).getDifficultyLevel();
+        nameLabel.setText(AiCharacters.get(n).getName());
+        AiLevel level = AiCharacters.get(n).getDifficultyLevel();
         difficultyLabel.setText(getDifficultyName(level));
         changeDifficultyColor(level);
-        descriptionLabel.setText(AICharacters.get(n).getDescription());
+        descriptionLabel.setText(AiCharacters.get(n).getDescription());
 
     }
 
-    private String getDifficultyName(AILevel level){
+    private String getDifficultyName(AiLevel level){
         //EASY -> Easy
         String firstLetter = level.toString().substring(0, 1).toUpperCase();
 
@@ -100,7 +100,7 @@ public class ChooseAIView extends BorderPane {
 
         return firstLetter + restOfString;
     }
-    private void changeDifficultyColor(AILevel level){
+    private void changeDifficultyColor(AiLevel level){
         switch(level){
             case EASY:
                 difficultyLabel.setStyle("-fx-text-fill: #42AF3F");
@@ -136,9 +136,9 @@ public class ChooseAIView extends BorderPane {
     }
 
 
-    public void initialise(List<Image> images, List<AI> characters, Image notFoundImage) {
+    public void initialise(List<Image> images, List<Ai> characters, Image notFoundImage) {
         this.AIImages = images;
-        this.AICharacters = characters;
+        this.AiCharacters = characters;
         this.notFoundImage = notFoundImage;
 
 
@@ -151,7 +151,7 @@ public class ChooseAIView extends BorderPane {
         HBox AICharactersHBox = new HBox();
         AICharactersHBox.getStyleClass().add("ai-characters-hbox");
         int count = 0;
-        for (AI character : AICharacters) {
+        for (Ai character : AiCharacters) {
             Button AICharacterButton = new Button();
             AICharacterButton.getStyleClass().add("ai-button");
 

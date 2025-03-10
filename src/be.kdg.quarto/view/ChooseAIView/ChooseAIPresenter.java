@@ -1,5 +1,5 @@
     package be.kdg.quarto.view.ChooseAIView;
-    import be.kdg.quarto.model.AI;
+    import be.kdg.quarto.model.Ai;
     import be.kdg.quarto.model.Game;
     import be.kdg.quarto.view.GameScreen.GamePresenter;
     import be.kdg.quarto.view.GameScreen.GameView;
@@ -27,9 +27,9 @@
         }
 
         private List<Image> findAICharacterImagesForButtons() {
-            List<AI> AIList = AICharacters.getInstance().getCharacters();
+            List<Ai> AiList = AICharacters.getInstance().getCharacters();
             List<Image> images = new ArrayList<>();
-            for (AI ai : AIList) {
+            for (Ai ai : AiList) {
                 //we add Boxed because that is a prefix for the character's button
                 // + AIName + extension
                 String pathToCharacters = "/resources/AICharacters/Boxed";

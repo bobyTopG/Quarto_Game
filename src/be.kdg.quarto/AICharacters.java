@@ -1,21 +1,21 @@
 package be.kdg.quarto;
 
-import be.kdg.quarto.model.AI;
+import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.PlayingStrategy;
-import be.kdg.quarto.model.enums.AILevel;
+import be.kdg.quarto.model.enums.AiLevel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AICharacters {
     private static AICharacters instance;
-    private final List<AI> characters;
+    private final List<Ai> characters;
 
     private AICharacters() {
         // Initializing the List
         this.characters = new ArrayList<>();
-        AI bobAI = new AI("Bob", AILevel.EASY, new PlayingStrategy("No Strategy"),"New to the game, understands \n the basic rules but has \n no other knowledge");
-        this.characters.add(bobAI);
+        Ai bobAi = new Ai("Bob", AiLevel.EASY, new PlayingStrategy("No Strategy"),"New to the game, understands \n the basic rules but has \n no other knowledge");
+        this.characters.add(bobAi);
         // Add more AI characters here...
     }
 
@@ -28,11 +28,11 @@ public class AICharacters {
         return instance;
     }
 
-    public List<AI> getCharacters() {
+    public List<Ai> getCharacters() {
         return this.characters;
     }
 
-    public AI getCharacter(int index) {
+    public Ai getCharacter(int index) {
         // TO DO, check if index is out of bounds
         return this.characters.get(index);
     }

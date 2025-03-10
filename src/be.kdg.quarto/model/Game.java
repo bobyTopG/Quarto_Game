@@ -1,6 +1,6 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.model.enums.AILevel;
+import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
@@ -18,7 +18,7 @@ public class Game {
 
     public Game() {
         this(new Human("Bob", "secretPassword"),
-                new AI("Open Ai", AILevel.HARD, new PlayingStrategy("S1"), "Description"));
+                new Ai("Open Ai", AiLevel.HARD, new PlayingStrategy("S1"), "Description"));
     }
 
     public Game(Player human, Player ai) {
