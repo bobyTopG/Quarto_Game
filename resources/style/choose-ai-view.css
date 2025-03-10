@@ -22,16 +22,23 @@
     -fx-spacing: 25px;
     -fx-padding: 0px 0px 0px 20px;
 }
+
 .ai-button {
     -fx-background-color: none;
-    -fx-background-size: 45px;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: 85%;
     -fx-padding: 0;
     -fx-cursor: hand;
 
-}
 
+    -fx-scale-x: 1.0; /* Initial scale (no enlargement) */
+    -fx-scale-y: 1.0;
+    transition: -fx-scale-x 1s ease,
+                -fx-scale-y 1s ease; /* Add this line */
+
+}
+.ai-button:hover {
+    -fx-scale-x: 1.1; /* Scale up on hover */
+    -fx-scale-y: 1.1;
+}
 .action-button{
     -fx-pref-width: 200px;
     -fx-min-height: 60px;
@@ -53,11 +60,15 @@
 .back-button {
     -fx-background-color: #F7931E;
 }
-
+.back-button:hover {
+    -fx-background-color: #e6621d;
+}
 .select-button{
     -fx-background-color: #42AF3F;
 }
-
+.select-button:hover{
+    -fx-background-color: #389a3d;
+}
 .choose-label{
     -fx-font-weight: bolder;
     -fx-font-size: 42px;

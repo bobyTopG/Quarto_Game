@@ -37,13 +37,11 @@ public class StartPresenter {
 
     private void addEventHandlers() {
         view.getNewGame().setOnAction(event -> {
-            //GameView gameView = new GameView();
-            //view.getScene().setRoot(gameView);
-            //new GamePresenter(model, gameView);
+
 
             ChooseAIView chooseAIView = new ChooseAIView();
             view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView);
+            new ChooseAIPresenter(chooseAIView, model);
         });
 
 

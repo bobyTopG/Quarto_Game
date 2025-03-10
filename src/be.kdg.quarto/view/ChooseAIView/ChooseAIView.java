@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseAIView extends BorderPane {
@@ -21,6 +22,8 @@ public class ChooseAIView extends BorderPane {
             descriptionLabel,difficultyHolderLabel, difficultyLabel;
 
     private HBox difficultyHBox;
+    private List<Button> characterButtons = new ArrayList<>();
+    private List<Button> notFoundButtons = new ArrayList<>();
     private VBox mainVBox, characterVBox;
 
     private ImageView selectedCharacter;
@@ -34,10 +37,10 @@ public class ChooseAIView extends BorderPane {
         backButton = new Button("Back");
         selectButton = new Button("Select");
         chooseAILabel = new Label("Choose opponent :");
-        nameLabel = new Label("Bob");
-        descriptionLabel = new Label("New to the game, understands \n the basic rules but has \n no other knowledge");
-        difficultyHolderLabel = new Label("Difficulty:");
-        difficultyLabel = new Label("Easy");
+        nameLabel = new Label("");
+        descriptionLabel = new Label("");
+        difficultyHolderLabel = new Label("");
+        difficultyLabel = new Label("");
         difficultyHBox = new HBox();
         mainVBox = new VBox();
         characterVBox = new VBox();
@@ -68,7 +71,8 @@ public class ChooseAIView extends BorderPane {
 
     }
 
-    private void setSelectedCharacter(int n){
+    public void setSelectedCharacter(int n){
+        difficultyHolderLabel.setText("Difficulty:");
         if(n == -1){
             selectedCharacter.setImage(notFoundImage);
             nameLabel.setText("Unknown");
@@ -86,17 +90,15 @@ public class ChooseAIView extends BorderPane {
         changeDifficultyColor(level);
         descriptionLabel.setText(AICharacters.get(n).getDescription());
 
-
     }
 
     private String getDifficultyName(AILevel level){
+        //EASY -> Easy
         String firstLetter = level.toString().substring(0, 1).toUpperCase();
 
         String restOfString = level.toString().substring(1).toLowerCase();
 
         return firstLetter + restOfString;
-
-
     }
     private void changeDifficultyColor(AILevel level){
         switch(level){
@@ -159,11 +161,7 @@ public class ChooseAIView extends BorderPane {
             imageView.setFitWidth(100);
 
             AICharacterButton.setGraphic(imageView);
-            final int id = count;
-            AICharacterButton.setOnAction(event -> {
-                setSelectedCharacter(id);
-                // Add your code here to execute when the button is clicked
-            });
+            characterButtons.add(AICharacterButton);
 
             AICharactersHBox.getChildren().add(AICharacterButton);
             count++;
@@ -177,14 +175,22 @@ public class ChooseAIView extends BorderPane {
             notFoundButton.setGraphic(imageView);
             notFoundButton.getStyleClass().add("ai-button");
             AICharactersHBox.getChildren().add(notFoundButton);
-            notFoundButton.setOnAction(event -> {
-                setSelectedCharacter(-1);
-                // Add your code here to execute when the button is clicked
-            });
-
+            notFoundButtons.add(notFoundButton);
         }
 
         return AICharactersHBox;
     }
+    public Button getBackButton() {
+        return backButton;
+    }
+    public List<Button> getCharacterButtons(){
+        return characterButtons;
+    }
+    public List<Button> getNotFoundButtons(){
+        return notFoundButtons;
+    }
 
+    public Button getSelectButton(){
+        return selectButton;
+    }
 }
