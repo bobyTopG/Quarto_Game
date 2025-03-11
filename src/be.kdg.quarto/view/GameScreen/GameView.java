@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.GameScreen;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -56,18 +57,9 @@ public class GameView extends StackPane {
         piece = new PieceView();
         turn = createLabel("Your Turn", 20, FontWeight.BOLD, Color.WHITE);
         timer = new Label("00:00:00");
-        quarto = createButton("Quarto", "quarto-button");
-        settings = createButton("Settings", "settings-button");
+        quarto = CreateHelper.createButton("Quarto", new String[]{"quarto-button","default-button","green-button"});
+        settings = CreateHelper.createButton("Settings", new String[]{"settings-button", "default-button","gray-button"});
 
-        // Apply CSS stylesheet
-        this.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
-    }
-
-    // Helper method to create a button with text and style
-    private Button createButton(String text, String styleClass) {
-        Button button = new Button(text);
-        button.getStyleClass().add(styleClass);
-        return button;
     }
 
     // Helper method to create a label with specific font and text color
