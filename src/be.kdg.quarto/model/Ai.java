@@ -13,6 +13,10 @@ public class Ai extends Player{
         this.strategy = strategy;
     }
 
+    public void setStrategy(PlayingStrategy strategy) {
+        this.strategy = strategy;
+    }
+
     public PlayingStrategy getStrategy() {
         return strategy;
     }

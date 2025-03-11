@@ -10,36 +10,37 @@ import java.util.List;
 
 public class Board {
     private static final int BOARD_SIZE = 16;
-    private List<Piece> availablePieces;
-    private List<Piece> placedPieces;
+    private List<Tile> tiles;
+
 
     public Board() {
-        this.availablePieces = new ArrayList<>(BOARD_SIZE);
-        this.placedPieces = new ArrayList<>(BOARD_SIZE);
-        generateAllPieces();
+        this.tiles = new ArrayList<>(BOARD_SIZE);
     }
 
-    private void generateAllPieces() {
+    public void generateAllTiles() {
         for (Color color : Color.values()) {
             for (Height height : Height.values()) {
                 for (Fill fill : Fill.values()) {
                     for (Shape shape : Shape.values()) {
-                        availablePieces.add(new Piece(color, height, fill, shape));
+                        tiles.add(new Tile(new Piece(color, height, fill, shape)));
                     }
                 }
             }
         }
     }
 
-    public List<Piece> getAvailablePieces() {
-        return new ArrayList<>(availablePieces);
+    public void createEmptyTiles() {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            tiles.add(new Tile());
+        }
     }
 
-    public void removePiece(Piece piece) {
-        availablePieces.remove(piece);
+    public List<Tile> getTiles() {
+        return tiles;}
+
+    public void removeTile(Tile tile) {
+        tiles.remove(tile);
     }
 
-    public List<Piece> getPlacedPieces() {
-        return placedPieces;
-    }
+
 }

@@ -1,18 +1,28 @@
 package be.kdg.quarto.model;
 
-import java.util.List;
 import java.util.Random;
 
 public class RandomPlayingStrategy implements PlayingStrategy {
-    private final Board board;
+    private  Board selectPiece ,placePiece;
+    private boolean toPick;
 
-    public RandomPlayingStrategy(Board board) {
-        this.board = board;
+    public boolean isToPick() {
+        return toPick;
+    }
+
+    public Board getPlacePiece() {
+        return placePiece;
+    }
+
+    public RandomPlayingStrategy(Board selectPiece , Board placePiece , boolean toPick) {
+        this.placePiece = placePiece;
+        this.selectPiece = selectPiece;
+        this.toPick = toPick;
     }
 
     @Override
-    public Piece selectPiece() {
-        return selectRandomPiece();
+    public Tile selectPiece() {
+       return selectRandomPiece();
     }
 
     @Override
@@ -21,14 +31,15 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     }
 
 
-    private Piece selectRandomPiece() {
-        List<Piece> availablePieces = board.getAvailablePieces();
-        if (!availablePieces.isEmpty()) {
-            Random rand = new Random();
-            Piece selectedPiece = availablePieces.get(rand.nextInt(availablePieces.size()));
-            board.removePiece(selectedPiece);
-            return selectedPiece;
+    private Tile selectRandomPiece() {
+        Random rand = new Random();
+        if (toPick) {
+           return selectPiece.getTiles().get(rand.nextInt(selectPiece.getTiles().size()));
         }
-        else return null;
+        else {
+            return placePiece.getTiles().get(rand.nextInt(placePiece.getTiles().size()));
+        }
+        //Pick
+
     }
 }

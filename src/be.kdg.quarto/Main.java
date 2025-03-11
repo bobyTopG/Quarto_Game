@@ -17,7 +17,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         UiSettings uiSettings = new UiSettings();
-        Game model = new Game();
         StartView view = new StartView(uiSettings);
 
         Scene scene = new Scene(view, 800, 600);
@@ -35,7 +34,7 @@ public class Main extends Application {
         primaryStage.setTitle(uiSettings.getApplicationName());
 
         primaryStage.setScene(scene);
-        new StartPresenter(model, view);
+        new StartPresenter(view);
         primaryStage.setHeight(500);
         primaryStage.setWidth(1100);
         primaryStage.show();

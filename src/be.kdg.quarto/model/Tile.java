@@ -1,24 +1,34 @@
 package be.kdg.quarto.model;
 
+import java.util.Objects;
+
 public class Tile {
-    private int index;
     private Piece piece;
 
-
-    public Tile(int index){
-        this(index, null);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return Objects.equals(piece, tile.piece);
     }
-    public Tile(int index , Piece piece) {
-        this.index = index;
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(piece);
+    }
+
+    public Tile(Piece piece) {
        setPiece(piece);
     }
-    public int getIndex() {
-        return index;
-    }
+    public Tile() {}
     public Piece getPiece() {
         return piece;
     }
     public void setPiece(Piece piece) {
         this.piece = piece;
+    }
+    public void removePiece() {
+        this.piece = null;
     }
 }

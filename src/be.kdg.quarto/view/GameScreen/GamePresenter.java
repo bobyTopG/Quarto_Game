@@ -2,22 +2,16 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.model.enums.Color;
-import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.enums.Height;
-import be.kdg.quarto.model.enums.Shape;
+import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
-import be.kdg.quarto.view.BoardView.BoardSpaceView;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import java.util.List;
-import java.util.Random;
+import javafx.scene.paint.Color;
 
 public class GamePresenter {
     private final Game model;
     private final GameView view;
-    private ImageView imageView;
 
     public GamePresenter(Game model, GameView view) {
         this.model = model;
@@ -25,37 +19,77 @@ public class GamePresenter {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
 
         new BoardPresenter(model, view.getBoard());
-
-        createPieceSelection();
+        createSelectBoard();
         updateView();
         addEventHandlers();
     }
 
     private void addEventHandlers() {
-
         //Place
         view.getBoard().getSpaceViews().forEach(boardSpaceView -> {
-//            boardSpaceView.getChildren()
-//                    .add(createImageView(getPieceImage(model.getSelectedPiece())));
+            boardSpaceView.getCircle().setOnMouseClicked(event -> {
+                int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
+                Tile tile = new Tile();
+                tile.setPiece(model.getCurntTile().getPiece());
+                model.getPlacedTiles().getTiles().set(place, tile);
+                view.getPiece().getPieceImage().setImage(null);
+                model.getCurntTile().setPiece(null);
+                updateView();
+
+            });
         });
 
         //Pick
         view.getSelectView().getPieceViews().forEach(pieceView -> {
-            // model.setSelectedPiece();
+            pieceView.getPieceRect().setOnMouseClicked(event -> {
+                if(model.getCurntTile().getPiece() == null) {
+                    System.out.println("u clicked");
+                    model.setCurrentTile(new Tile(
+                            model.createPieceFromImageName
+                                    (pieceView.getPieceImage().getImage().getUrl())));
+                    model.getTilesToSelect().getTiles().get(model.getTilesToSelect().getTiles().indexOf(model.getCurntTile())).setPiece(null);
+                    model.switchTurns();
+                    updateView();
+                }
+            });
         });
-
     }
 
-
     private void updateView() {
+        //Updates the current piece
+        if (model.getCurntTile().getPiece() != null) {
+            view.getPiece().getPieceRect().setFill(Color.WHITE);
+            view.getPiece().getPieceImage().setImage
+                    (new Image(getPieceImage(model.getCurntTile().getPiece())));
+        }
 
-        view.getSelectView().getPieceViews().forEach(pieceView -> {
 
-        });
+        //Update select board
+        for (int i = 0; i < model.getTilesToSelect().getTiles().size(); i++) {
+            if (model.getTilesToSelect().getTiles().get(i).getPiece() != null) {
+                Piece piece = model.getTilesToSelect().getTiles().get(i).getPiece();
+                view.getSelectView().getPieceViews().get(i)
+                        .getPieceImage().setImage(new Image(getPieceImage(piece)));
+            } else {
+                view.getSelectView().getPieceViews().get(i).getPieceImage().setImage(null);
+            }
+        }
 
-        view.getBoard().getSpaceViews().forEach(boardSpaceView -> {
 
-        });
+        //Updates playing board
+        for (int i = 0; i < view.getBoard().getSpaceViews().size(); i++) {
+            if (model.getPlacedTiles().getTiles().get(i).getPiece() != null) {
+                ImageView imageView =
+                        new ImageView(getPieceImage(model.getPlacedTiles().getTiles().get(i).getPiece()));
+                imageView.setFitHeight(30);
+                imageView.setFitWidth(30);
+
+                view.getBoard().getSpaceViews().get(i)
+                        .getChildren().add(imageView);
+
+
+            } else continue;
+        }
 
 
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
@@ -63,7 +97,7 @@ public class GamePresenter {
 
     }
 
-    private void createPieceSelection() {
+    private void createSelectBoard() {
         view.getSelectView().getPieceViews().clear();
 
         for (int i = 0; i < 4; i++) {
@@ -73,38 +107,11 @@ public class GamePresenter {
                 view.getSelectView().add(pieceView, i, j);
             }
         }
-
-        for (int i = 0; i < model.getPieces().size(); i++) {
-            Piece piece = model.getPieces().get(i);
-
-            view.getSelectView().getPieceViews().get(i)
-                    .getPieceImage().setImage(new Image(getPieceImage(piece)));
-        }
     }
 
-    private Piece createPieceFromImageName(String path) {
-        String filename = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
-
-        String[] parts = filename.split("_");
-
-        if (parts.length != 4) {
-            throw new IllegalArgumentException("Invalid image name format: " + path);
-        }
-
-        try {
-            Color color = Color.valueOf(parts[0].toUpperCase());
-            Height height = Height.valueOf(parts[1].toUpperCase());
-            Fill fill = Fill.valueOf(parts[2].toUpperCase());
-            Shape shape = Shape.valueOf(parts[3].toUpperCase());
-
-            // Create and return the Piece
-            return new Piece(color, height, fill, shape);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid enum value in image name: " + path, e);
-        }
-    }
 
     private String getPieceImage(Piece piece) {
         return String.format("/images/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
+
     }
 }
