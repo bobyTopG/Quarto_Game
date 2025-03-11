@@ -1,148 +1,86 @@
 package be.kdg.quarto.view.StartScreen;
 
-import be.kdg.quarto.model.Board;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.UiSettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+
 
 public class StartView extends BorderPane {
 
     private Label label;
     private Button newGame, continueButton, leaderBoard, statistics, quit;
+    private HBox mainHBox;
     private BoardView board;
+    private UiSettings settings;
 
-    public StartView() {
+    private static final int BUTTON_SPACING = 20;
+    private static final int VBOX_LEFT_PADDING = 70;
+    private static final int VBOX_TOP_PADDING = 10;
+    private static final int VBOX_BOTTOM_PADDING = 20;
+    public StartView(UiSettings settings) {
+        this.settings = settings;
         initialiseNodes();
         layoutNodes();
     }
+    //private static final String FONT_FILE = "/fonts/berlin.ttf"; // Relative path
 
     private void initialiseNodes() {
         board = new BoardView();
-        label = new Label("Quarto!");
-        newGame = new Button("New Game");
-        continueButton = new Button("Continue");
-        leaderBoard = new Button("Leaderboard");
-        statistics = new Button("Statistics");
-        quit = new Button("Quit");
+        label = CreateHelper.createLabel("Quarto!", "main-title");
+        label.setFont(FontHelper.getExtraLargeFont());
+
+        newGame = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
+        continueButton = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
+        leaderBoard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
+        statistics = CreateHelper.createButton("Statistics", new String[]{"blue-button", "default-button"});
+        quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
+        mainHBox = CreateHelper.createHBox("root-hbox");
     }
 
+
+    private void layoutNodes() {
+        VBox vbox = CreateHelper.createVBox("start-main-vbox");
+        vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
+        vbox.getChildren().addAll(label, newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.setAlignment(Pos.CENTER);
+
+
+        mainHBox.getChildren().add(vbox);
+
+        setCenter(mainHBox);
+    }
+
+    // Getters
     public BoardView getBoard() {
         return board;
     }
 
-    private void layoutNodes() {
-        label.setFont(Font.font("Sigmar", FontWeight.BOLD, 40));
-
-        newGame.setStyle(
-                "-fx-background-color: #28a745; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        continueButton.setStyle(
-                "-fx-background-color: #d2941f; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #070501; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        leaderBoard.setStyle(
-                "-fx-background-color: #2dbdfa; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        statistics.setStyle(
-                "-fx-background-color: #2dbdfa; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #000000; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-        quit.setStyle(
-                "-fx-background-color: #f62626; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #070303; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;"
-        );
-
-
-        continueButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        leaderBoard.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        statistics.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        quit.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-
-
-        VBox vbox = new VBox();
-        vbox.setSpacing(20);
-        vbox.setPadding(new Insets(10, 10, 20, 20));
-        vbox.getChildren().addAll(newGame, continueButton, leaderBoard, statistics, quit);
-        vbox.setAlignment(Pos.CENTER);
+    public void loadBoardImage(Image boardImage) {
         StackPane stackPane = new StackPane();
-        board.disableBoard();
-        stackPane.getChildren().addAll(board);
-        HBox hBox = new HBox(250, vbox, stackPane);
-        setAlignment(label, Pos.CENTER);
-        setTop(label);
-        setCenter(hBox);
-    }
-
-    public Button getContinueButton() {
-        return continueButton;
-    }
-
-    public Label getLabel() {
-        return label;
-    }
-
-    public Button getLeaderBoard() {
-        return leaderBoard;
+        ImageView boardImageView = new ImageView(boardImage); // No cast needed
+        boardImageView.setFitHeight(400);
+        boardImageView.setFitWidth(400);
+        stackPane.getChildren().add(boardImageView);
+        mainHBox.getChildren().add(stackPane);
     }
 
     public Button getNewGame() {
         return newGame;
     }
 
-    public Button getQuit() {
-        return quit;
-    }
-
     public Button getStatistics() {
         return statistics;
+    }
+
+    public Button getQuit() {
+        return quit;
     }
 }

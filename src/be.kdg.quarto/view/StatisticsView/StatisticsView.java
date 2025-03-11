@@ -1,28 +1,19 @@
 package be.kdg.quarto.view.StatisticsView;
 
-
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 public class StatisticsView extends BorderPane {
-    // Private attributes for nodes
-    private ToggleButton playerBtn, aiBtn;
-    private ToggleGroup group;
+    private Button playerBtn;
+    private Button aiBtn;
     private Label infoLabel;
-    private HBox btnBox;
-    private VBox vBox;
-
-    private Label titleLabel;
     private Button closeBtn;
+    private Button backBtn;
+    private Button nextBtn;
 
     // Constructor
     public StatisticsView() {
@@ -31,57 +22,54 @@ public class StatisticsView extends BorderPane {
     }
 
     private void initializeNodes() {
-        playerBtn = new ToggleButton("Player");
-        aiBtn = new ToggleButton("AI");
-        group = new ToggleGroup();
-        infoLabel = new Label("Player info");
-        btnBox = new HBox();
-        vBox = new VBox();
+        Label titleLabel = new Label("[someone] Won!");
 
-        titleLabel = new Label("[someone] Won!");
+        playerBtn = new Button("Player");
+        aiBtn = new Button("AI");
+
+        infoLabel = new Label();
+
+        HBox centerBtnBox = new HBox();
+        centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
+        centerBtnBox.setSpacing(10);
+        VBox centerBox = new VBox();
+        centerBox.getChildren().addAll(centerBtnBox, infoLabel);
+
         closeBtn = new Button("Close");
+        backBtn = new Button("Back");
+        nextBtn = new Button("Next");
 
-        playerBtn.setToggleGroup(group);
-        aiBtn.setToggleGroup(group);
-        btnBox.getChildren().addAll(playerBtn, aiBtn);
-        btnBox.setSpacing(10);
-        vBox.getChildren().addAll(btnBox, infoLabel);
+        HBox bBtnBox = new HBox();
+        bBtnBox.getChildren().addAll(backBtn, nextBtn);
+        bBtnBox.setSpacing(10);
+        BorderPane bottomLayout = new BorderPane();
+        bottomLayout.setLeft(closeBtn);
+        bottomLayout.setRight(bBtnBox);
+
+        setTop(titleLabel);
+        setCenter(centerBox);
+        setBottom(bottomLayout);
     }
 
     private void layoutNodes() {
         setPadding(new Insets(10, 10, 10, 10));
-        setTop(titleLabel);
-        setCenter(vBox);
-        setBottom(closeBtn);
 
-
-        setAlignment(btnBox, Pos.CENTER);
         playerBtn.setPrefWidth(200);
-        playerBtn.setStyle(getOnStyle());
-
+        playerBtn.setStyle(getBtnStyle("#2dbdfa"));
         aiBtn.setPrefWidth(200);
-        aiBtn.setStyle(getOffStyle());
+        aiBtn.setStyle(getBtnStyle("#2dbdfa"));
 
-        setAlignment(closeBtn, Pos.CENTER);
-        closeBtn.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        closeBtn.setStyle(
-                "-fx-background-color: #f62626; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 16px; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-color: #070303; " +
-                        "-fx-border-width: 2px; " +
-                        "-fx-border-radius: 20; " +
-                        "-fx-cursor: hand;");
+        closeBtn.setStyle(getBtnStyle("#f62626"));
+        backBtn.setStyle(getBtnStyle("#d2941f"));
+        nextBtn.setStyle(getBtnStyle("#28a745"));
     }
 
     // Package private getters
-    public ToggleButton getPlayerBtn() {
+    public Button getPlayerBtn() {
         return playerBtn;
     }
 
-    public ToggleButton getAiBtn() {
+    public Button getAiBtn() {
         return aiBtn;
     }
 
@@ -93,20 +81,16 @@ public class StatisticsView extends BorderPane {
         return closeBtn;
     }
 
-    public String getOnStyle() {
-        return "-fx-background-color: #14526a; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-size: 16px; " +
-                "-fx-font-weight: bold; " +
-                "-fx-background-radius: 20; " +
-                "-fx-border-color: #070303; " +
-                "-fx-border-width: 2px; " +
-                "-fx-border-radius: 20; " +
-                "-fx-cursor: hand;";
+    public Button getBackBtn() {
+        return backBtn;
     }
 
-    public String getOffStyle() {
-        return "-fx-background-color: #2dbdfa; " +
+    public Button getNextBtn() {
+        return nextBtn;
+    }
+
+    public String getBtnStyle(String hex) {
+        return "-fx-background-color: " + hex + "; " +
                 "-fx-text-fill: white; " +
                 "-fx-font-size: 16px; " +
                 "-fx-font-weight: bold; " +

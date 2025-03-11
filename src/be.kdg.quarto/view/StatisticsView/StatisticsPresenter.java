@@ -12,6 +12,9 @@ public class StatisticsPresenter {
         this.stats = stats;
         addEventHandlers();
         updateView();
+
+        view.getPlayerBtn().fire();
+        view.getBackBtn().fire();
     }
 
     private void updateView() {
@@ -20,15 +23,25 @@ public class StatisticsPresenter {
 
     private void addEventHandlers() {
         view.getPlayerBtn().setOnAction(event -> {
-            view.getInfoLabel().setText("Player info");
-            view.getPlayerBtn().setStyle(view.getOnStyle());
-            view.getAiBtn().setStyle(view.getOffStyle());
+            view.getInfoLabel().setText("Player");
+            view.getPlayerBtn().setDisable(true);
+            view.getAiBtn().setDisable(false);
         });
 
         view.getAiBtn().setOnAction(event -> {
-            view.getInfoLabel().setText("AI info");
-            view.getAiBtn().setStyle(view.getOnStyle());
-            view.getPlayerBtn().setStyle(view.getOffStyle());
+            view.getInfoLabel().setText("AI");
+            view.getPlayerBtn().setDisable(false);
+            view.getAiBtn().setDisable(true);
+        });
+
+        view.getBackBtn().setOnAction(event -> {
+            view.getBackBtn().setDisable(true);
+            view.getNextBtn().setDisable(false);
+        });
+
+        view.getNextBtn().setOnAction(event -> {
+            view.getBackBtn().setDisable(false);
+            view.getNextBtn().setDisable(true);
         });
 
         view.getCloseBtn().setOnAction(event -> {

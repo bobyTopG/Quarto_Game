@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.ChooseAIView;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.enums.AiLevel;
 import javafx.scene.control.Button;
@@ -34,8 +35,8 @@ public class ChooseAIView extends BorderPane {
 
     }
     private void initialiseNodes() {
-        backButton = new Button("Back");
-        selectButton = new Button("Select");
+        backButton = CreateHelper.createButton("Back",new String[]{"back-button","action-button"});
+        selectButton = CreateHelper.createButton("Select", new String[]{"select-button","action-button"});
         chooseAILabel = new Label("Choose opponent :");
         nameLabel = new Label("");
         descriptionLabel = new Label("");
@@ -126,10 +127,6 @@ public class ChooseAIView extends BorderPane {
 
     }
     private void styleMainVBox() {
-        backButton.getStyleClass().add("action-button");
-        backButton.getStyleClass().add("back-button");
-        selectButton.getStyleClass().add("action-button");
-        selectButton.getStyleClass().add("select-button");
         chooseAILabel.getStyleClass().add("choose-label");
         mainVBox.getStyleClass().add("main-vbox");
 
@@ -152,9 +149,7 @@ public class ChooseAIView extends BorderPane {
         AICharactersHBox.getStyleClass().add("ai-characters-hbox");
         int count = 0;
         for (Ai character : AiCharacters) {
-            Button AICharacterButton = new Button();
-            AICharacterButton.getStyleClass().add("ai-button");
-
+            Button AICharacterButton = CreateHelper.createButton("","ai-button");
             Image image = AIImages.get(count);
             ImageView imageView = new ImageView(image);
             imageView.setFitHeight(100);
@@ -167,13 +162,12 @@ public class ChooseAIView extends BorderPane {
             count++;
         }
         for (int i = 0; i < amount-count; i++){
-            Button notFoundButton = new Button();
+            Button notFoundButton = CreateHelper.createButton("","ai-button");
             ImageView imageView = new ImageView(notFoundImage);
             imageView.setFitHeight(100);
             imageView.setFitWidth(100);
 
             notFoundButton.setGraphic(imageView);
-            notFoundButton.getStyleClass().add("ai-button");
             AICharactersHBox.getChildren().add(notFoundButton);
             notFoundButtons.add(notFoundButton);
         }

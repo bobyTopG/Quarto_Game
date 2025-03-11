@@ -5,9 +5,10 @@
     import be.kdg.quarto.view.GameScreen.GameView;
     import be.kdg.quarto.view.StartScreen.StartPresenter;
     import be.kdg.quarto.view.StartScreen.StartView;
+    import be.kdg.quarto.view.UiSettings;
     import javafx.scene.control.Button;
     import javafx.scene.image.Image;
-    import be.kdg.quarto.AICharacters;
+    import be.kdg.quarto.helpers.AICharacters;
 
     import java.util.ArrayList;
     import java.util.List;
@@ -21,13 +22,13 @@
             List<Image> images = findAICharacterImagesForButtons();
             String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
             Image notFoundImage = new Image(pathToNotFound);
-            view.initialise(images, AICharacters.getInstance().getCharacters(), notFoundImage); // Pass the images & characters to the view
+            view.initialise(images, AICharacters.getCharacters(), notFoundImage); // Pass the images & characters to the view
             updateView();
             addEventHandlers();
         }
 
         private List<Image> findAICharacterImagesForButtons() {
-            List<Ai> AiList = AICharacters.getInstance().getCharacters();
+            List<Ai> AiList = AICharacters.getCharacters();
             List<Image> images = new ArrayList<>();
             for (Ai ai : AiList) {
                 //we add Boxed because that is a prefix for the character's button
@@ -40,13 +41,14 @@
             }
             return images;
         }
+        UiSettings uiSettings = new UiSettings();
 
         private void addEventHandlers() {
 
             addEventListenersForAICharacterButtons();
 
             view.getBackButton().setOnMouseClicked(event -> {
-                StartView startView = new StartView();
+                StartView startView = new StartView(uiSettings);
                 view.getScene().setRoot(startView);
                 new StartPresenter(model, startView);
             });

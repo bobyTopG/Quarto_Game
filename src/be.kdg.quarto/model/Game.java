@@ -42,6 +42,7 @@ public class Game {
         }
     }
 
+
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -50,25 +51,11 @@ public class Game {
         currentPlayer = (currentPlayer == human) ? ai : human;
     }
 
-    public boolean isAiTurn() {
-        return currentPlayer.equals(ai);
-    }
-
-    public boolean isHumanTurn() {
-        return currentPlayer.equals(human);
-    }
-
-    public Player getAi() {
-        return ai;
-    }
 
     public Player getHuman() {
         return human;
     }
 
-    public Board getBoard() {
-        return board;
-    }
 
     public Piece getSelectedPiece() {
         return selectedPiece;
@@ -78,13 +65,15 @@ public class Game {
         this.selectedPiece = selectedPiece;
     }
 
-    public void selectRandomPiece() {
+    public Piece selectRandomPiece() {
         List<Piece> availablePieces = board.getAvailablePieces();
         if (!availablePieces.isEmpty()) {
             Random rand = new Random();
             selectedPiece = availablePieces.get(rand.nextInt(availablePieces.size()));
             board.removePiece(selectedPiece);
+            return selectedPiece;
         }
+        else return null;
     }
 
     public List<Piece> getPieces() {
