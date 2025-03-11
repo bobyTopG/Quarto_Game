@@ -111,7 +111,7 @@ public class GamePresenter {
 
 
     private String getPieceImage(Piece piece) {
-        return String.format("/images/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
+        return String.format("/images/pieces/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
 
     }
 }

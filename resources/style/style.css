@@ -1,72 +1,53 @@
-/* styles.css */
 
-/* Styling the label */
-.label {
-    -fx-font-family: "Sigmar";
-    -fx-font-weight: bold;
-    -fx-font-size: 27px;
-}
 
-/* Common Button Style */
-.button {
-    -fx-font-family: "Arial";
-    -fx-font-weight: bold;
-    -fx-font-size: 24px;
-    -fx-background-radius: 20;
-    -fx-border-width: 2px;
-    -fx-border-radius: 20;
+.default-button{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-pref-height: 50px;
+    -fx-background-radius: 40px;
+    -fx-border-width: 4px;
+    -fx-border-radius: 40px;
+    -fx-font-size: 22px;
+    -fx-text-fill: white;
+    -fx-padding: 0 10px 0 10px;
     -fx-cursor: hand;
-    -fx-text-fill: #ef0202;
-    -fx-pref-width: 200px;
-    -fx-padding: 10;
-}
 
-/* New Game Button */
-.new-game {
-    -fx-background-color: #28a745;
+}
+.green-button {
+    -fx-background-color: #18B235;
     -fx-border-color: #000000;
 }
+.green-button:hover{
+    -fx-background-color: #389a3d;
 
-/* Continue Button */
-.continue-button {
-    -fx-background-color: #d2941f;
+}
+/* Choose Piece Button */
+.orange-button {
+    -fx-background-color: #F7931E;
     -fx-border-color: #070501;
 }
-
-/* Leaderboard and Statistics Buttons */
-.leaderboard-button,
-.statistics-button {
-    -fx-background-color: #2dbdfa;
+.orange-button:hover {
+    -fx-background-color: #e6621d;
+}
+.blue-button {
+    -fx-background-color: #29ABE2;
     -fx-border-color: #000000;
 }
-
-/* Quit Button */
-.quit-button {
-    -fx-background-color: #f62626;
+.blue-button:hover {
+    -fx-background-color: #2672cc;
+}
+.red-button {
+    -fx-background-color: #FF1D25;
     -fx-border-color: #070303;
 }
-
-.button {
-    -fx-font-family: "Arial";
-    -fx-font-weight: bold;
-    -fx-font-size: 24px;
-    -fx-background-radius: 20;
-    -fx-border-width: 2px;
-    -fx-border-radius: 20;
-    -fx-cursor: hand;
-    -fx-text-fill: white;
-    -fx-pref-width: 200px;
-    -fx-padding: 10;
+.red-button:hover {
+    -fx-background-color: #b60f0f;
 }
 
-/* Quarto Button */
-.quarto-button {
-    -fx-background-color: #28a745;
+.gray-button {
+    -fx-background-color: #939393;
     -fx-border-color: #000000;
 }
-
-/* Settings Button */
-.settings-button {
-    -fx-background-color: #f62626;
-    -fx-border-color: #000000;
+.gray-button:hover {
+    -fx-background-color: #6c6c6c;
 }
+

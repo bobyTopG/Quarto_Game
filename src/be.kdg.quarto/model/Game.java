@@ -6,6 +6,7 @@ import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
 
+import java.util.List;
 import java.util.Random;
 
 public class Game {
@@ -18,7 +19,8 @@ public class Game {
 
 
     public Game() {
-        this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null));
+        this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
+
     }
 
     public Game(Human human, Ai ai) {

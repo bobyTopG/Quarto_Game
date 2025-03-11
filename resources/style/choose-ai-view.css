@@ -1,0 +1,117 @@
+/* choose-ai-view.css */
+.scene {
+    -fx-background-color: #d89e30;
+}
+.main-vbox {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-alignment: center;
+    -fx-padding: 20px;
+    -fx-spacing: 25px;
+}
+.character-vbox {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-alignment: center;
+    -fx-padding: 20px 130px 20px 20px;
+}
+.ai-characters-hbox{
+    -fx-spacing: 20px;
+}
+.buttons-hbox{
+    -fx-spacing: 25px;
+    -fx-padding: 0px 0px 0px 20px;
+}
+
+.ai-button {
+    -fx-background-color: none;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+
+
+    -fx-scale-x: 1.0; /* Initial scale (no enlargement) */
+    -fx-scale-y: 1.0;
+    transition: -fx-scale-x 1s ease,
+                -fx-scale-y 1s ease; /* Add this line */
+
+}
+.ai-button:hover {
+    -fx-scale-x: 1.1; /* Scale up on hover */
+    -fx-scale-y: 1.1;
+}
+.action-button{
+    -fx-pref-width: 200px;
+    -fx-min-height: 60px;
+    -fx-max-height: 60px;
+
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-weight: bolder;
+    -fx-background-radius: 50px;
+
+    -fx-border-color: black;
+    -fx-border-width: 4px;
+    -fx-border-radius: 50px;
+    -fx-cursor: hand;
+
+    -fx-padding: 0px;
+
+}
+.back-button {
+    -fx-background-color: #F7931E;
+}
+.back-button:hover {
+    -fx-background-color: #e6621d;
+}
+.select-button{
+    -fx-background-color: #42AF3F;
+}
+.select-button:hover{
+    -fx-background-color: #389a3d;
+}
+.choose-label{
+    -fx-font-weight: bolder;
+    -fx-font-size: 42px;
+    -fx-padding: 0px 0px 0px 20px;
+}
+
+
+.select-character-image{
+    -fx-background-color: none;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 250px;
+}
+
+.name-label{
+    -fx-font-weight: bold;
+    -fx-font-size: 42px;
+}
+.difficulty-holder-label{
+    -fx-font-weight: bold;
+    -fx-font-size: 42px;
+
+}
+
+.difficulty-label{
+    -fx-font-weight: bold;
+    -fx-font-size: 42px;
+    -fx-text-fill: #42AF3F;
+
+}
+
+.description-label{
+    -fx-font-family: "Berlin Sans FB";
+    -fx-font-weight: normal;
+    -fx-text-alignment: center;
+    -fx-font-size: 24px;
+
+}
+
+.difficulty-hbox{
+    -fx-spacing: 10px;
+}
+
+
+.selected-character-image{
+    -fx-background-color: none;
+}

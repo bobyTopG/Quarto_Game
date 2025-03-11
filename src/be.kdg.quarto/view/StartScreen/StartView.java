@@ -1,17 +1,23 @@
 package be.kdg.quarto.view.StartScreen;
 
+import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.UiSettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+
 
 public class StartView extends BorderPane {
 
     private Label label;
     private Button newGame, continueButton, leaderBoard, statistics, quit;
+    private HBox mainHBox;
     private BoardView board;
     private UiSettings settings;
 
@@ -19,59 +25,51 @@ public class StartView extends BorderPane {
     private static final int VBOX_LEFT_PADDING = 70;
     private static final int VBOX_TOP_PADDING = 10;
     private static final int VBOX_BOTTOM_PADDING = 20;
-    private static final int LABEL_TOP_PADDING = 50;
-    private static final int LABEL_LEFT_PADDING = 20;
-
     public StartView(UiSettings settings) {
         this.settings = settings;
         initialiseNodes();
         layoutNodes();
     }
+    //private static final String FONT_FILE = "/fonts/berlin.ttf"; // Relative path
 
     private void initialiseNodes() {
         board = new BoardView();
-        label = createLabel("Quarto!");
-        newGame = createButton("New Game", "new-game");
-        continueButton = createButton("Continue", "continue-button");
-        leaderBoard = createButton("Leaderboard", "leaderboard-button");
-        statistics = createButton("Statistics", "statistics-button");
-        quit = createButton("Quit", "quit-button");
-        this.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
+        label = CreateHelper.createLabel("Quarto!", "main-title");
+        label.setFont(FontHelper.getExtraLargeFont());
+
+        newGame = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
+        continueButton = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
+        leaderBoard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
+        statistics = CreateHelper.createButton("Statistics", new String[]{"blue-button", "default-button"});
+        quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
+        mainHBox = CreateHelper.createHBox("root-hbox");
     }
 
-    private Label createLabel(String text) {
-        Label label = new Label(text);
-        label.setFont(javafx.scene.text.Font.font("Sigmar", javafx.scene.text.FontWeight.BOLD, 40));
-        return label;
-    }
-
-    private Button createButton(String text, String styleClass) {
-        Button button = new Button(text);
-        button.getStyleClass().add(styleClass);
-        return button;
-    }
 
     private void layoutNodes() {
-        VBox vbox = new VBox(BUTTON_SPACING);
+        VBox vbox = CreateHelper.createVBox("start-main-vbox");
         vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
-        vbox.getChildren().addAll(newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.getChildren().addAll(label, newGame, continueButton, leaderBoard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
 
-        StackPane stackPane = new StackPane();
-        board.disableBoard();
-        stackPane.getChildren().add(board);
 
-        HBox hBox = new HBox(250, vbox, stackPane);
-        label.setPadding(new Insets(10, 50, LABEL_TOP_PADDING, LABEL_LEFT_PADDING));
+        mainHBox.getChildren().add(vbox);
 
-        setAlignment(label, Pos.CENTER);
-        setTop(label);
-        setCenter(hBox);
+        setCenter(mainHBox);
     }
 
     // Getters
     public BoardView getBoard() {
         return board;
+    }
+
+    public void loadBoardImage(Image boardImage) {
+        StackPane stackPane = new StackPane();
+        ImageView boardImageView = new ImageView(boardImage); // No cast needed
+        boardImageView.setFitHeight(400);
+        boardImageView.setFitWidth(400);
+        stackPane.getChildren().add(boardImageView);
+        mainHBox.getChildren().add(stackPane);
     }
 
     public Button getNewGame() {

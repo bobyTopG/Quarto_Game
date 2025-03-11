@@ -5,12 +5,14 @@ import be.kdg.quarto.model.enums.AiLevel;
 public class Ai extends Player{
     private AiLevel difficultyLevel;
     private PlayingStrategy strategy;
+    private String description;
 
 
-    public Ai(String name , AiLevel difficultyLevel , PlayingStrategy strategy) {
+    public Ai(String name , AiLevel difficultyLevel , PlayingStrategy strategy, String description) {
         super(name);
         setDifficultyLevel(difficultyLevel);
         this.strategy = strategy;
+        this.description = description;
     }
 
     public void setStrategy(PlayingStrategy strategy) {
@@ -29,4 +31,11 @@ public class Ai extends Player{
         this.difficultyLevel = difficultyLevel;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
