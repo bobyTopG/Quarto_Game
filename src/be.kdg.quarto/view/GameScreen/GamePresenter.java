@@ -41,8 +41,8 @@ public class GamePresenter {
 
         //Pick
         view.getSelectView().getPieceViews().forEach(pieceView -> {
-            pieceView.getPieceRect().setOnMouseClicked(event -> {
-                if(model.getCurrentTile().getPiece() == null) {
+            pieceView.getPieceImage().setOnMouseClicked(event -> {
+                if (model.getCurrentTile().getPiece() == null) {
                     model.setCurrentTile(new Tile(
                             model.createPieceFromImageName
                                     (pieceView.getPieceImage().getImage().getUrl())));
@@ -55,6 +55,7 @@ public class GamePresenter {
     }
 
     private void updateView() {
+
         //Updates the current piece
         if (model.getCurrentTile().getPiece() != null) {
             view.getPiece().getPieceRect().setFill(Color.WHITE);
@@ -69,7 +70,8 @@ public class GamePresenter {
                 Piece piece = model.getTilesToSelect().getTiles().get(i).getPiece();
                 view.getSelectView().getPieceViews().get(i)
                         .getPieceImage().setImage(new Image(getPieceImage(piece)));
-            } else {
+            }
+            else {
                 view.getSelectView().getPieceViews().get(i).getPieceImage().setImage(null);
             }
         }
@@ -85,9 +87,7 @@ public class GamePresenter {
 
                 view.getBoard().getSpaceViews().get(i)
                         .getChildren().add(imageView);
-
-
-            } else continue;
+            }
         }
 
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
@@ -109,6 +109,5 @@ public class GamePresenter {
 
     private String getPieceImage(Piece piece) {
         return String.format("/images/pieces/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
-
     }
 }

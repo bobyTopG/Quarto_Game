@@ -76,12 +76,12 @@ public class Game {
                 handleAiTurn();
             } else {
                 //Picking
-                getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
-                getTilesToSelect().getTiles()
-                        .get(getTilesToSelect().getTiles()
-                                .indexOf(getCurrentTile())).setPiece(null);
-                switchTurns();
-            }
+                    getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
+                    getTilesToSelect().getTiles()
+                            .get(getTilesToSelect().getTiles()
+                                    .indexOf(getCurrentTile())).setPiece(null);
+                    switchTurns();
+                }
         }
     }
 
