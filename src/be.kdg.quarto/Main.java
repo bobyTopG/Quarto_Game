@@ -54,6 +54,8 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/choose-ai-view.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/game.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/start-menu.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style/statistics.css").toExternalForm());
+
 
     }
 }

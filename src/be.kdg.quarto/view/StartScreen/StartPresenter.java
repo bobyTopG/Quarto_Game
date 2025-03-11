@@ -56,7 +56,9 @@ public class StartPresenter {
             Stage statsStage = new Stage();
             statsStage.initOwner(view.getScene().getWindow());
             statsStage.initModality(Modality.APPLICATION_MODAL);
-            statsStage.setScene(new Scene(statsView));
+            Scene statsScene = new Scene(statsView);
+            statsScene.getStylesheets().addAll(view.getScene().getStylesheets());
+            statsStage.setScene(statsScene);
 
             statsStage.setTitle("Statistics");
             statsStage.setWidth(400);

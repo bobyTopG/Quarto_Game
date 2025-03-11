@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.StatisticsView;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,20 +25,21 @@ public class StatisticsView extends BorderPane {
     private void initializeNodes() {
         Label titleLabel = new Label("[someone] Won!");
 
-        playerBtn = new Button("Player");
-        aiBtn = new Button("AI");
+        playerBtn = CreateHelper.createButton("Player", new String[]{"default-button","blue-button"});
+        playerBtn.setId("player-statistics-button");
+        aiBtn = CreateHelper.createButton("AI", new String[]{"default-button","blue-button"});
+        aiBtn.setId("ai-statistics-button");
 
         infoLabel = new Label();
 
         HBox centerBtnBox = new HBox();
         centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
-        centerBtnBox.setSpacing(10);
         VBox centerBox = new VBox();
         centerBox.getChildren().addAll(centerBtnBox, infoLabel);
 
-        closeBtn = new Button("Close");
-        backBtn = new Button("Back");
-        nextBtn = new Button("Next");
+        closeBtn = CreateHelper.createButton("Close",new String[]{"default-button","red-button"});
+        backBtn = CreateHelper.createButton("Back",new String[]{"default-button","orange-button"});
+        nextBtn = CreateHelper.createButton("Next",new String[]{"default-button","green-button"});
 
         HBox bBtnBox = new HBox();
         bBtnBox.getChildren().addAll(backBtn, nextBtn);
@@ -55,13 +57,11 @@ public class StatisticsView extends BorderPane {
         setPadding(new Insets(10, 10, 10, 10));
 
         playerBtn.setPrefWidth(200);
-        playerBtn.setStyle(getBtnStyle("#2dbdfa"));
+        //playerBtn.setStyle(getBtnStyle("#2dbdfa"));
         aiBtn.setPrefWidth(200);
-        aiBtn.setStyle(getBtnStyle("#2dbdfa"));
-
-        closeBtn.setStyle(getBtnStyle("#f62626"));
-        backBtn.setStyle(getBtnStyle("#d2941f"));
-        nextBtn.setStyle(getBtnStyle("#28a745"));
+        //closeBtn.setStyle(getBtnStyle("#f62626"));
+        //backBtn.setStyle(getBtnStyle("#d2941f"));
+        //nextBtn.setStyle(getBtnStyle("#28a745"));
     }
 
     // Package private getters
