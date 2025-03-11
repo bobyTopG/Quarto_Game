@@ -1,6 +1,5 @@
 package be.kdg.quarto;
 
-import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.UiSettings;
