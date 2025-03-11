@@ -16,9 +16,9 @@ public class GamePresenter {
     public GamePresenter(Game model, GameView view) {
         this.model = model;
         this.view = view;
+        new BoardPresenter(model, view.getBoard());
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
 
-        new BoardPresenter(model, view.getBoard());
         createSelectBoard();
         updateView();
         addEventHandlers();
@@ -30,10 +30,10 @@ public class GamePresenter {
             boardSpaceView.getCircle().setOnMouseClicked(event -> {
                 int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
                 Tile tile = new Tile();
-                tile.setPiece(model.getCurntTile().getPiece());
+                tile.setPiece(model.getCurrentTile().getPiece());
                 model.getPlacedTiles().getTiles().set(place, tile);
                 view.getPiece().getPieceImage().setImage(null);
-                model.getCurntTile().setPiece(null);
+                model.getCurrentTile().setPiece(null);
                 updateView();
 
             });
@@ -42,12 +42,11 @@ public class GamePresenter {
         //Pick
         view.getSelectView().getPieceViews().forEach(pieceView -> {
             pieceView.getPieceRect().setOnMouseClicked(event -> {
-                if(model.getCurntTile().getPiece() == null) {
-                    System.out.println("u clicked");
+                if(model.getCurrentTile().getPiece() == null) {
                     model.setCurrentTile(new Tile(
                             model.createPieceFromImageName
                                     (pieceView.getPieceImage().getImage().getUrl())));
-                    model.getTilesToSelect().getTiles().get(model.getTilesToSelect().getTiles().indexOf(model.getCurntTile())).setPiece(null);
+                    model.getTilesToSelect().getTiles().get(model.getTilesToSelect().getTiles().indexOf(model.getCurrentTile())).setPiece(null);
                     model.switchTurns();
                     updateView();
                 }
@@ -57,10 +56,10 @@ public class GamePresenter {
 
     private void updateView() {
         //Updates the current piece
-        if (model.getCurntTile().getPiece() != null) {
+        if (model.getCurrentTile().getPiece() != null) {
             view.getPiece().getPieceRect().setFill(Color.WHITE);
             view.getPiece().getPieceImage().setImage
-                    (new Image(getPieceImage(model.getCurntTile().getPiece())));
+                    (new Image(getPieceImage(model.getCurrentTile().getPiece())));
         }
 
 
@@ -91,10 +90,8 @@ public class GamePresenter {
             } else continue;
         }
 
-
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
         view.getTurn().setText(isHumanTurn ? "Your Turn!" : "AI Turn!");
-
     }
 
     private void createSelectBoard() {

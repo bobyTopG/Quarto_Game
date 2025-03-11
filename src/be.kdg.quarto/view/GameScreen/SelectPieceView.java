@@ -23,7 +23,7 @@ public class SelectPieceView extends GridPane {
 
 
     private void layoutNodes() {
-        setGridLinesVisible(true);
+        setGridLinesVisible(false);
     }
 
 

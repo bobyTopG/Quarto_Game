@@ -40,7 +40,6 @@ public class PieceView extends StackPane {
 
 
     private void layoutNodes() {
-
         pieceRect.setFill(Color.WHITE);
         pieceRect.setArcHeight(20);
         pieceRect.setArcWidth(20);
@@ -50,7 +49,7 @@ public class PieceView extends StackPane {
         stackPane.getChildren().addAll(pieceRect);
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
-        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setPadding(new Insets(5, 5, 5, 5));
         hbox.getChildren().addAll(stackPane);
         pieceImage.setFitHeight(30);
         pieceImage.setFitWidth(30);
