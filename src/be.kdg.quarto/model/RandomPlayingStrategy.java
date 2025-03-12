@@ -31,7 +31,7 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     private Tile selectRandomPiece() {
         List<Tile> availableTiles = selectPiece.getTiles().stream()
                 .filter(tile -> tile.getPiece() != null)
-                .collect(Collectors.toList());
+                .toList();
 
         if (availableTiles.isEmpty()) {
             return null;
@@ -44,7 +44,7 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     public Tile placeRandomPiece() {
         List<Tile> emptyTiles = placePiece.getTiles().stream()
                 .filter(tile -> tile.getPiece() == null)
-                .collect(Collectors.toList());
+                .toList();
 
         if (emptyTiles.isEmpty()) {
             return null;

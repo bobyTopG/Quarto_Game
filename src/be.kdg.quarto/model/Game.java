@@ -5,6 +5,7 @@ import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
+import javafx.scene.control.Alert;
 
 public class Game {
     private final Ai ai;
@@ -76,12 +77,21 @@ public class Game {
                 handleAiTurn();
             } else {
                 //Picking
+                try {
+
+
                     getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
                     getTilesToSelect().getTiles()
                             .get(getTilesToSelect().getTiles()
                                     .indexOf(getCurrentTile())).setPiece(null);
                     switchTurns();
+                } catch (NullPointerException e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game Over");
+                    alert.setHeaderText("There are no pieces to select!");
+                    alert.showAndWait();
                 }
+            }
         }
     }
 
