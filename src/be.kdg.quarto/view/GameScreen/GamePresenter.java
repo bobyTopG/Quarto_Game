@@ -2,7 +2,6 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,12 +27,12 @@ public class GamePresenter {
         //Place
         view.getBoard().getSpaceViews().forEach(boardSpaceView -> {
             boardSpaceView.getCircle().setOnMouseClicked(event -> {
+
                 int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
-                Tile tile = new Tile();
-                tile.setPiece(model.getSelectedPiece());
-                model.getPlacedTiles().getTiles().set(place, tile);
-                view.getPiece().getPieceImage().setImage(null);
-                model.setSelectedPiece(null);
+                model.placePiece(model.getBoard().findTile(place) ,model.getHuman());
+
+
+                view.getSelectedPiece().getPieceImage().setImage(null);
                 updateView();
 
             });
@@ -42,15 +41,18 @@ public class GamePresenter {
         //Pick
         view.getSelectView().getPieceViews().forEach(pieceView -> {
             pieceView.getPieceImage().setOnMouseClicked(event -> {
+                //place piece before picking
                 if (model.getSelectedPiece() == null) {
-                    model.setSelectedPiece(
-                            model.createPieceFromImageName
-                                    (pieceView.getPieceImage().getImage().getUrl()));
-                    model.getPiecesToSelect().findTile(model.getSelectedPiece()).setPiece(null);
-                    model.switchTurns();
+
+                    Piece selectedPiece = model.createPieceFromImageName(pieceView.getPieceImage().getImage().getUrl());
+                    model.pickPiece(selectedPiece, model.getHuman());
+
                     updateView();
                 }
             });
+        });
+        view.getQuarto().setOnMouseClicked(event -> {
+            model.callQuarto();
         });
     }
 
@@ -58,8 +60,8 @@ public class GamePresenter {
 
         //Updates the current piece
         if (model.getSelectedPiece() != null) {
-            view.getPiece().getPieceRect().setFill(Color.WHITE);
-            view.getPiece().getPieceImage().setImage
+            view.getSelectedPiece().getPieceRect().setFill(Color.WHITE);
+            view.getSelectedPiece().getPieceImage().setImage
                     (new Image(getPieceImage(model.getSelectedPiece())));
         }
 

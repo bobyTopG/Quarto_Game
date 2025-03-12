@@ -1,6 +1,7 @@
 package be.kdg.quarto.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GameSession {
@@ -8,11 +9,15 @@ public class GameSession {
     private final Player player1;
     private final Player player2;
     private final List<Move> moves;
+    private Date startTime;
+    private Date endTime;
 
     public GameSession(Player player1, Player player2) {
        this.player1 = player1;
        this.player2 = player2;
        moves = new ArrayList<>();
+
+       startTime = new Date();
     }
 
     public Player getOtherPlayer(Player currentPlayer) {
@@ -29,5 +34,17 @@ public class GameSession {
     }
     public List<Move> getMoves() {
         return moves;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }

@@ -14,7 +14,7 @@ import javafx.scene.text.FontWeight;
 
 public class GameView extends StackPane {
 
-    private PieceView piece;
+    private PieceView selectedPiece;
     private SelectPieceView selectView;
     private Label turn, timer;
     private Button quarto,settings;
@@ -34,40 +34,15 @@ public class GameView extends StackPane {
         layoutNodes();
     }
 
-    // Getters
-    public SelectPieceView getSelectView() {
-        return selectView;
-    }
-
-    public BoardView getBoard() {
-        return board;
-    }
-
-    public PieceView getPiece() {
-        return piece;
-    }
-
-    public Label getTurn() {
-        return turn;
-    }
-
     private void initialiseNodes() {
         selectView = new SelectPieceView();
         board = new BoardView();
-        piece = new PieceView();
+        selectedPiece = new PieceView();
         turn = createLabel("Your Turn", 20, FontWeight.BOLD, Color.WHITE);
         timer = new Label("00:00:00");
         quarto = CreateHelper.createButton("Quarto", new String[]{"quarto-button","default-button","green-button"});
         settings = CreateHelper.createButton("Settings", new String[]{"settings-button", "default-button","gray-button"});
 
-    }
-
-    // Helper method to create a label with specific font and text color
-    private Label createLabel(String text, int fontSize, FontWeight fontWeight, Color textColor) {
-        Label label = new Label(text);
-        label.setFont(Font.font("Arial", fontWeight, fontSize));
-        label.setTextFill(textColor);
-        return label;
     }
 
     private void layoutNodes() {
@@ -89,7 +64,7 @@ public class GameView extends StackPane {
 
         StackPane pane = createTurnPane();
         grid.add(pane, 0, 0);
-        grid.add(piece, 3, 0);
+        grid.add(selectedPiece, 3, 0);
         grid.add(timer, 30, 0);
 
         VBox vbox2 = new VBox();
@@ -107,5 +82,32 @@ public class GameView extends StackPane {
         r.setFill(Color.web("#2dbdfa"));
         pane.getChildren().addAll(r, turn);
         return pane;
+    }
+
+    // Helper method to create a label with specific font and text color
+    private Label createLabel(String text, int fontSize, FontWeight fontWeight, Color textColor) {
+        Label label = new Label(text);
+        label.setFont(Font.font("Arial", fontWeight, fontSize));
+        label.setTextFill(textColor);
+        return label;
+    }
+    // Getters
+    public SelectPieceView getSelectView() {
+        return selectView;
+    }
+
+    public BoardView getBoard() {
+        return board;
+    }
+
+    public PieceView getSelectedPiece() {
+        return selectedPiece;
+    }
+
+    public Label getTurn() {
+        return turn;
+    }
+    public Button getQuarto() {
+        return quarto;
     }
 }

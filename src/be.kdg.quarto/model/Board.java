@@ -49,4 +49,8 @@ public class Board {
         return null;
     }
 
+    public Tile findTile(int pos){
+        return tiles.get(pos);
+    }
+
 }
