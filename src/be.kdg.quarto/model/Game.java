@@ -8,6 +8,7 @@ import be.kdg.quarto.model.enums.Fill;
 import javafx.scene.control.Alert;
 
 import java.util.Date;
+import java.util.List;
 
 public class Game {
     private final Ai ai;
@@ -15,12 +16,14 @@ public class Game {
     private final GameSession gameSession;
     private Player currentPlayer;
     private Move currentMove;
-    private int numberOfMoves = 0;
+    private int numberOfMoves = 1;
 
     //we make the pieces into a board for convenience
     private final Board piecesToSelect;
     private final Board board;
     private Piece selectedPiece;
+
+    private GameRules gameRules = new GameRules();
 
     public Game() {
         this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
@@ -42,7 +45,14 @@ public class Game {
             handleAiTurn();
         }
     }
-
+    public Player callQuarto(){
+         if(gameRules.checkWin(board, gameSession.getMoves())){
+             System.out.println(currentPlayer.getName() + " Has won the game!");
+             return currentPlayer;
+         }
+        System.out.println("No one won yet :(");
+         return null;
+    }
     public Piece createPieceFromImageName(String path) {
         String filename = path.substring(path.indexOf("/pieces/") + 8, path.lastIndexOf("."));
         String[] parts = filename.split("_");
@@ -86,8 +96,10 @@ public class Game {
                 try {
                     pickPiece(ai.getStrategy().selectPiece(), ai);
                 } catch (NullPointerException e) {
+                    for(Move move : gameSession.getMoves()) {
+                        System.out.println(move);
+                    }
                     //all pieces have been placed
-                    System.out.println(gameSession.getMoves());
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Game Over");
                     alert.setHeaderText("There are no pieces to select!");
@@ -95,13 +107,6 @@ public class Game {
                 }
             }
         }
-    }
-    public void  handeHumanTurn(){
-        if(currentPlayer == human){
-            if (selectedPiece != null) {
-
-            }
-            }
     }
     private boolean isAiTurn() {
         return currentPlayer == ai;
@@ -120,19 +125,28 @@ public class Game {
     }
 
     public void startMove(Player player, Tile selectedTile) {
-        //TO DO: calculate startTime and endTime
-         currentMove = new Move(ai, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, new Date() ,new Date());
+        currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, getStartTimeForMove());
+        gameSession.addMove(currentMove);
         numberOfMoves++;
     }
     public void endMove(Player player){
         if(currentMove !=null){
             currentMove.setSelectedPiece(getSelectedPiece());
+            currentMove.setEndTime(new Date());
         }else{
             //first move made will be only choosing the piece without placing any
-            currentMove = new Move(player, getSelectedPiece(), new Date(), new Date());
+            currentMove = new Move(player, getSelectedPiece(), getStartTimeForMove(), new Date());
+            gameSession.addMove(currentMove);
         }
-        gameSession.addMove(currentMove);
-
+    }
+    public Date getStartTimeForMove() {
+        List<Move> moves = gameSession.getMoves();
+        if (moves == null || moves.isEmpty()) { // Check for null and empty
+            return gameSession.getStartTime();
+        } else {
+            //noinspection SequencedCollectionMethodCanBeUsed
+            return moves.get(moves.size() - 1).getEndTime();
+        }
     }
     public Board getPlacedTiles() {
         return board;
@@ -149,8 +163,15 @@ public class Game {
     public Piece getSelectedPiece() {
         return selectedPiece;
     }
+    public Board getBoard() {
+        return board;
+    }
 
     public void setSelectedPiece(Piece selectedPiece) {
         this.selectedPiece = selectedPiece;
+    }
+
+    public GameRules getGameRules(){
+        return gameRules;
     }
 }
