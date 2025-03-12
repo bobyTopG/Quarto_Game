@@ -5,6 +5,12 @@ import java.util.Objects;
 public class Tile {
     private Piece piece;
 
+
+    public Tile(Piece piece) {
+        setPiece(piece);
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -18,9 +24,7 @@ public class Tile {
         return Objects.hashCode(piece);
     }
 
-    public Tile(Piece piece) {
-       setPiece(piece);
-    }
+
     public Tile() {}
     public Piece getPiece() {
         return piece;

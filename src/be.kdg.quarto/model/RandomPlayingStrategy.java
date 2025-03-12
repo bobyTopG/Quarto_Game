@@ -1,45 +1,56 @@
 package be.kdg.quarto.model;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class RandomPlayingStrategy implements PlayingStrategy {
-    private  Board selectPiece ,placePiece;
-    private boolean toPick;
+    private Board selectPiece, placePiece;
 
-    public boolean isToPick() {
-        return toPick;
-    }
-
-    public Board getPlacePiece() {
-        return placePiece;
-    }
-
-    public RandomPlayingStrategy(Board selectPiece , Board placePiece , boolean toPick) {
+    public RandomPlayingStrategy(Board selectPiece, Board placePiece) {
         this.placePiece = placePiece;
         this.selectPiece = selectPiece;
-        this.toPick = toPick;
     }
 
     @Override
     public Tile selectPiece() {
-       return selectRandomPiece();
+        return selectRandomPiece();
     }
-
+    @Override
+    public Tile placePiece() {
+        return placeRandomPiece();
+    }
     @Override
     public String getName() {
         return "S1";
     }
 
 
-    private Tile selectRandomPiece() {
-        Random rand = new Random();
-        if (toPick) {
-           return selectPiece.getTiles().get(rand.nextInt(selectPiece.getTiles().size()));
-        }
-        else {
-            return placePiece.getTiles().get(rand.nextInt(placePiece.getTiles().size()));
-        }
-        //Pick
 
+
+    private Tile selectRandomPiece() {
+        List<Tile> availableTiles = selectPiece.getTiles().stream()
+                .filter(tile -> tile.getPiece() != null)
+                .toList();
+
+        if (availableTiles.isEmpty()) {
+            return null;
+        }
+        return availableTiles.get(new Random().nextInt(availableTiles.size()));
     }
+
+
+
+    public Tile placeRandomPiece() {
+        List<Tile> emptyTiles = placePiece.getTiles().stream()
+                .filter(tile -> tile.getPiece() == null)
+                .toList();
+
+        if (emptyTiles.isEmpty()) {
+            return null;
+        }
+        return emptyTiles.get(new Random().nextInt(emptyTiles.size()));
+    }
+
 }
+
