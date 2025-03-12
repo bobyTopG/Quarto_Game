@@ -1,13 +1,18 @@
 package be.kdg.quarto.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameSession {
     private Player winner;
     private final Player player1;
     private final Player player2;
+    private final List<Move> moves;
 
     public GameSession(Player player1, Player player2) {
        this.player1 = player1;
        this.player2 = player2;
+       moves = new ArrayList<>();
     }
 
     public Player getOtherPlayer(Player currentPlayer) {
@@ -18,5 +23,11 @@ public class GameSession {
 
     public boolean hasWinner() {
         return winner != null;
+    }
+    public void addMove(Move move){
+        moves.add(move);
+    }
+    public List<Move> getMoves() {
+        return moves;
     }
 }

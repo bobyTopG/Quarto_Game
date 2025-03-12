@@ -17,7 +17,7 @@ public class Board {
         this.tiles = new ArrayList<>(BOARD_SIZE);
     }
 
-    public void generateAllTiles() {
+    public void generateAllPieces() {
         for (Color color : Color.values()) {
             for (Height height : Height.values()) {
                 for (Fill fill : Fill.values()) {
@@ -29,7 +29,7 @@ public class Board {
         }
     }
 
-    public void createEmptyTiles() {
+    public void createEmptyBoard() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             tiles.add(new Tile());
         }
@@ -38,6 +38,15 @@ public class Board {
     public List<Tile> getTiles() {
         return tiles;
     }
-
+    public Tile findTile(Piece piece) {
+        for (Tile tile : tiles) {
+            if(tile.getPiece() == null)
+                continue;
+            if (tile.getPiece().equals(piece)) {
+                return tile;
+            }
+        }
+        return null;
+    }
 
 }

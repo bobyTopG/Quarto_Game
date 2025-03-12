@@ -7,14 +7,20 @@ import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
 import javafx.scene.control.Alert;
 
+import java.util.Date;
+
 public class Game {
     private final Ai ai;
     private final Human human;
     private final GameSession gameSession;
     private Player currentPlayer;
-    private final Board tilesToSelect;
-    private final Board tilesToPlace;
-    private Tile currentTile = new Tile();
+    private Move currentMove;
+    private int numberOfMoves = 0;
+
+    //we make the pieces into a board for convenience
+    private final Board piecesToSelect;
+    private final Board board;
+    private Piece selectedPiece;
 
     public Game() {
         this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
@@ -23,14 +29,14 @@ public class Game {
     public Game(Human human, Ai ai) {
         this.human = human;
         this.ai = ai;
-        this.tilesToSelect = new Board();
-        this.tilesToPlace = new Board();
-        tilesToSelect.generateAllTiles();
-        tilesToPlace.createEmptyTiles();
+        this.piecesToSelect = new Board();
+        this.board = new Board();
+        piecesToSelect.generateAllPieces();
+        board.createEmptyBoard();
 
         this.gameSession = new GameSession(human, ai);
         this.currentPlayer = ai;
-        ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
+        ai.setStrategy(new RandomPlayingStrategy(piecesToSelect, board));
 
         if (isAiTurn()) {
             handleAiTurn();
@@ -70,22 +76,18 @@ public class Game {
 
     private void handleAiTurn() {
         if (currentPlayer == ai) {
-            if (currentTile.getPiece() != null) {
+            if (selectedPiece != null) {
                 //Placing
-                ai.getStrategy().placePiece().setPiece(currentTile.getPiece());
-                getCurrentTile().setPiece(null);
+                placePiece(ai.getStrategy().selectTile(), ai);
+                //after placing piece -> pick piece
                 handleAiTurn();
             } else {
                 //Picking
                 try {
-
-
-                    getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
-                    getTilesToSelect().getTiles()
-                            .get(getTilesToSelect().getTiles()
-                                    .indexOf(getCurrentTile())).setPiece(null);
-                    switchTurns();
+                    pickPiece(ai.getStrategy().selectPiece(), ai);
                 } catch (NullPointerException e) {
+                    //all pieces have been placed
+                    System.out.println(gameSession.getMoves());
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Game Over");
                     alert.setHeaderText("There are no pieces to select!");
@@ -94,28 +96,61 @@ public class Game {
             }
         }
     }
+    public void  handeHumanTurn(){
+        if(currentPlayer == human){
+            if (selectedPiece != null) {
 
+            }
+            }
+    }
     private boolean isAiTurn() {
         return currentPlayer == ai;
     }
-
-    public Board getPlacedTiles() {
-        return tilesToPlace;
+    public void pickPiece(Piece piece, Player player) {
+        setSelectedPiece(piece);
+        getPiecesToSelect().findTile(getSelectedPiece()).setPiece(null);
+        endMove(player);
+        switchTurns();
     }
 
-    public Board getTilesToSelect() {
-        return tilesToSelect;
+    public void placePiece(Tile selectedTile, Player player) {
+        selectedTile.setPiece(selectedPiece);
+        startMove(player, selectedTile);
+        setSelectedPiece(null);
+    }
+
+    public void startMove(Player player, Tile selectedTile) {
+        //TO DO: calculate startTime and endTime
+         currentMove = new Move(ai, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, new Date() ,new Date());
+        numberOfMoves++;
+    }
+    public void endMove(Player player){
+        if(currentMove !=null){
+            currentMove.setSelectedPiece(getSelectedPiece());
+        }else{
+            //first move made will be only choosing the piece without placing any
+            currentMove = new Move(player, getSelectedPiece(), new Date(), new Date());
+        }
+        gameSession.addMove(currentMove);
+
+    }
+    public Board getPlacedTiles() {
+        return board;
+    }
+
+    public Board getPiecesToSelect() {
+        return piecesToSelect;
     }
 
     public Player getHuman() {
         return human;
     }
 
-    public Tile getCurrentTile() {
-        return currentTile;
+    public Piece getSelectedPiece() {
+        return selectedPiece;
     }
 
-    public void setCurrentTile(Tile selectedPiece) {
-        this.currentTile = selectedPiece;
+    public void setSelectedPiece(Piece selectedPiece) {
+        this.selectedPiece = selectedPiece;
     }
 }

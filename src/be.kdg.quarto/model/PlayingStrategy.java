@@ -1,8 +1,8 @@
 package be.kdg.quarto.model;
 
 public interface PlayingStrategy {
-    Tile selectPiece();
-    Tile placePiece();
+    Tile selectTile();
+    Piece selectPiece();
     String getName();
 
 }

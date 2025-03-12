@@ -2,9 +2,10 @@ package be.kdg.quarto.model;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class RandomPlayingStrategy implements PlayingStrategy {
+    //selectPiece = pieces that are not on the board
+    // placePiece = the board
     private Board selectPiece, placePiece;
 
     public RandomPlayingStrategy(Board selectPiece, Board placePiece) {
@@ -13,12 +14,12 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     }
 
     @Override
-    public Tile selectPiece() {
-        return selectRandomPiece();
+    public Piece selectPiece() {
+            return selectRandomPiece().getPiece();
     }
     @Override
-    public Tile placePiece() {
-        return placeRandomPiece();
+    public Tile selectTile() {
+        return getRandomFreeTile();
     }
     @Override
     public String getName() {
@@ -41,7 +42,7 @@ public class RandomPlayingStrategy implements PlayingStrategy {
 
 
 
-    public Tile placeRandomPiece() {
+    public Tile getRandomFreeTile() {
         List<Tile> emptyTiles = placePiece.getTiles().stream()
                 .filter(tile -> tile.getPiece() == null)
                 .toList();

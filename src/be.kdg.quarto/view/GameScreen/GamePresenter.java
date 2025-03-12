@@ -4,7 +4,6 @@ import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -12,6 +11,7 @@ import javafx.scene.paint.Color;
 public class GamePresenter {
     private final Game model;
     private final GameView view;
+
 
     public GamePresenter(Game model, GameView view) {
         this.model = model;
@@ -30,10 +30,10 @@ public class GamePresenter {
             boardSpaceView.getCircle().setOnMouseClicked(event -> {
                 int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
                 Tile tile = new Tile();
-                tile.setPiece(model.getCurrentTile().getPiece());
+                tile.setPiece(model.getSelectedPiece());
                 model.getPlacedTiles().getTiles().set(place, tile);
                 view.getPiece().getPieceImage().setImage(null);
-                model.getCurrentTile().setPiece(null);
+                model.setSelectedPiece(null);
                 updateView();
 
             });
@@ -42,11 +42,11 @@ public class GamePresenter {
         //Pick
         view.getSelectView().getPieceViews().forEach(pieceView -> {
             pieceView.getPieceImage().setOnMouseClicked(event -> {
-                if (model.getCurrentTile().getPiece() == null) {
-                    model.setCurrentTile(new Tile(
+                if (model.getSelectedPiece() == null) {
+                    model.setSelectedPiece(
                             model.createPieceFromImageName
-                                    (pieceView.getPieceImage().getImage().getUrl())));
-                    model.getTilesToSelect().getTiles().get(model.getTilesToSelect().getTiles().indexOf(model.getCurrentTile())).setPiece(null);
+                                    (pieceView.getPieceImage().getImage().getUrl()));
+                    model.getPiecesToSelect().findTile(model.getSelectedPiece()).setPiece(null);
                     model.switchTurns();
                     updateView();
                 }
@@ -57,17 +57,17 @@ public class GamePresenter {
     private void updateView() {
 
         //Updates the current piece
-        if (model.getCurrentTile().getPiece() != null) {
+        if (model.getSelectedPiece() != null) {
             view.getPiece().getPieceRect().setFill(Color.WHITE);
             view.getPiece().getPieceImage().setImage
-                    (new Image(getPieceImage(model.getCurrentTile().getPiece())));
+                    (new Image(getPieceImage(model.getSelectedPiece())));
         }
 
 
         //Update select board
-        for (int i = 0; i < model.getTilesToSelect().getTiles().size(); i++) {
-            if (model.getTilesToSelect().getTiles().get(i).getPiece() != null) {
-                Piece piece = model.getTilesToSelect().getTiles().get(i).getPiece();
+        for (int i = 0; i < model.getPiecesToSelect().getTiles().size(); i++) {
+            if (model.getPiecesToSelect().getTiles().get(i).getPiece() != null) {
+                Piece piece = model.getPiecesToSelect().getTiles().get(i).getPiece();
                 view.getSelectView().getPieceViews().get(i)
                         .getPieceImage().setImage(new Image(getPieceImage(piece)));
             }

@@ -23,17 +23,15 @@ import java.util.Optional;
 
 public class StartPresenter {
 
-    private Game model;
     private StartView view;
     private BoardView boardView = new BoardView();
     private final String pathToBoard = "/images/Example_Board.png";
 
 
-    public StartPresenter(Game model, StartView view) {
-        this.model = model;
+    public StartPresenter(StartView view) {
+
         this.view = view;
         Image boardImage = new Image(pathToBoard);
-        new BoardPresenter(model, view.getBoard());
         addEventHandlers();
         updateView();
         view.loadBoardImage(boardImage);
@@ -47,7 +45,7 @@ public class StartPresenter {
 
             ChooseAIView chooseAIView = new ChooseAIView();
             view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView, model);
+            new ChooseAIPresenter(chooseAIView);
         });
 
 

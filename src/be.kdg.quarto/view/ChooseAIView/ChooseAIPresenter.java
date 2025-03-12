@@ -14,11 +14,9 @@
     import java.util.List;
 
     public class ChooseAIPresenter {
-        private final Game model;
         ChooseAIView view;
-        public ChooseAIPresenter(ChooseAIView view, Game model) {
+        public ChooseAIPresenter(ChooseAIView view) {
             this.view = view;
-            this.model = model;
             List<Image> images = findAICharacterImagesForButtons();
             String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
             Image notFoundImage = new Image(pathToNotFound);
@@ -50,13 +48,13 @@
             view.getBackButton().setOnMouseClicked(event -> {
                 StartView startView = new StartView(uiSettings);
                 view.getScene().setRoot(startView);
-                new StartPresenter(model, startView);
+                new StartPresenter(startView);
             });
 
             view.getSelectButton().setOnMouseClicked(event -> {
                 GameView gameView = new GameView();
                 view.getScene().setRoot(gameView);
-                new GamePresenter(model, gameView);
+                new GamePresenter(new Game(), gameView);
             });
         }
         private void addEventListenersForAICharacterButtons(){
