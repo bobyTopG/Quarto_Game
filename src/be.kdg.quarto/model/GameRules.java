@@ -3,59 +3,63 @@ package be.kdg.quarto.model;
 import java.util.List;
 
 public class GameRules {
-    private boolean gameOver, isTie;
+    private boolean gameOver;
+    private boolean isTie;
     private Player winner;
     private Board placingBoard;
-    private Board selectedBoard;
 
-    public GameRules(Board selectedBoard, Board placingBoard) {
-        this.selectedBoard = selectedBoard;
+    public boolean isTie() {
+        return isTie;
+    }
+
+    public GameRules(Board placingBoard) {
         this.placingBoard = placingBoard;
     }
 
-
     public boolean isGameOver() {
-        List<Tile> emptyTiles = placingBoard.getTiles().stream()
-                .filter(tile -> tile.getPiece() == null)
-                .toList();
+        if (gameOver) return true;
 
+        List<Tile> tiles = placingBoard.getTiles();
+        boolean hasEmptyTiles = tiles.stream().anyMatch(tile -> tile.getPiece() == null);
 
-        if (emptyTiles.isEmpty()) {
+        if (!hasEmptyTiles) {
             gameOver = true;
             isTie = true;
-            return gameOver;
         } else if (checkRowsAndCols() || checkColumns() || checkDiagonals()) {
             gameOver = true;
         }
+
         return gameOver;
     }
 
     private boolean checkRowsAndCols() {
+        List<Tile> tiles = placingBoard.getTiles();
         for (int row = 0; row < 4; row++) {
             int startIndex = row * 4;  // First element of the row
-            if (checkLine(startIndex, 1)) return true; // Step = 1 for rows
+            if (checkLine(tiles, startIndex, 1)) return true; // Step = 1 for rows
         }
         return false;
     }
 
     private boolean checkColumns() {
+        List<Tile> tiles = placingBoard.getTiles();
         for (int col = 0; col < 4; col++) {
-            if (checkLine(col, 4)) return true; // Step = 4 for columns
+            if (checkLine(tiles, col, 4)) return true; // Step = 4 for columns
         }
         return false;
     }
 
     private boolean checkDiagonals() {
-        if (checkLine(0, 5)) return true;
-        if (checkLine(3, 3)) return true;
-        return false;
+        List<Tile> tiles = placingBoard.getTiles();
+        if (checkLine(tiles, 0, 5)) return true;
+        return checkLine(tiles, 3, 3);
     }
 
-    private boolean checkLine(int startIndex, int step) {
-        Piece p1 = placingBoard.getTiles().get(startIndex).getPiece();
-        Piece p2 = placingBoard.getTiles().get(startIndex + step).getPiece();
-        Piece p3 = placingBoard.getTiles().get(startIndex + 2 * step).getPiece();
-        Piece p4 = placingBoard.getTiles().get(startIndex + 3 * step).getPiece();
+    private boolean checkLine(List<Tile> tiles, int startIndex, int step) {
+        Piece p1 = tiles.get(startIndex).getPiece();
+        Piece p2 = tiles.get(startIndex + step).getPiece();
+        Piece p3 = tiles.get(startIndex + 2 * step).getPiece();
+        Piece p4 = tiles.get(startIndex + 3 * step).getPiece();
 
         if (p1 == null || p2 == null || p3 == null || p4 == null) return false;
 
@@ -75,18 +79,13 @@ public class GameRules {
     }
 
     private String getAttribute(Piece piece, String attribute) {
-        switch (attribute) {
-            case "color":
-                return piece.getColor().toString();
-            case "high":
-                return piece.getHeight().toString();
-            case "shape":
-                return piece.getShape().toString();
-            case "fill":
-                return piece.getFill().toString();
-            default:
-                return "";
-        }
+        return switch (attribute) {
+            case "color" -> piece.getColor().toString();
+            case "high" -> piece.getHeight().toString();
+            case "shape" -> piece.getShape().toString();
+            case "fill" -> piece.getFill().toString();
+            default -> "";
+        };
     }
 
     public void setWinner(Player winner) {

@@ -1,17 +1,14 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
-import be.kdg.quarto.model.GameRules;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
-import be.kdg.quarto.view.BoardView.BoardSpaceView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-
 import java.util.Optional;
 
 public class GamePresenter {
@@ -31,52 +28,70 @@ public class GamePresenter {
 
     private void addEventHandlers() {
         //Place
-        view.getBoard().getSpaceViews().forEach(boardSpaceView -> {
-            boardSpaceView.getCircle().setOnMouseClicked(event -> {
-                int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
-                Tile tile = new Tile();
-                tile.setPiece(model.getCurrentTile().getPiece());
-                model.getPlacedTiles().getTiles().set(place, tile);
-                view.getPiece().getPieceImage().setImage(null);
-                model.getCurrentTile().setPiece(null);
-                updateView();
-                model.getGameRules().isGameOver();
-            });
-        });
+        view.getBoard().getSpaceViews().forEach(boardSpaceView ->
+                boardSpaceView.getCircle().setOnMouseClicked(event -> {
+
+                    int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
+                    Tile tile = new Tile();
+
+                    tile.setPiece(model.getCurrentTile().getPiece());
+                    model.getPlacedTiles().getTiles().set(place, tile);
+
+                    view.getPiece().getPieceImage().setImage(null);
+
+                    model.getCurrentTile().setPiece(null);
+                    updateView();
+                    model.getGameRules().isGameOver();
+                }));
 
         //Pick
-        view.getSelectView().getPieceViews().forEach(pieceView -> {
-            pieceView.getPieceImage().setOnMouseClicked(event -> {
-                if (model.getCurrentTile().getPiece() == null) {
-                    model.setCurrentTile(new Tile(
-                            model.createPieceFromImageName
-                                    (pieceView.getPieceImage().getImage().getUrl())));
-                    model.getTilesToSelect().getTiles().get(model.getTilesToSelect().getTiles().indexOf(model.getCurrentTile())).setPiece(null);
+        view.getSelectView().getPieceViews().forEach(pieceView ->
+                pieceView.getPieceImage().setOnMouseClicked(event -> {
+                    if (model.getCurrentTile().getPiece() == null) {
 
-                    if(model.getGameRules().isGameOver()) {
-                        model.getGameRules().setWinner(model.getCurrentPlayer());
-                        model.getGameSession().setWinner(model.getCurrentPlayer());
+                        model.setCurrentTile(new Tile(
+                                model.createPieceFromImageName
+                                        (pieceView.getPieceImage().getImage().getUrl())));
+
+                        model.getTilesToSelect().getTiles().
+                                get(model.getTilesToSelect().getTiles()
+                                        .indexOf(model.getCurrentTile())).setPiece(null);
+
+                        if (model.getGameRules().isGameOver()) {
+                            model.getGameRules().setWinner(model.getCurrentPlayer());
+                            model.getGameSession().setWinner(model.getCurrentPlayer());
+                        }
+
+                        model.switchTurns();
+                        updateView();
                     }
-                    model.switchTurns();
-                    updateView();
-                }
-            });
-        });
+                }));
     }
 
     private void updateView() {
-
         //Game Over
-        if(model.getGameRules().isGameOver()) {
+        if (model.getGameRules().isGameOver()) {
+
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Game Over");
-            alert.setHeaderText("Winner is : " + model.getGameRules().getWinner().getName());
             alert.setContentText("Do you want to play again?");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
-               model.restartGame();
+
+            if (!model.getGameRules().isTie()) {
+
+                alert.setHeaderText("Winner is : " + model.getGameRules().getWinner().getName());
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    model.restartGame();
+                }
+                alert.showAndWait();
+            } else {
+                alert.setHeaderText("Tie");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    model.restartGame();
+                }
+                alert.showAndWait();
             }
-            alert.showAndWait();
         }
 
 
@@ -94,8 +109,7 @@ public class GamePresenter {
                 Piece piece = model.getTilesToSelect().getTiles().get(i).getPiece();
                 view.getSelectView().getPieceViews().get(i)
                         .getPieceImage().setImage(new Image(getPieceImage(piece)));
-            }
-            else {
+            } else {
                 view.getSelectView().getPieceViews().get(i).getPieceImage().setImage(null);
             }
         }
@@ -111,12 +125,13 @@ public class GamePresenter {
 
                 view.getBoard().getSpaceViews().get(i)
                         .getChildren().add(imageView);
-            }
-            else {
+            } else {
                 view.getBoard().getSpaceViews().get(i).relayoutNodes();
             }
         }
 
+
+        //Update turn label
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
         view.getTurn().setText(isHumanTurn ? "Your Turn!" : "AI Turn!");
     }

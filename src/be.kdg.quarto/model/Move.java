@@ -1,33 +1,27 @@
 package be.kdg.quarto.model;
 
-import java.util.Date;
-
 public class Move {
-
-   private Player player;
-   private int position;
-   private Piece piece;
-   private Piece selectedPiece;
-   private Date startTime;
-   private Date endTime;
+    private Tile tile;  // The tile being placed
+    private int position;  // The position on the board (index)
+    private int evaluation;  // The evaluation score for minimax
+    private boolean isMaximizingPlayer;  // Whether the current move is for the maximizing player
 
 
-    public Move(Player player, int position, Piece piece, Piece selectedPiece, Date startTime, Date endTime) {
-        this.player = player;
+    public Move(Tile tile, int position, int evaluation, boolean isMaximizingPlayer) {
+        this.tile = tile;
         this.position = position;
-        this.piece = piece;
-        this.selectedPiece = selectedPiece;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.evaluation = evaluation;
+        this.isMaximizingPlayer = isMaximizingPlayer;
     }
 
-    public Player getPlayer() {
-        return player;
+    public Tile getTile() {
+        return tile;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
+
 
     public int getPosition() {
         return position;
@@ -37,40 +31,31 @@ public class Move {
         this.position = position;
     }
 
-    public Piece getPiece() {
-        return piece;
+
+    public int getEvaluation() {
+        return evaluation;
     }
 
-    public void setPiece(Piece piece) {
-        this.piece = piece;
+    public void setEvaluation(int evaluation) {
+        this.evaluation = evaluation;
     }
 
-    public Piece getSelectedPiece() {
-        return selectedPiece;
+
+    public boolean isMaximizingPlayer() {
+        return isMaximizingPlayer;
     }
 
-    public void setSelectedPiece(Piece selectedPiece) {
-        this.selectedPiece = selectedPiece;
+    public void setMaximizingPlayer(boolean isMaximizingPlayer) {
+        this.isMaximizingPlayer = isMaximizingPlayer;
     }
 
-    public Date getStartTime() {
-        return startTime;
+
+    public Move copy() {
+        return new Move(this.tile, this.position, this.evaluation, this.isMaximizingPlayer);
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public float getDuration() {
-        // todo: this is a placeholder return value
-        return 0f;
+    @Override
+    public String toString() {
+        return "Move [tile=" + tile + ", position=" + position + ", evaluation=" + evaluation + "]";
     }
 }

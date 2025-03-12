@@ -104,7 +104,8 @@ public class GameView extends StackPane {
         Rectangle r = new Rectangle(120, 40);
         r.setArcWidth(20);
         r.setArcHeight(20);
-        r.setFill(Color.web("#2dbdfa"));
+        r.setStroke(Color.BLACK);
+        r.setFill(Color.web("#cc9600"));
         pane.getChildren().addAll(r, turn);
         return pane;
     }

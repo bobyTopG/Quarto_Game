@@ -28,7 +28,7 @@ public class Game {
 
         this.tilesToSelect = new Board();
         this.tilesToPlace = new Board();
-        gameRules=new GameRules(tilesToSelect, tilesToPlace);
+        gameRules = new GameRules(tilesToPlace);
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
 
@@ -48,7 +48,7 @@ public class Game {
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
 
-        gameRules = new GameRules(tilesToSelect, tilesToPlace);
+        gameRules = new GameRules(tilesToPlace);
 
         ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
         if (isAiTurn()) {
@@ -70,7 +70,7 @@ public class Game {
                     Shape.valueOf(parts[1].toUpperCase())
             );
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid enum value in image name.");
+            System.out.println("Invalid image name.");
             return null;
         }
     }
@@ -92,7 +92,6 @@ public class Game {
     }
 
 
-
     private void handleAiTurn() {
         if (currentPlayer == ai) {
             if (currentTile.getPiece() != null) {
@@ -109,7 +108,7 @@ public class Game {
                     getTilesToSelect().getTiles()
                             .get(getTilesToSelect().getTiles()
                                     .indexOf(getCurrentTile())).setPiece(null);
-                    if(gameRules.isGameOver()) {
+                    if (gameRules.isGameOver()) {
                         gameRules.setWinner(getCurrentPlayer());
                         gameSession.setWinner(getCurrentPlayer());
                     }
@@ -136,9 +135,11 @@ public class Game {
     public Board getTilesToSelect() {
         return tilesToSelect;
     }
+
     public GameSession getGameSession() {
         return gameSession;
     }
+
     public Player getHuman() {
         return human;
     }
