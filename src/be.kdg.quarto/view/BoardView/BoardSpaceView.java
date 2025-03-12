@@ -7,7 +7,6 @@ import javafx.scene.shape.Circle;
 
 public class BoardSpaceView extends StackPane {
     private Circle circle;
-    private boolean owned = false;
 
     public BoardSpaceView() {
         initialiseNodes();
@@ -23,20 +22,18 @@ public class BoardSpaceView extends StackPane {
         return circle;
     }
 
-    public boolean isOwned() {
-        return owned;
-    }
-
-    public void setOwned() {
-        this.owned = true;
-    }
 
     private void layoutNodes() {
         circle.setFill(Color.TRANSPARENT);
         circle.setStroke(Color.WHITE);
         getChildren().addAll(circle);
     }
-    public void remove(SelectPieceView view) {
-        getChildren().remove(view);
+
+    public void relayoutNodes() {
+        getChildren().clear();
+        circle.setFill(Color.TRANSPARENT);
+        circle.setStroke(Color.WHITE);
+        getChildren().addAll(circle);
+
     }
 }

@@ -43,8 +43,6 @@ public class StartPresenter {
 
     private void addEventHandlers() {
         view.getNewGame().setOnAction(event -> {
-
-
             ChooseAIView chooseAIView = new ChooseAIView();
             view.getScene().setRoot(chooseAIView);
             new ChooseAIPresenter(chooseAIView, model);

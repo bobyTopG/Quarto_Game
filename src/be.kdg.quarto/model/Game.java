@@ -15,23 +15,42 @@ public class Game {
     private final Board tilesToSelect;
     private final Board tilesToPlace;
     private Tile currentTile = new Tile();
+    private GameRules gameRules;
 
     public Game() {
-        this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
+        this(new Human("Human", "secretPassword"),
+                new Ai("Computer", AiLevel.HARD, null, "Description"));
     }
 
     public Game(Human human, Ai ai) {
         this.human = human;
         this.ai = ai;
+
         this.tilesToSelect = new Board();
         this.tilesToPlace = new Board();
+        gameRules=new GameRules(tilesToSelect, tilesToPlace);
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
 
         this.gameSession = new GameSession(human, ai);
         this.currentPlayer = ai;
         ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
+        if (isAiTurn()) {
+            handleAiTurn();
+        }
+    }
 
+    public void restartGame() {
+        tilesToSelect.getTiles().clear();
+        tilesToPlace.getTiles().clear();
+        currentTile = new Tile();
+
+        tilesToSelect.generateAllTiles();
+        tilesToPlace.createEmptyTiles();
+
+        gameRules = new GameRules(tilesToSelect, tilesToPlace);
+
+        ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
         if (isAiTurn()) {
             handleAiTurn();
         }
@@ -68,6 +87,12 @@ public class Game {
         }
     }
 
+    public GameRules getGameRules() {
+        return gameRules;
+    }
+
+
+
     private void handleAiTurn() {
         if (currentPlayer == ai) {
             if (currentTile.getPiece() != null) {
@@ -75,15 +100,20 @@ public class Game {
                 ai.getStrategy().placePiece().setPiece(currentTile.getPiece());
                 getCurrentTile().setPiece(null);
                 handleAiTurn();
+                gameRules.setWinner(getCurrentPlayer());
+                gameRules.isGameOver();
             } else {
                 //Picking
                 try {
-
-
                     getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
                     getTilesToSelect().getTiles()
                             .get(getTilesToSelect().getTiles()
                                     .indexOf(getCurrentTile())).setPiece(null);
+                    if(gameRules.isGameOver()) {
+                        gameRules.setWinner(getCurrentPlayer());
+                        gameSession.setWinner(getCurrentPlayer());
+                    }
+
                     switchTurns();
                 } catch (NullPointerException e) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -106,7 +136,9 @@ public class Game {
     public Board getTilesToSelect() {
         return tilesToSelect;
     }
-
+    public GameSession getGameSession() {
+        return gameSession;
+    }
     public Player getHuman() {
         return human;
     }

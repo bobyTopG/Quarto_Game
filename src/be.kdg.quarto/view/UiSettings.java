@@ -41,7 +41,6 @@ public class UiSettings {
 
     public String getHomeDir () {return this.homeDir;}
 
-
     public String getApplicationName () {return this.ApplicationName;}
 
 }

@@ -19,4 +19,8 @@ public class GameSession {
     public boolean hasWinner() {
         return winner != null;
     }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
 }
