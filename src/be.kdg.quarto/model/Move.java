@@ -13,13 +13,12 @@ public class Move {
    private Date endTime;
 
 
-    public Move(Player player, int position, Piece piece, int moveNumber, Date startTime, Date endTime) {
+    public Move(Player player, int position, Piece piece, int moveNumber, Date startTime) {
         this.player = player;
         this.position = position;
         this.piece = piece;
         this.moveNumber = moveNumber;
         this.startTime = startTime;
-        this.endTime = endTime;
     }
 
     public Move(Player player, Piece selectedPiece,Date startTime, Date endTime){
@@ -79,6 +78,20 @@ public class Move {
         // todo: this is a placeholder return value
         return 0f;
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "player=" + player +
+                ", position=" + position +
+                ", piece=" + piece +
+                ", selectedPiece=" + selectedPiece +
+                ", moveNumber=" + moveNumber +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
+
 
 
 }
