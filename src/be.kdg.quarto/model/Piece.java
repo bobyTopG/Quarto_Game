@@ -25,7 +25,7 @@ public class Piece {
     public int hashCode() {
         return Objects.hash(color, height, fill, shape);
     }
-    public Piece(){}
+
 
     public Piece(Color color, Height height, Fill fill, Shape shape) {
         this.color = color;

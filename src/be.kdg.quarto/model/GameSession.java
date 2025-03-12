@@ -2,20 +2,21 @@ package be.kdg.quarto.model;
 
 public class GameSession {
     private Player winner;
-    private Player player1, player2;
+    private final Player player1;
+    private final Player player2;
 
-
-    public GameSession(Player winner, Player player1, Player player2) {
-        this.winner = winner;
-        this.player1 = player1;
-        this.player2 = player2;
+    public GameSession(Player player1, Player player2) {
+       this.player1 = player1;
+       this.player2 = player2;
     }
 
-    public Player getWinner() {
-        return winner;
+    public Player getOtherPlayer(Player currentPlayer) {
+        if (currentPlayer.equals(player1)) return player2;
+        if (currentPlayer.equals(player2)) return player1;
+        throw new IllegalArgumentException("Given player is not part of this session.");
     }
 
-    public void setWinner(Player winner) {
-        this.winner = winner;
+    public boolean hasWinner() {
+        return winner != null;
     }
 }

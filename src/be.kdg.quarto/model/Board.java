@@ -36,10 +36,7 @@ public class Board {
     }
 
     public List<Tile> getTiles() {
-        return tiles;}
-
-    public void removeTile(Tile tile) {
-        tiles.remove(tile);
+        return tiles;
     }
 
 
