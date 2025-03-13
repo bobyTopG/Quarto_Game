@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DifficultStrategy implements PlayingStrategy {
-    private static final int MAX_DEPTH = 3;
+    private static final int MAX_DEPTH = 7;
     private final Game game; // Reference to the current game state
 
     public DifficultStrategy(Game game) {
