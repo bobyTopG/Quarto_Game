@@ -1,5 +1,7 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.model.strategy.DifficultStrategy;
+import be.kdg.quarto.model.strategy.RandomPlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
@@ -34,7 +36,7 @@ public class Game {
 
         this.gameSession = new GameSession(human, ai);
         this.currentPlayer = ai;
-        ai.setStrategy(new HardMode(this));
+        ai.setStrategy(new DifficultStrategy(this));
         if (isAiTurn()) {
             handleAiTurn();
         }

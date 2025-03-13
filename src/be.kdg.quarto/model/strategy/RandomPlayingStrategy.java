@@ -1,4 +1,7 @@
-package be.kdg.quarto.model;
+package be.kdg.quarto.model.strategy;
+
+import be.kdg.quarto.model.Board;
+import be.kdg.quarto.model.Tile;
 
 import java.util.List;
 import java.util.Random;

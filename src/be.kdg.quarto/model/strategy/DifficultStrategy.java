@@ -1,10 +1,44 @@
-package be.kdg.quarto.model;
+package be.kdg.quarto.model.strategy;
+
+import be.kdg.quarto.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class QuartoAI {
-    private static final int MAX_DEPTH = 3; // Limits recursion depth
+public class DifficultStrategy implements PlayingStrategy {
+    private static final int MAX_DEPTH = 3;
+    private final Game game; // Reference to the current game state
+
+    public DifficultStrategy(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public Tile selectPiece() {
+
+        List<Tile> availableTiles = game.getTilesToSelect().getTiles().stream()
+                .filter(tile -> tile.getPiece() != null)
+                .toList();
+
+        if (availableTiles.isEmpty()) {
+            return null;
+        }
+        return availableTiles.get(new Random().nextInt(availableTiles.size()));
+    }
+
+    @Override
+    public Tile placePiece() {
+        Move bestMove = getBestMove(game);
+        if (bestMove == null) {
+            return null; // No valid move found (should not happen in a normal game)
+        }
+        return game.getPlacedTiles().getTiles().get(bestMove.getStartY() * 4 + bestMove.getStartX());
+    }
+    @Override
+    public String getName() {
+        return "Hard Mode AI";
+    }
 
     public Move getBestMove(Game game) {
         int bestScore = Integer.MIN_VALUE;

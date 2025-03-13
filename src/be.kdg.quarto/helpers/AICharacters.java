@@ -1,7 +1,6 @@
 package be.kdg.quarto.helpers;
 
 import be.kdg.quarto.model.Ai;
-import be.kdg.quarto.model.PlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
 
 import java.util.ArrayList;

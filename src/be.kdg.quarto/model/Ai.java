@@ -1,5 +1,6 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.model.strategy.PlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
 
 public class Ai extends Player{
