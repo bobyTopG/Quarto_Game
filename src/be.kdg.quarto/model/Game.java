@@ -94,6 +94,10 @@ public class Game {
     }
 
 
+    public Ai getAi() {
+        return ai;
+    }
+
     private void handleAiTurn() {
         if (currentPlayer == ai) {
             if (currentTile.getPiece() != null) {

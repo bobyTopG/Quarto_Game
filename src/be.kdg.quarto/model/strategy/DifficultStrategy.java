@@ -35,17 +35,28 @@ public class DifficultStrategy implements PlayingStrategy {
         }
         return game.getPlacedTiles().getTiles().get(bestMove.getStartY() * 4 + bestMove.getStartX());
     }
+
     @Override
     public String getName() {
         return "Hard Mode AI";
     }
 
     public Move getBestMove(Game game) {
+        if (game.getGameRules().isGameOver()) {
+            return null; // AI should not play after winning
+        }
+
         int bestScore = Integer.MIN_VALUE;
         Move bestMove = null;
 
         for (Move move : getPossibleMoves(game)) {
             applyMove(game, move);
+
+            if (game.getGameRules().isGameOver()) {
+                undoMove(game, move);
+                return move; // Stop immediately and return winning move
+            }
+
             int score = minimax(game, MAX_DEPTH, false);
             undoMove(game, move);
 
@@ -54,11 +65,19 @@ public class DifficultStrategy implements PlayingStrategy {
                 bestMove = move;
             }
         }
+
+        System.out.println("Best move chosen: " + (bestMove != null ? bestMove.getStartX() + ", " + bestMove.getStartY() : "None") + " with score: " + bestScore);
         return bestMove;
     }
 
+
     private int minimax(Game game, int depth, boolean isMaximizing) {
-        if (depth == 0 || game.getGameRules().isGameOver()) {
+        if (game.getGameRules().isGameOver()) {
+            int score = (game.getGameRules().getWinner() == game.getAi()) ? 1000 : -1000;
+            return score;
+        }
+
+        if (depth == 0) {
             return evaluateBoard(game);
         }
 
@@ -66,6 +85,10 @@ public class DifficultStrategy implements PlayingStrategy {
             int maxEval = Integer.MIN_VALUE;
             for (Move move : getPossibleMoves(game)) {
                 applyMove(game, move);
+                if (game.getGameRules().isGameOver()) {
+                    undoMove(game, move);
+                    return 1000; // Stop searching if AI finds a win
+                }
                 int eval = minimax(game, depth - 1, false);
                 undoMove(game, move);
                 maxEval = Math.max(maxEval, eval);
@@ -75,6 +98,10 @@ public class DifficultStrategy implements PlayingStrategy {
             int minEval = Integer.MAX_VALUE;
             for (Move move : getPossibleMoves(game)) {
                 applyMove(game, move);
+                if (game.getGameRules().isGameOver()) {
+                    undoMove(game, move);
+                    return -1000; // Stop searching if human finds a win
+                }
                 int eval = minimax(game, depth - 1, true);
                 undoMove(game, move);
                 minEval = Math.min(minEval, eval);
@@ -85,7 +112,11 @@ public class DifficultStrategy implements PlayingStrategy {
 
     private int evaluateBoard(Game game) {
         if (game.getGameRules().isGameOver()) {
-            return game.getGameRules().getWinner() == game.getHuman() ? -1000 : 1000;
+            if (game.getGameRules().getWinner() == game.getAi()) {
+                return 1000; // AI wins
+            } else if (game.getGameRules().getWinner() == game.getHuman()) {
+                return -1000; // Human wins
+            }
         }
 
         int score = 0;
@@ -103,6 +134,17 @@ public class DifficultStrategy implements PlayingStrategy {
         return score;
     }
 
+    private boolean isWinningLine(Board board, int startIndex, int step) {
+        List<Tile> tiles = board.getTiles();
+        Piece[] pieces = new Piece[4];
+
+        for (int i = 0; i < 4; i++) {
+            pieces[i] = tiles.get(startIndex + (i * step)).getPiece();
+            if (pieces[i] == null) return false; // Incomplete line
+        }
+
+        return allSame(pieces, "color") || allSame(pieces, "high") || allSame(pieces, "shape") || allSame(pieces, "fill");
+    }
     private int evaluateLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
         Piece[] pieces = new Piece[4];
