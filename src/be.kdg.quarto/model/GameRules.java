@@ -6,30 +6,33 @@ public class GameRules {
     private boolean gameOver;
     private boolean isTie;
     private Player winner;
+    private Game game;
     private Board placingBoard;
 
     public boolean isTie() {
         return isTie;
     }
 
-    public GameRules(Board placingBoard) {
-        this.placingBoard = placingBoard;
+    public GameRules(Game game) {
+        this.game = game;
+        placingBoard = game.getPlacedTiles();
     }
 
     public boolean isGameOver() {
-        if (gameOver) return true;
-
         List<Tile> tiles = placingBoard.getTiles();
         boolean hasEmptyTiles = tiles.stream().anyMatch(tile -> tile.getPiece() == null);
 
         if (!hasEmptyTiles) {
             gameOver = true;
             isTie = true;
+            return true;
         } else if (checkRowsAndCols() || checkColumns() || checkDiagonals()) {
             gameOver = true;
+            return true;
         }
+       gameOver = false;
+        return false;
 
-        return gameOver;
     }
 
     private boolean checkRowsAndCols() {

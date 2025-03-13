@@ -28,13 +28,13 @@ public class Game {
 
         this.tilesToSelect = new Board();
         this.tilesToPlace = new Board();
-        gameRules = new GameRules(tilesToPlace);
+        gameRules = new GameRules(this);
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
 
         this.gameSession = new GameSession(human, ai);
         this.currentPlayer = ai;
-        ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
+        ai.setStrategy(new HardMode(this));
         if (isAiTurn()) {
             handleAiTurn();
         }
@@ -48,7 +48,7 @@ public class Game {
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
 
-        gameRules = new GameRules(tilesToPlace);
+        gameRules = new GameRules(this);
 
         ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
         if (isAiTurn()) {
@@ -96,10 +96,11 @@ public class Game {
         if (currentPlayer == ai) {
             if (currentTile.getPiece() != null) {
                 //Placing
-                ai.getStrategy().placePiece().setPiece(currentTile.getPiece());
+                ai.getStrategy().placePiece().setPiece(currentTile.getPiece());//set piece to the chosen tile
                 getCurrentTile().setPiece(null);
                 handleAiTurn();
                 gameRules.setWinner(getCurrentPlayer());
+                this.getPlacedTiles();
                 gameRules.isGameOver();
             } else {
                 //Picking

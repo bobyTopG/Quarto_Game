@@ -1,61 +1,37 @@
 package be.kdg.quarto.model;
 
 public class Move {
-    private Tile tile;  // The tile being placed
-    private int position;  // The position on the board (index)
-    private int evaluation;  // The evaluation score for minimax
-    private boolean isMaximizingPlayer;  // Whether the current move is for the maximizing player
+    private int startX;
+    private int startY;
+    private int endX;
+    private int endY;
 
-
-    public Move(Tile tile, int position, int evaluation, boolean isMaximizingPlayer) {
-        this.tile = tile;
-        this.position = position;
-        this.evaluation = evaluation;
-        this.isMaximizingPlayer = isMaximizingPlayer;
+    public Move(int startX, int startY, int endX, int endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
     }
 
-    public Tile getTile() {
-        return tile;
+    // Getters
+    public int getStartX() {
+        return startX;
     }
 
-    public void setTile(Tile tile) {
-        this.tile = tile;
+    public int getStartY() {
+        return startY;
     }
 
-
-    public int getPosition() {
-        return position;
+    public int getEndX() {
+        return endX;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-
-    public int getEvaluation() {
-        return evaluation;
-    }
-
-    public void setEvaluation(int evaluation) {
-        this.evaluation = evaluation;
-    }
-
-
-    public boolean isMaximizingPlayer() {
-        return isMaximizingPlayer;
-    }
-
-    public void setMaximizingPlayer(boolean isMaximizingPlayer) {
-        this.isMaximizingPlayer = isMaximizingPlayer;
-    }
-
-
-    public Move copy() {
-        return new Move(this.tile, this.position, this.evaluation, this.isMaximizingPlayer);
+    public int getEndY() {
+        return endY;
     }
 
     @Override
     public String toString() {
-        return "Move [tile=" + tile + ", position=" + position + ", evaluation=" + evaluation + "]";
+        return "Move from (" + startX + ", " + startY + ") to (" + endX + ", " + endY + ")";
     }
 }

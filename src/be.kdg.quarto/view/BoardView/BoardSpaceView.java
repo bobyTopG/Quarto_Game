@@ -1,6 +1,5 @@
 package be.kdg.quarto.view.BoardView;
 
-import be.kdg.quarto.view.GameScreen.SelectPieceView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -29,7 +28,7 @@ public class BoardSpaceView extends StackPane {
         getChildren().addAll(circle);
     }
 
-    public void relayoutNodes() {
+    public void reset() {
         getChildren().clear();
         circle.setFill(Color.TRANSPARENT);
         circle.setStroke(Color.WHITE);

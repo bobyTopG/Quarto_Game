@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private static final int BOARD_SIZE = 16;
+    public static final int BOARD_SIZE = 4;
+
     private List<Tile> tiles;
 
 
     public Board() {
-        this.tiles = new ArrayList<>(BOARD_SIZE);
+        this.tiles = new ArrayList<>(BOARD_SIZE * BOARD_SIZE);
     }
 
     public void generateAllTiles() {
@@ -30,13 +31,15 @@ public class Board {
     }
 
     public void createEmptyTiles() {
-        for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             tiles.add(new Tile());
         }
     }
 
     public List<Tile> getTiles() {
+        
         return tiles;
+
     }
 
 

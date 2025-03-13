@@ -2,10 +2,10 @@ package be.kdg.quarto.model;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class RandomPlayingStrategy implements PlayingStrategy {
-    private Board selectPiece, placePiece;
+    private final Board selectPiece;
+    private final Board placePiece;
 
     public RandomPlayingStrategy(Board selectPiece, Board placePiece) {
         this.placePiece = placePiece;

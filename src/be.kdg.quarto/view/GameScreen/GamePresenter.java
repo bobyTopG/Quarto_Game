@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.GameScreen;
 
+import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Tile;
@@ -69,6 +70,7 @@ public class GamePresenter {
     }
 
     private void updateView() {
+
         //Game Over
         if (model.getGameRules().isGameOver()) {
 
@@ -123,10 +125,9 @@ public class GamePresenter {
                 imageView.setFitHeight(30);
                 imageView.setFitWidth(30);
 
-                view.getBoard().getSpaceViews().get(i)
-                        .getChildren().add(imageView);
+                view.getBoard().getSpaceViews().get(i).getChildren().add(imageView);
             } else {
-                view.getBoard().getSpaceViews().get(i).relayoutNodes();
+                view.getBoard().getSpaceViews().get(i).reset();
             }
         }
 
@@ -139,8 +140,8 @@ public class GamePresenter {
     private void createSelectBoard() {
         view.getSelectView().getPieceViews().clear();
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < Board.BOARD_SIZE; i++) {
+            for (int j = 0; j < Board.BOARD_SIZE; j++) {
                 PieceView pieceView = new PieceView();
                 view.getSelectView().getPieceViews().add(pieceView);
                 view.getSelectView().add(pieceView, i, j);
