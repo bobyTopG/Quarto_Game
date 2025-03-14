@@ -5,7 +5,6 @@
     import be.kdg.quarto.view.GameScreen.GameView;
     import be.kdg.quarto.view.StartScreen.StartPresenter;
     import be.kdg.quarto.view.StartScreen.StartView;
-    import be.kdg.quarto.view.UiSettings;
     import javafx.scene.control.Button;
     import javafx.scene.image.Image;
     import be.kdg.quarto.helpers.AICharacters;
@@ -41,14 +40,13 @@
             }
             return images;
         }
-        UiSettings uiSettings = new UiSettings();
 
         private void addEventHandlers() {
 
             addEventListenersForAICharacterButtons();
 
             view.getBackButton().setOnMouseClicked(event -> {
-                StartView startView = new StartView(uiSettings);
+                StartView startView = new StartView();
                 view.getScene().setRoot(startView);
                 new StartPresenter(model, startView);
             });

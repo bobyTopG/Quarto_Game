@@ -2,6 +2,7 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,10 +30,31 @@ public class GameView extends StackPane {
     private static final int GRID_HGAP = 10;
     private static final int GRID_VGAP = 10;
 
+    private  StackPane overlayContainer;
+    private  SettingsView settingsView;
+
+
     public GameView() {
         initialiseNodes();
         layoutNodes();
+        overlayContainer = new StackPane();
+        overlayContainer.setVisible(false);
+        overlayContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        settingsView = new SettingsView();
+        StackPane.setAlignment(settingsView, Pos.CENTER);
+
+        overlayContainer.getChildren().add(settingsView);
+        this.getChildren().add(overlayContainer);
     }
+
+    public StackPane getOverlayContainer() { return overlayContainer; }
+
+    public Button getSettings() {
+        return settings;
+    }
+
+    public SettingsView getSettingsView() { return settingsView; }
 
     // Getters
     public SelectPieceView getSelectView() {

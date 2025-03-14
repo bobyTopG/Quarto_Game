@@ -1,6 +1,12 @@
 package be.kdg.quarto.model.strategy;
 
-import be.kdg.quarto.model.*;
+
+
+import be.kdg.quarto.model.Board;
+import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Move;
+import be.kdg.quarto.model.Tile;
+import be.kdg.quarto.model.Piece;
 
 import java.util.ArrayList;
 import java.util.List;

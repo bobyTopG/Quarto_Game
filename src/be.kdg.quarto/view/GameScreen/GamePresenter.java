@@ -5,6 +5,7 @@ import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
@@ -25,6 +26,10 @@ public class GamePresenter {
         createSelectBoard();
         updateView();
         addEventHandlers();
+    }
+
+    public GameView getView() {
+        return view;
     }
 
     private void addEventHandlers() {
@@ -67,6 +72,12 @@ public class GamePresenter {
                         updateView();
                     }
                 }));
+
+
+        view.getSettings().setOnAction(event -> {
+            view.getOverlayContainer().setVisible(true); // Show settings overlay
+            new SettingsPresenter(this, view.getSettingsView() , model);
+        });
     }
 
     private void updateView() {

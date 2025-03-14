@@ -3,7 +3,6 @@ package be.kdg.quarto.view.StartScreen;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
-import be.kdg.quarto.view.UiSettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -19,14 +18,13 @@ public class StartView extends BorderPane {
     private Button newGame, continueButton, leaderBoard, statistics, quit;
     private HBox mainHBox;
     private BoardView board;
-    private UiSettings settings;
+
 
     private static final int BUTTON_SPACING = 20;
     private static final int VBOX_LEFT_PADDING = 70;
     private static final int VBOX_TOP_PADDING = 10;
     private static final int VBOX_BOTTOM_PADDING = 20;
-    public StartView(UiSettings settings) {
-        this.settings = settings;
+    public StartView() {
         initialiseNodes();
         layoutNodes();
     }
