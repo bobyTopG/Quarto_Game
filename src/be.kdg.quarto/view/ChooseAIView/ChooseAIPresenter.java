@@ -1,6 +1,7 @@
     package be.kdg.quarto.view.ChooseAIView;
     import be.kdg.quarto.model.Ai;
     import be.kdg.quarto.model.Game;
+    import be.kdg.quarto.model.Human;
     import be.kdg.quarto.view.GameScreen.GamePresenter;
     import be.kdg.quarto.view.GameScreen.GameView;
     import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -15,6 +16,7 @@
 
     public class ChooseAIPresenter {
         ChooseAIView view;
+        Ai aiSelected;
         public ChooseAIPresenter(ChooseAIView view) {
             this.view = view;
             List<Image> images = findAICharacterImagesForButtons();
@@ -54,7 +56,7 @@
             view.getSelectButton().setOnMouseClicked(event -> {
                 GameView gameView = new GameView();
                 view.getScene().setRoot(gameView);
-                new GamePresenter(new Game(), gameView);
+                new GamePresenter(new Game(new Human("Example","98eu98u2e198"), aiSelected), gameView);
             });
         }
         private void addEventListenersForAICharacterButtons(){
@@ -63,12 +65,15 @@
                 final int id = count;
                 characterButton.setOnMouseClicked(event -> {
                     view.setSelectedCharacter(id);
+                    view.getSelectButton().setDisable(false);
+                    aiSelected = AICharacters.getCharacters().get(id);
                 });
                 count++;
             }
             for(Button notFoundButton : view.getNotFoundButtons()){
                 notFoundButton.setOnMouseClicked(event -> {
                     view.setSelectedCharacter(-1);
+                    view.getSelectButton().setDisable(true);
                 });
             }
         }
