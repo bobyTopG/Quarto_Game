@@ -1,5 +1,6 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
@@ -26,7 +27,7 @@ public class Game {
     private GameRules gameRules = new GameRules();
 
     public Game() {
-        this(new Human("Bob", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
+        this(new Human("Me", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
     }
 
     public Game(Human human, Ai ai) {
@@ -48,6 +49,7 @@ public class Game {
     public Player callQuarto(){
          if(gameRules.checkWin(board, gameSession.getMoves())){
              System.out.println(currentPlayer.getName() + " Has won the game!");
+             CreateHelper.createAlert( "Game Over", currentPlayer.getName() + " Has won the game!","Game Win");
              return currentPlayer;
          }
         System.out.println("No one won yet :(");
@@ -78,6 +80,7 @@ public class Game {
 
     public void switchTurns() {
         if (gameSession.hasWinner()) return;
+
         currentPlayer = gameSession.getOtherPlayer(currentPlayer);
         if (isAiTurn()) {
             handleAiTurn();
@@ -89,8 +92,11 @@ public class Game {
             if (selectedPiece != null) {
                 //Placing
                 placePiece(ai.getStrategy().selectTile(), ai);
+                if(ai.getStrategy().isCallingQuarto())
+                    callQuarto();
                 //after placing piece -> pick piece
                 handleAiTurn();
+
             } else {
                 //Picking
                 try {
@@ -100,10 +106,7 @@ public class Game {
                         System.out.println(move);
                     }
                     //all pieces have been placed
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game Over");
-                    alert.setHeaderText("There are no pieces to select!");
-                    alert.showAndWait();
+                    CreateHelper.createAlert("Game Over", "Game Over", "There are no pieces to select!" );
                 }
             }
         }

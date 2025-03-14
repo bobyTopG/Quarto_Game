@@ -13,6 +13,7 @@ public class RandomPlayingStrategy implements PlayingStrategy {
         this.selectPiece = selectPiece;
     }
 
+
     @Override
     public Piece selectPiece() {
             return selectRandomPiece().getPiece();
@@ -26,7 +27,11 @@ public class RandomPlayingStrategy implements PlayingStrategy {
         return "S1";
     }
 
-
+    @Override
+    public boolean isCallingQuarto() {
+        int rand = new Random().nextInt(1);
+        return rand == 0;
+    }
 
 
     private Tile selectRandomPiece() {

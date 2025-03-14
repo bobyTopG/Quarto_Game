@@ -1,5 +1,6 @@
 package be.kdg.quarto.helpers;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -38,5 +39,12 @@ public class CreateHelper {
         hbox.getStyleClass().add(styleClass);
         return hbox;
     }
+    public static void createAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
 
+    }
 }
