@@ -4,5 +4,5 @@ public interface PlayingStrategy {
     Tile selectTile();
     Piece selectPiece();
     String getName();
-
+    boolean isCallingQuarto();
 }
