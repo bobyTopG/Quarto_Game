@@ -47,8 +47,10 @@ public class ChooseAIView extends BorderPane {
         characterVBox = new VBox();
         selectedCharacter = new ImageView();
     }
-    private void layoutNodes() {
 
+
+
+    private void layoutNodes() {
 
         styleMainVBox();
 

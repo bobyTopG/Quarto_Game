@@ -10,11 +10,14 @@ public class AICharacters {
     private final static List<Ai> characters;
 
     static {
-        // Initializing the List
         characters = new ArrayList<>();
+
         Ai bobAi = new Ai("Bob", AiLevel.EASY, null,"New to the game, understands \n the basic rules but has \n no other knowledge");
         characters.add(bobAi);
-        // Add more AI characters here...
+
+        Ai tomAi = new Ai("Bob", AiLevel.HARD, null,"A strategic player\n who has a good understanding \n of the game and makes \n calculated moves.");
+        characters.add(tomAi);
+
     }
 
     public static List<Ai> getCharacters() {

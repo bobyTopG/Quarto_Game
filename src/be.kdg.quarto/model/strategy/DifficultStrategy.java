@@ -1,7 +1,6 @@
 package be.kdg.quarto.model.strategy;
 
 
-
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Move;
