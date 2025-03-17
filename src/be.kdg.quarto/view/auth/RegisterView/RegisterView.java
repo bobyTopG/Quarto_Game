@@ -29,7 +29,7 @@ public class RegisterView extends BorderPane {
     }
 
     private void initialiseNodes() {
-        registerLabel = CreateHelper.createLabel("Register", "main-login");
+        registerLabel = CreateHelper.createLabel("Register", "main-title");
         registerLabel.setFont(FontHelper.getLargeFont());
 
         usernameTextField = new TextField();

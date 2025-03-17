@@ -28,7 +28,7 @@ public class LoginView extends BorderPane {
     }
 
     private void initialiseNodes() {
-        loginLabel = CreateHelper.createLabel("Login", "main-login");
+        loginLabel = CreateHelper.createLabel("Login", "main-title");
         loginLabel.setFont(FontHelper.getLargeFont());
 
         usernameTextField = new TextField();
