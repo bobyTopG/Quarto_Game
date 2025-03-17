@@ -1,6 +1,5 @@
     package be.kdg.quarto.view.ChooseAIView;
     import be.kdg.quarto.model.Ai;
-    import be.kdg.quarto.model.Game;
     import be.kdg.quarto.model.GameSession;
     import be.kdg.quarto.model.strategy.DifficultStrategy;
     import be.kdg.quarto.model.strategy.RandomPlayingStrategy;
@@ -63,9 +62,10 @@
                     new GamePresenter(session ,gameView);
                 }
                 else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("No Ai selected");
-                    alert.setHeaderText("Please select an AI character");
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You have to select an AI character first!");
                     alert.showAndWait();
                 }
 

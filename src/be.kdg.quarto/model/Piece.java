@@ -27,6 +27,7 @@ public class Piece {
     }
 
 
+
     public Piece(Color color, Height height, Fill fill, Shape shape) {
         this.color = color;
         this.height = height;
@@ -52,6 +53,12 @@ public class Piece {
 
     @Override
     public String toString() {
-        return color + " " + height + " " + fill + " " + shape;
+        return "Piece{" +
+                "color=" + color +
+                ", height=" + height +
+                ", fill=" + fill +
+                ", shape=" + shape +
+                '}';
     }
+
 }

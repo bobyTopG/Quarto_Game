@@ -21,6 +21,7 @@ public class DifficultStrategy implements PlayingStrategy {
         this.game = session.getModel();
     }
 
+    //Picking
     @Override
     public Tile selectPiece() {
         List<Tile> availableTiles = game.getTilesToSelect().getTiles().stream()
@@ -30,11 +31,85 @@ public class DifficultStrategy implements PlayingStrategy {
         if (availableTiles.isEmpty()) {
             return null;
         }
-        return availableTiles.get(new Random().nextInt(availableTiles.size()));
+
+        Tile bestTile = null;
+        int lowestOpponentScore = Integer.MAX_VALUE;
+        List<Tile> safeTiles = new ArrayList<>();
+
+        // Avoid selecting a piece that allows the opponent to win
+        for (Tile tile : availableTiles) {
+            applyTemporarySelection(tile);
+            if (opponentCanWin()) {
+                undoTemporarySelection(tile);
+                System.out.println("Avoiding " + tile);
+                continue; // Skip this piece to prevent the opponent from winning
+            }
+            safeTiles.add(tile);
+            undoTemporarySelection(tile);
+        }
+
+        // If all pieces are dangerous, return any to continue the game
+        if (safeTiles.isEmpty()) {
+            return availableTiles.get(new Random().nextInt(availableTiles.size()));
+        }
+
+        //Choose the piece that minimizes the opponent’s best move
+        for (Tile tile : safeTiles) {
+            applyTemporarySelection(tile);
+            int opponentScore = evaluateOpponentOptions();
+            undoTemporarySelection(tile);
+
+            if (opponentScore < lowestOpponentScore) {
+                lowestOpponentScore = opponentScore;
+                bestTile = tile;
+            }
+        }
+
+        if (bestTile != null) {
+            return bestTile; // Choose the piece that gives the opponent the worst position
+        }
+
+        // If no good piece is found, select randomly from safe options
+        Tile randomTile = safeTiles.get(new Random().nextInt(safeTiles.size()));
+        return randomTile;
     }
 
 
+    private void applyTemporarySelection(Tile tile) {
+        game.getCurrentTile().setPiece(tile.getPiece());
+    }
 
+
+    private void undoTemporarySelection(Tile tile) {
+        game.getCurrentTile().setPiece(null);
+    }
+
+    private boolean opponentCanWin() {
+        for (Move move : getPossibleMoves(game)) {
+            applyMove(game, move);
+            boolean wins = game.getGameRules().isGameOver();
+            undoMove(game, move);
+            if (wins) {
+                System.out.println("!Opponent has a winning move!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int evaluateOpponentOptions() {
+        int bestScore = Integer.MIN_VALUE;
+        for (Move move : getPossibleMoves(game)) {
+            applyMove(game, move);
+            int score = minimax(game, 1, false); // Check one depth level ahead
+            undoMove(game, move);
+            bestScore = Math.max(bestScore, score);
+        }
+        return bestScore;
+    }
+
+
+    //Placing
     @Override
     public Tile placePiece() {
         Move bestMove = getBestMove(game);
@@ -73,7 +148,7 @@ public class DifficultStrategy implements PlayingStrategy {
             }
         }
 
-        System.out.println("Best move chosen: " + (bestMove != null ? bestMove.getStartX() + ", " + bestMove.getStartY() : "None") + " with score: " + bestScore);
+        //System.out.println("Best move chosen: " + (bestMove != null ? bestMove.getStartX() + ", " + bestMove.getStartY() : "None") + " with score: " + bestScore);
         return bestMove;
     }
 
@@ -155,7 +230,6 @@ public class DifficultStrategy implements PlayingStrategy {
     }
 
 
-
     private int evaluateLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
         Piece[] pieces = new Piece[4];
@@ -178,7 +252,6 @@ public class DifficultStrategy implements PlayingStrategy {
     }
 
 
-
     private boolean allSame(Piece[] pieces, String attribute) {
         String v1 = getAttribute(pieces[0], attribute);
         String v2 = getAttribute(pieces[1], attribute);
@@ -187,7 +260,6 @@ public class DifficultStrategy implements PlayingStrategy {
 
         return v1.equals(v2) && v2.equals(v3) && v3.equals(v4);
     }
-
 
 
     private String getAttribute(Piece piece, String attribute) {
@@ -199,7 +271,6 @@ public class DifficultStrategy implements PlayingStrategy {
             default -> "";
         };
     }
-
 
 
     private List<Move> getPossibleMoves(Game game) {

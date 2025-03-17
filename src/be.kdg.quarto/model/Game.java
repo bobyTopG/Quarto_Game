@@ -1,12 +1,9 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.model.strategy.DifficultStrategy;
-import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
-import javafx.scene.control.Alert;
 
 public class Game {
 
@@ -43,11 +40,9 @@ public class Game {
         }
     }
 
-
     public GameRules getGameRules() {
         return gameRules;
     }
-
 
     public Board getPlacedTiles() {
         return tilesToPlace;

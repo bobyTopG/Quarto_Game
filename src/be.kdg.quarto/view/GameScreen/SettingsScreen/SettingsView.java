@@ -16,8 +16,6 @@ public class SettingsView extends StackPane {
 
     public SettingsView() {
         this.setStyle("-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 20px;");
-        this.setPrefSize(500, 300);
-        this.setMaxSize(500, 300);
 
         initialiseNodes();
         layoutNodes();

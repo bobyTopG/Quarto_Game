@@ -12,6 +12,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+
 import java.util.Optional;
 
 public class GamePresenter {
@@ -37,7 +38,6 @@ public class GamePresenter {
         //Place
         view.getBoard().getSpaceViews().forEach(boardSpaceView ->
                 boardSpaceView.getCircle().setOnMouseClicked(event -> {
-
                     int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
                     Tile tile = new Tile();
 
@@ -74,10 +74,10 @@ public class GamePresenter {
                     }
                 }));
 
-
+                //Settings Button
         view.getSettings().setOnAction(event -> {
             view.getOverlayContainer().setVisible(true);
-            new SettingsPresenter(this, view.getSettingsView() , session);
+            new SettingsPresenter(this, view.getSettingsView(), session);
         });
     }
 
