@@ -1,6 +1,7 @@
     package be.kdg.quarto.view.ChooseAIView;
     import be.kdg.quarto.model.Ai;
     import be.kdg.quarto.model.Game;
+    import be.kdg.quarto.model.GameSession;
     import be.kdg.quarto.model.strategy.DifficultStrategy;
     import be.kdg.quarto.model.strategy.RandomPlayingStrategy;
     import be.kdg.quarto.view.GameScreen.GamePresenter;
@@ -15,11 +16,11 @@
     import java.util.List;
 
     public class ChooseAIPresenter {
-        private final Game model;
+        private final GameSession session;
         ChooseAIView view;
-        public ChooseAIPresenter(ChooseAIView view, Game model) {
+        public ChooseAIPresenter(ChooseAIView view, GameSession session) {
             this.view = view;
-            this.model = model;
+            this.session = session;
             List<Image> images = findAICharacterImagesForButtons();
             String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
             Image notFoundImage = new Image(pathToNotFound);
@@ -50,13 +51,13 @@
             view.getBackButton().setOnMouseClicked(event -> {
                 StartView startView = new StartView();
                 view.getScene().setRoot(startView);
-                new StartPresenter(model, startView);
+                new StartPresenter(session, startView);
             });
 
             view.getSelectButton().setOnMouseClicked(event -> {
                 GameView gameView = new GameView();
                 view.getScene().setRoot(gameView);
-                new GamePresenter(model, gameView);
+                new GamePresenter(session ,gameView);
             });
         }
         private void addEventListenersForAICharacterButtons(){
@@ -66,9 +67,9 @@
                 characterButton.setOnMouseClicked(event -> {
                     view.setSelectedCharacter(id);
                     if(id  == 0 )
-                            model.getAi().setStrategy(new RandomPlayingStrategy(model.getTilesToSelect() , model.getPlacedTiles()));
+                            session.getAi().setStrategy(new RandomPlayingStrategy(session.getModel().getTilesToSelect() , session.getModel().getPlacedTiles()));
                     else
-                        model.getAi().setStrategy(new DifficultStrategy(model));
+                        session.getAi().setStrategy(new DifficultStrategy(session));
                 });
                 count++;
             }

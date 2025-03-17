@@ -1,19 +1,20 @@
 package be.kdg.quarto.view.GameScreen.SettingsScreen;
 
 import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 
 public class SettingsPresenter {
-    private Game model;
+    private GameSession session;
     private GamePresenter gamePresenter;
     private SettingsView view;
 
-    public SettingsPresenter(GamePresenter game, SettingsView view, Game model) {
+    public SettingsPresenter(GamePresenter game, SettingsView view, GameSession session) {
         this.gamePresenter = game;
         this.view = view;
-        this.model = model;
+        this.session = session;
 
         updateView();
         addEventHandlers();
@@ -21,7 +22,7 @@ public class SettingsPresenter {
 
     private void addEventHandlers() {
         view.getRestartButton().setOnAction(event -> {
-            model.restartGame();
+            session.restartGame();
             closeSettings();
         });
 
@@ -32,7 +33,7 @@ public class SettingsPresenter {
         view.getExitButton().setOnAction(event -> {
            StartView startView= new StartView();
            view.getScene().setRoot(startView);
-           new StartPresenter(model, startView);
+           new StartPresenter(session, startView);
         });
     }
 

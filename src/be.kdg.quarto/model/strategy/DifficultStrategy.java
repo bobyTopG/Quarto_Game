@@ -1,10 +1,13 @@
 package be.kdg.quarto.model.strategy;
 
 
-import be.kdg.quarto.model.Board;
+
+
 import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Tile;
+import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Piece;
 
 import java.util.ArrayList;
@@ -13,10 +16,12 @@ import java.util.Random;
 
 public class DifficultStrategy implements PlayingStrategy {
     private static final int MAX_DEPTH = 6;
-    private final Game game; // Reference to the current game state
+    private final Game game;
+    private GameSession session;
 
-    public DifficultStrategy(Game game) {
-        this.game = game;
+    public DifficultStrategy(GameSession session) {
+        this.session = session;
+        this.game = session.getModel();
     }
 
     @Override
@@ -79,7 +84,7 @@ public class DifficultStrategy implements PlayingStrategy {
 
     private int minimax(Game game, int depth, boolean isMaximizing) {
         if (game.getGameRules().isGameOver()) {
-            int score = (game.getGameRules().getWinner() == game.getAi()) ? 1000 : -1000;
+            int score = (game.getGameRules().getWinner() == session.getAi()) ? 1000 : -1000;
             return score;
         }
 
@@ -119,9 +124,9 @@ public class DifficultStrategy implements PlayingStrategy {
 
     private int evaluateBoard(Game game) {
         if (game.getGameRules().isGameOver()) {
-            if (game.getGameRules().getWinner() == game.getAi()) {
+            if (game.getGameRules().getWinner() == session.getAi()) {
                 return 1000; // AI wins
-            } else if (game.getGameRules().getWinner() == game.getHuman()) {
+            } else if (game.getGameRules().getWinner() != session.getAi()) {
                 return -1000; // Human wins
             }
         }

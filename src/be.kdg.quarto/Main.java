@@ -1,5 +1,6 @@
 package be.kdg.quarto;
 
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.application.Application;
@@ -12,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        Game model = new Game();
+        GameSession session = new GameSession();
         StartView view = new StartView();
 
         Scene scene = new Scene(view);
@@ -20,8 +21,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
-        primaryStage.setScene(scene);
-        new StartPresenter(model,view);
+        new StartPresenter(session,view);
         primaryStage.setHeight(500);
         primaryStage.setWidth(900);
         primaryStage.show();

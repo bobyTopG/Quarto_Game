@@ -2,6 +2,7 @@ package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
@@ -24,13 +25,16 @@ import java.util.Optional;
 public class StartPresenter {
 
     private Game model;
+    private GameSession session;
+
     private StartView view;
     private BoardView boardView = new BoardView();
     private final String pathToBoard = "/images/Example_Board.png";
 
 
-    public StartPresenter(Game model, StartView view) {
-        this.model = model;
+    public StartPresenter(GameSession session, StartView view) {
+        this.session = session;
+        this.model = session.getModel();
         this.view = view;
         Image boardImage = new Image(pathToBoard);
         new BoardPresenter(model, view.getBoard());
@@ -45,7 +49,7 @@ public class StartPresenter {
         view.getNewGame().setOnAction(event -> {
             ChooseAIView chooseAIView = new ChooseAIView();
             view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView, model);
+            new ChooseAIPresenter(chooseAIView, session);
         });
 
 
