@@ -1,7 +1,6 @@
 package be.kdg.quarto.model;
 
 import be.kdg.quarto.model.strategy.DifficultStrategy;
-import be.kdg.quarto.model.strategy.RandomPlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
@@ -49,10 +48,9 @@ public class Game {
 
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
-
+        gameSession.setWinner(null);
         gameRules = new GameRules(this);
 
-        ai.setStrategy(new RandomPlayingStrategy(tilesToSelect, tilesToPlace));
         if (isAiTurn()) {
             handleAiTurn();
         }
@@ -93,10 +91,10 @@ public class Game {
         return gameRules;
     }
 
-
     public Ai getAi() {
         return ai;
     }
+
 
     private void handleAiTurn() {
         if (currentPlayer == ai) {
@@ -104,32 +102,25 @@ public class Game {
                 //Placing
                 ai.getStrategy().placePiece().setPiece(currentTile.getPiece());//set piece to the chosen tile
                 getCurrentTile().setPiece(null);
-                handleAiTurn();
-                gameRules.setWinner(getCurrentPlayer());
-                this.getPlacedTiles();
                 gameRules.isGameOver();
+                handleAiTurn();
             } else {
                 //Picking
-                try {
-                    getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
-                    getTilesToSelect().getTiles()
-                            .get(getTilesToSelect().getTiles()
-                                    .indexOf(getCurrentTile())).setPiece(null);
-                    if (gameRules.isGameOver()) {
-                        gameRules.setWinner(getCurrentPlayer());
-                        gameSession.setWinner(getCurrentPlayer());
-                    }
 
-                    switchTurns();
-                } catch (NullPointerException e) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game Over");
-                    alert.setHeaderText("There are no pieces to select!");
-                    alert.showAndWait();
+                getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
+                getTilesToSelect().getTiles()
+                        .get(getTilesToSelect().getTiles()
+                                .indexOf(getCurrentTile())).setPiece(null);
+                if (gameRules.isGameOver()) {
+                    gameRules.setWinner(getCurrentPlayer());
+                    gameSession.setWinner(getCurrentPlayer());
                 }
+
+                switchTurns();
             }
         }
     }
+
 
     private boolean isAiTurn() {
         return currentPlayer == ai;

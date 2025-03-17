@@ -75,13 +75,12 @@ public class GamePresenter {
 
 
         view.getSettings().setOnAction(event -> {
-            view.getOverlayContainer().setVisible(true); // Show settings overlay
+            view.getOverlayContainer().setVisible(true);
             new SettingsPresenter(this, view.getSettingsView() , model);
         });
     }
 
     private void updateView() {
-
         //Game Over
         if (model.getGameRules().isGameOver()) {
 

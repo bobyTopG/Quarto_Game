@@ -1,6 +1,8 @@
     package be.kdg.quarto.view.ChooseAIView;
     import be.kdg.quarto.model.Ai;
     import be.kdg.quarto.model.Game;
+    import be.kdg.quarto.model.strategy.DifficultStrategy;
+    import be.kdg.quarto.model.strategy.RandomPlayingStrategy;
     import be.kdg.quarto.view.GameScreen.GamePresenter;
     import be.kdg.quarto.view.GameScreen.GameView;
     import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -63,6 +65,10 @@
                 final int id = count;
                 characterButton.setOnMouseClicked(event -> {
                     view.setSelectedCharacter(id);
+                    if(id  == 0 )
+                            model.getAi().setStrategy(new RandomPlayingStrategy(model.getTilesToSelect() , model.getPlacedTiles()));
+                    else
+                        model.getAi().setStrategy(new DifficultStrategy(model));
                 });
                 count++;
             }

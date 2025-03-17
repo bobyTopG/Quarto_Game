@@ -21,7 +21,6 @@ public class DifficultStrategy implements PlayingStrategy {
 
     @Override
     public Tile selectPiece() {
-
         List<Tile> availableTiles = game.getTilesToSelect().getTiles().stream()
                 .filter(tile -> tile.getPiece() != null)
                 .toList();
@@ -31,6 +30,8 @@ public class DifficultStrategy implements PlayingStrategy {
         }
         return availableTiles.get(new Random().nextInt(availableTiles.size()));
     }
+
+
 
     @Override
     public Tile placePiece() {
@@ -115,6 +116,7 @@ public class DifficultStrategy implements PlayingStrategy {
         }
     }
 
+
     private int evaluateBoard(Game game) {
         if (game.getGameRules().isGameOver()) {
             if (game.getGameRules().getWinner() == game.getAi()) {
@@ -139,6 +141,7 @@ public class DifficultStrategy implements PlayingStrategy {
         return score;
     }
 
+
     private boolean isWinningLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
         Piece[] pieces = new Piece[4];
@@ -147,9 +150,11 @@ public class DifficultStrategy implements PlayingStrategy {
             pieces[i] = tiles.get(startIndex + (i * step)).getPiece();
             if (pieces[i] == null) return false; // Incomplete line
         }
-
         return allSame(pieces, "color") || allSame(pieces, "high") || allSame(pieces, "shape") || allSame(pieces, "fill");
     }
+
+
+
     private int evaluateLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
         Piece[] pieces = new Piece[4];
@@ -171,6 +176,8 @@ public class DifficultStrategy implements PlayingStrategy {
         return score;
     }
 
+
+
     private boolean allSame(Piece[] pieces, String attribute) {
         String v1 = getAttribute(pieces[0], attribute);
         String v2 = getAttribute(pieces[1], attribute);
@@ -179,6 +186,8 @@ public class DifficultStrategy implements PlayingStrategy {
 
         return v1.equals(v2) && v2.equals(v3) && v3.equals(v4);
     }
+
+
 
     private String getAttribute(Piece piece, String attribute) {
         return switch (attribute) {
@@ -189,6 +198,8 @@ public class DifficultStrategy implements PlayingStrategy {
             default -> "";
         };
     }
+
+
 
     private List<Move> getPossibleMoves(Game game) {
         List<Move> moves = new ArrayList<>();
@@ -203,10 +214,12 @@ public class DifficultStrategy implements PlayingStrategy {
         return moves;
     }
 
+
     private void applyMove(Game game, Move move) {
         Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
         tile.setPiece(game.getCurrentTile().getPiece());
     }
+
 
     private void undoMove(Game game, Move move) {
         Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
