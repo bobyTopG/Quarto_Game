@@ -3,9 +3,12 @@ package be.kdg.quarto.view.GameScreen;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+
+import javax.swing.text.View;
 
 public class GamePresenter {
     private final Game model;
@@ -45,7 +48,11 @@ public class GamePresenter {
                 if (model.getSelectedPiece() == null) {
 
                     Piece selectedPiece = model.createPieceFromImageName(pieceView.getPieceImage().getImage().getUrl());
-                    model.pickPiece(selectedPiece, model.getHuman());
+                    if(selectedPiece != null) {
+                        model.pickPiece(selectedPiece, model.getHuman());
+                    }else{
+                        System.out.println("Selected Piece is null!");
+                    }
 
                     updateView();
                 }
@@ -54,9 +61,15 @@ public class GamePresenter {
         view.getQuarto().setOnMouseClicked(event -> {
             model.callQuarto();
         });
+
+        view.getSettings().setOnAction(event -> {
+            view.getOverlayContainer().setVisible(true);
+            new SettingsPresenter(this, view.getSettingsView() , this.model);
+        });
+
     }
 
-    private void updateView() {
+    public void updateView() {
 
         //Updates the current piece
         if (model.getSelectedPiece() != null) {
@@ -112,4 +125,9 @@ public class GamePresenter {
     private String getPieceImage(Piece piece) {
         return String.format("/images/pieces/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
     }
+
+    public GameView getView() {
+        return view;
+    }
+
 }

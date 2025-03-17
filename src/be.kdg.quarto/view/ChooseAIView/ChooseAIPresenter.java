@@ -48,7 +48,7 @@
             addEventListenersForAICharacterButtons();
 
             view.getBackButton().setOnMouseClicked(event -> {
-                StartView startView = new StartView(uiSettings);
+                StartView startView = new StartView();
                 view.getScene().setRoot(startView);
                 new StartPresenter(startView);
             });
@@ -56,7 +56,7 @@
             view.getSelectButton().setOnMouseClicked(event -> {
                 GameView gameView = new GameView();
                 view.getScene().setRoot(gameView);
-                new GamePresenter(new Game(new Human("Example","98eu98u2e198"), aiSelected), gameView);
+                new GamePresenter(new Game(new Human("Sample Player","98eu98u2e198"), aiSelected), gameView);
             });
         }
         private void addEventListenersForAICharacterButtons(){

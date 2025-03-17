@@ -18,22 +18,19 @@ public class StartView extends BorderPane {
     private Label label;
     private Button newGame, continueButton, leaderBoard, statistics, quit;
     private HBox mainHBox;
-    private BoardView board;
     private UiSettings settings;
 
     private static final int BUTTON_SPACING = 20;
     private static final int VBOX_LEFT_PADDING = 70;
     private static final int VBOX_TOP_PADDING = 10;
     private static final int VBOX_BOTTOM_PADDING = 20;
-    public StartView(UiSettings settings) {
-        this.settings = settings;
+    public StartView() {
         initialiseNodes();
         layoutNodes();
     }
     //private static final String FONT_FILE = "/fonts/berlin.ttf"; // Relative path
 
     private void initialiseNodes() {
-        board = new BoardView();
         label = CreateHelper.createLabel("Quarto!", "main-title");
         label.setFont(FontHelper.getExtraLargeFont());
 
@@ -59,9 +56,7 @@ public class StartView extends BorderPane {
     }
 
     // Getters
-    public BoardView getBoard() {
-        return board;
-    }
+
 
     public void loadBoardImage(Image boardImage) {
         StackPane stackPane = new StackPane();
