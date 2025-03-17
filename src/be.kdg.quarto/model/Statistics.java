@@ -28,18 +28,6 @@ public class Statistics {
         return winnerId;
     }
 
-    private int getTotalMoves() {
-        return totalMoves;
-    }
-
-    private String getTotalTime() {
-        return totalTime;
-    }
-
-    private float getAverageTime() {
-        return averageTime;
-    }
-
     public String getGeneralStatistics() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGeneralStatistics())) {
             ps.setInt(1, gameSessionIdTemp);
@@ -54,7 +42,6 @@ public class Statistics {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-//        System.out.println(winnerId + " " + totalMoves + " " + totalTime + " " + averageTime);
 
         return (playerIdTemp == winnerId ? "Wow, congrats!" : "Better luck next time!") +
                 "\nTotal moves: " + totalMoves +
