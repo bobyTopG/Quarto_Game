@@ -6,15 +6,16 @@ import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
-import javafx.scene.control.Alert;
+import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class Game {
     private final Ai ai;
     private final Human human;
-    private final GameSession gameSession;
+    private GameSession gameSession;
     private Player currentPlayer;
     private Move currentMove;
     private int numberOfMoves = 1;
@@ -24,7 +25,7 @@ public class Game {
     private final Board board;
     private Piece selectedPiece;
 
-    private GameRules gameRules = new GameRules();
+    private final GameRules gameRules = new GameRules();
 
     public Game() {
         this(new Human("Me", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
@@ -33,18 +34,26 @@ public class Game {
     public Game(Human human, Ai ai) {
         this.human = human;
         this.ai = ai;
+
         this.piecesToSelect = new Board();
         this.board = new Board();
         piecesToSelect.generateAllPieces();
         board.createEmptyBoard();
+        this.gameSession = new GameSession(human, ai, this);
+        this.currentPlayer = getRandomPlayer();
 
-        this.gameSession = new GameSession(human, ai);
-        this.currentPlayer = ai;
-        ai.setStrategy(new RandomPlayingStrategy(piecesToSelect, board));
+
+        ai.getStrategy().fillNecessaryData(this);
 
         if (isAiTurn()) {
             handleAiTurn();
         }
+
+    }
+    public Player getRandomPlayer(){
+        int rand =  new Random().nextInt(2);
+
+        return rand == 1 ? human : ai;
     }
     public Player callQuarto(){
          if(gameRules.checkWin(board, gameSession.getMoves())){
@@ -52,7 +61,6 @@ public class Game {
              CreateHelper.createAlert( "Game Over", currentPlayer.getName() + " Has won the game!","Game Win");
              return currentPlayer;
          }
-        System.out.println("No one won yet :(");
          return null;
     }
     public Piece createPieceFromImageName(String path) {
@@ -93,7 +101,7 @@ public class Game {
                 //Placing
                 placePiece(ai.getStrategy().selectTile(), ai);
                 if(ai.getStrategy().isCallingQuarto())
-                    callQuarto();
+                   gameSession.SetWinner(callQuarto());
                 //after placing piece -> pick piece
                 handleAiTurn();
 
@@ -132,6 +140,30 @@ public class Game {
         gameSession.addMove(currentMove);
         numberOfMoves++;
     }
+    public void restartGame() {
+        // Reset core game state
+        setSelectedPiece(null);
+        getBoard().createEmptyBoard(); // Clear placed tiles
+        getPiecesToSelect().generateAllPieces(); // Regenerate all pieces
+
+        // Reset game session
+        this.gameSession = new GameSession(human, ai, this); // Reset the game session
+
+        // Reset player turns
+        this.currentPlayer = getRandomPlayer(); // Randomize starting player
+
+        // Reset move counters
+        this.numberOfMoves = 1;
+        this.currentMove = null;
+
+        // Reset AI strategy
+        ai.getStrategy().fillNecessaryData(this);
+
+        // Start AI turn if necessary
+        if (isAiTurn()) {
+            handleAiTurn();
+        }
+    }
     public void endMove(Player player){
         if(currentMove !=null){
             currentMove.setSelectedPiece(getSelectedPiece());
@@ -162,7 +194,9 @@ public class Game {
     public Player getHuman() {
         return human;
     }
-
+    public Player getAI(){
+        return ai;
+    }
     public Piece getSelectedPiece() {
         return selectedPiece;
     }
@@ -174,7 +208,8 @@ public class Game {
         this.selectedPiece = selectedPiece;
     }
 
-    public GameRules getGameRules(){
-        return gameRules;
+
+    public GameSession getGameSession(){
+        return gameSession;
     }
 }

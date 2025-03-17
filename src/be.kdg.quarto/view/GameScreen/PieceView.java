@@ -25,7 +25,9 @@ public class PieceView extends StackPane {
     public void setPieceImage(ImageView pieceImage) {
         this.pieceImage = pieceImage;
     }
-
+    public void clearPiece() {
+        this.getPieceImage().setImage(null);
+    }
     public PieceView() {
         initialiseNodes();
         layoutNodes();

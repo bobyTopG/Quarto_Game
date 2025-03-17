@@ -1,22 +1,19 @@
 package be.kdg.quarto;
 
-import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.UiSettings;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import be.kdg.quarto.model.Game;
 
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         UiSettings uiSettings = new UiSettings();
-        StartView view = new StartView(uiSettings);
+        StartView view = new StartView();
 
         Scene scene = new Scene(view);
         loadStyleSheets(scene);

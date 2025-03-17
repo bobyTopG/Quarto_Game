@@ -5,20 +5,23 @@ import java.util.Date;
 import java.util.List;
 
 public class GameSession {
+    private Game model;
     private Player winner;
     private final Player player1;
     private final Player player2;
     private final List<Move> moves;
-    private Date startTime;
+    private final Date startTime;
     private Date endTime;
 
-    public GameSession(Player player1, Player player2) {
+    public GameSession(Player player1, Player player2, Game model) {
        this.player1 = player1;
        this.player2 = player2;
-       moves = new ArrayList<>();
-
-       startTime = new Date();
+       this.moves = new ArrayList<>();
+       this.model = model;
+       this.startTime = new Date();
     }
+
+
 
     public Player getOtherPlayer(Player currentPlayer) {
         if (currentPlayer.equals(player1)) return player2;
@@ -47,4 +50,21 @@ public class GameSession {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+
+    public Game getModel() {
+        return model;
+    }
+
+    public boolean isGameOver(){
+        return winner == null;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void SetWinner(Player winner) {
+        this.winner = winner;
+    }
+
 }
