@@ -49,6 +49,7 @@ public class GamePresenter {
                     session.getModel().getCurrentTile().setPiece(null);
                     updateView();
                     session.getModel().getGameRules().isGameOver();
+                    session.getModel().getGameRules().setWinner(session.getCurrentPlayer());
                 }));
 
         //Pick

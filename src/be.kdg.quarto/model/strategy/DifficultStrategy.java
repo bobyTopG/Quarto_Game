@@ -1,8 +1,5 @@
 package be.kdg.quarto.model.strategy;
 
-
-
-
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Move;
@@ -15,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DifficultStrategy implements PlayingStrategy {
-    private static final int MAX_DEPTH = 6;
+    private static final int MAX_DEPTH = 2;
     private final Game game;
     private GameSession session;
 
@@ -56,7 +53,6 @@ public class DifficultStrategy implements PlayingStrategy {
         if (game.getGameRules().isGameOver()) {
             return null; // AI should not play after winning
         }
-
         int bestScore = Integer.MIN_VALUE;
         Move bestMove = null;
 
