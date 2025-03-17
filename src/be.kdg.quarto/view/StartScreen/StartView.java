@@ -76,6 +76,10 @@ public class StartView extends BorderPane {
         return newGame;
     }
 
+    public Button getContinueButton() {
+        return continueButton;
+    }
+
     public Button getStatistics() {
         return statistics;
     }

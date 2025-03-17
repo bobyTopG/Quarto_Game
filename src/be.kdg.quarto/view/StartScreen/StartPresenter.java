@@ -11,6 +11,10 @@ import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
 import be.kdg.quarto.view.StatisticsView.StatisticsView;
+import be.kdg.quarto.view.auth.LoginView.LoginPresenter;
+import be.kdg.quarto.view.auth.LoginView.LoginView;
+import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
+import be.kdg.quarto.view.auth.RegisterView.RegisterView;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -43,9 +47,15 @@ public class StartPresenter {
         view.getNewGame().setOnAction(event -> {
 
 
-            ChooseAIView chooseAIView = new ChooseAIView();
-            view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView);
+            RegisterView registerView = new RegisterView();
+            view.getScene().setRoot(registerView);
+            new RegisterPresenter(registerView);
+        });
+
+        view.getContinueButton().setOnAction(event -> {
+            LoginView loginView = new LoginView();
+            view.getScene().setRoot(loginView);
+            new LoginPresenter(loginView);
         });
 
 
