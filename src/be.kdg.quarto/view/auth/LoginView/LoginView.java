@@ -29,26 +29,30 @@ public class LoginView extends BorderPane {
 
     private void initialiseNodes() {
         loginLabel = CreateHelper.createLabel("Login", "main-title");
-        loginLabel.setFont(FontHelper.getLargeFont());
 
         usernameTextField = new TextField();
         usernameTextField.setPromptText("Username");
+        usernameTextField.getStyleClass().addAll("default-button", "white-text-field");
+
         passwordTextField = new PasswordField();
         passwordTextField.setPromptText("Password");
-        usernameTextField.setFont(FontHelper.getMediumFont());
-        passwordTextField.setFont(FontHelper.getMediumFont());
+        passwordTextField.getStyleClass().addAll("default-button", "white-text-field");
 
         loginButton = CreateHelper.createButton("Login", new String[] {"green-button", "default-button"});
         backButton = CreateHelper.createButton("Back", new String[] {"red-button", "default-button"});
-
         this.setTop(loginLabel);
     }
 
     private void layoutNodes() {
-        VBox vbox = CreateHelper.createVBox("login-main-vbox");
-        vbox.getChildren().addAll(loginLabel, usernameTextField, passwordTextField, loginButton, backButton);
-        vbox.setAlignment(Pos.CENTER);
+        HBox buttonHBox = CreateHelper.createHBox("login-button-hbox");
+        buttonHBox.getChildren().addAll(loginButton, backButton);
+        buttonHBox.setAlignment(Pos.CENTER);
+        buttonHBox.setSpacing(10);
 
+        VBox vbox = CreateHelper.createVBox("login-main-vbox");
+        vbox.getChildren().addAll(loginLabel, usernameTextField, passwordTextField, buttonHBox);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
 
         mainHBox = CreateHelper.createHBox("login-main-hbox");
         mainHBox.getChildren().addAll(vbox);
