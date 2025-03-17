@@ -29,11 +29,6 @@ public class BoardView extends Pane {
         initialiseNodes();
         layoutNodes();
     }
-    public void clearBoard() {
-        this.getChildren().clear();
-        initialiseNodes();
-        layoutNodes();
-    }
 
     private void createBoardSpaces() {
         for (int i = 0; i < 4; i++) {

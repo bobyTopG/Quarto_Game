@@ -31,9 +31,13 @@ public class Game {
         this(new Human("Me", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
     }
 
-    public Game(Human human, Ai ai) {
-        this.human = human;
-        this.ai = ai;
+    public Game(Player human, Player ai) {
+
+        if (!(human instanceof Human) || !(ai instanceof Ai)) {
+            throw new IllegalArgumentException("Game must be initialized with Human and Ai player types");
+        }
+        this.human = (Human) human;
+        this.ai = (Ai) ai;
 
         this.piecesToSelect = new Board();
         this.board = new Board();
@@ -43,7 +47,7 @@ public class Game {
         this.currentPlayer = getRandomPlayer();
 
 
-        ai.getStrategy().fillNecessaryData(this);
+        this.ai.getStrategy().fillNecessaryData(this);
 
         if (isAiTurn()) {
             handleAiTurn();
@@ -139,30 +143,6 @@ public class Game {
         currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, getStartTimeForMove());
         gameSession.addMove(currentMove);
         numberOfMoves++;
-    }
-    public void restartGame() {
-        // Reset core game state
-        setSelectedPiece(null);
-        getBoard().createEmptyBoard(); // Clear placed tiles
-        getPiecesToSelect().generateAllPieces(); // Regenerate all pieces
-
-        // Reset game session
-        this.gameSession = new GameSession(human, ai, this); // Reset the game session
-
-        // Reset player turns
-        this.currentPlayer = getRandomPlayer(); // Randomize starting player
-
-        // Reset move counters
-        this.numberOfMoves = 1;
-        this.currentMove = null;
-
-        // Reset AI strategy
-        ai.getStrategy().fillNecessaryData(this);
-
-        // Start AI turn if necessary
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
     }
     public void endMove(Player player){
         if(currentMove !=null){

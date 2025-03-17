@@ -1,4 +1,4 @@
-package be.kdg.quarto;
+package be.kdg.quarto.helpers;
 
 import be.kdg.quarto.model.Player;
 

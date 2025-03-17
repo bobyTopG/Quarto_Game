@@ -4,9 +4,11 @@ import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
+import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.GameScreen.PieceView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
+import javafx.application.Platform;
 
 public class SettingsPresenter {
     private GamePresenter gamePresenter;
@@ -24,11 +26,18 @@ public class SettingsPresenter {
 
     private void addEventHandlers() {
         view.getRestartButton().setOnAction(event -> {
-            //todo: make this to work
-            model.restartGame();
-            gamePresenter.getView().getBoard().clearBoard(); // Clear the existing BoardView
-            gamePresenter.updateView();
+            // Close the settings overlay
             closeSettings();
+            // Create a new Game instance with the same players from the current game
+            Game newGame = new Game(model.getHuman(), model.getAI());
+            // Create a new view (this will properly initialize all UI components)
+            GameView newView = new GameView();
+
+            // Replace the entire scene root with the new view
+            view.getScene().setRoot(newView);
+
+            // Create a new presenter with the new model and new view
+            new GamePresenter(newGame, newView);
         });
 
         view.getResumeButton().setOnAction(event -> {
@@ -36,7 +45,7 @@ public class SettingsPresenter {
         });
 
         view.getExitButton().setOnAction(event -> {
-            model.restartGame();
+            //model.restartGame();
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
@@ -44,6 +53,7 @@ public class SettingsPresenter {
     }
 
     private void updateView() {
+        // You can add any view updates here if needed
     }
 
     private void closeSettings() {

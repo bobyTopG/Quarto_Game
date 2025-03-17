@@ -56,7 +56,7 @@ public class GameSession {
     }
 
     public boolean isGameOver(){
-        return winner == null;
+        return winner != null;
     }
 
     public Player getWinner() {

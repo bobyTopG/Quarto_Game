@@ -16,23 +16,17 @@ public class MiniMaxStrategy implements PlayingStrategy {
     private static final int MAX_DEPTH = 4;
     private Game game;
     private Player strategyAI;
-    public MiniMaxStrategy(){
 
+    public MiniMaxStrategy() {
     }
+
     public void fillNecessaryData(Game game) {
         this.game = game;
-        this.strategyAI =  game.getAI();
-
+        this.strategyAI = game.getAI();
     }
-
-
 
     @Override
     public Piece selectPiece() {
-       return selectRandomPiece();
-    }
-
-    private Piece selectRandomPiece() {
         List<Tile> availableTiles = game.getPiecesToSelect().getTiles().stream()
                 .filter(tile -> tile.getPiece() != null)
                 .toList();
@@ -40,15 +34,87 @@ public class MiniMaxStrategy implements PlayingStrategy {
         if (availableTiles.isEmpty()) {
             return null;
         }
-        return availableTiles.get(new Random().nextInt(availableTiles.size())).getPiece();
+
+        Tile bestTile = null;
+        int lowestOpponentScore = Integer.MAX_VALUE;
+        List<Tile> safeTiles = new ArrayList<>();
+
+        // Avoid selecting a piece that allows the opponent to win
+        for (Tile tile : availableTiles) {
+            applyTemporarySelection(tile);
+            if (opponentCanWin()) {
+                undoTemporarySelection();
+                System.out.println("Avoiding " + tile.getPiece());
+                continue; // Skip this piece to prevent the opponent from winning
+            }
+            safeTiles.add(tile);
+            undoTemporarySelection();
+        }
+
+        // If all pieces are dangerous, return any to continue the game
+        if (safeTiles.isEmpty()) {
+            return availableTiles.get(new Random().nextInt(availableTiles.size())).getPiece();
+        }
+
+        // Choose the piece that minimizes the opponent's best move
+        for (Tile tile : safeTiles) {
+            applyTemporarySelection(tile);
+            int opponentScore = evaluateOpponentOptions();
+            undoTemporarySelection();
+
+            if (opponentScore < lowestOpponentScore) {
+                lowestOpponentScore = opponentScore;
+                bestTile = tile;
+            }
+        }
+
+        if (bestTile != null) {
+            return bestTile.getPiece(); // Choose the piece that gives the opponent the worst position
+        }
+
+        // If no good piece is found, select randomly from safe options
+        Tile randomTile = safeTiles.get(new Random().nextInt(safeTiles.size()));
+        return randomTile.getPiece();
     }
 
+    private void applyTemporarySelection(Tile tile) {
+        // Store the current selected piece temporarily
+        game.setSelectedPiece(tile.getPiece());
+    }
+
+    private void undoTemporarySelection() {
+        // Restore the previous state
+        game.setSelectedPiece(null);
+    }
+
+    private boolean opponentCanWin() {
+        for (StrategyMove move : getPossibleMoves(game)) {
+            applyMove(game, move);
+            boolean wins = game.getGameSession().isGameOver();
+            undoMove(game, move);
+            if (wins) {
+                System.out.println("!Opponent has a winning move!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int evaluateOpponentOptions() {
+        int bestScore = Integer.MIN_VALUE;
+        for (StrategyMove move : getPossibleMoves(game)) {
+            applyMove(game, move);
+            int score = minimax(game, 1, false); // Check one depth level ahead
+            undoMove(game, move);
+            bestScore = Math.max(bestScore, score);
+        }
+        return bestScore;
+    }
 
     @Override
     public Tile selectTile() {
-       StrategyMove bestMove = getBestMove(game);
+        StrategyMove bestMove = getBestMove(game);
         if (bestMove == null) {
-            //todo: error in here
             return null; // No valid StrategyMove found (should not happen in a normal game)
         }
         return game.getPlacedTiles().getTiles().get(bestMove.getStartY() * 4 + bestMove.getStartX());
@@ -59,7 +125,7 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return "Hard Mode AI";
     }
 
-    public boolean isCallingQuarto(){
+    public boolean isCallingQuarto() {
         return true;
     }
 
@@ -90,7 +156,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
         System.out.println("Best move chosen: " + (bestMove != null ? bestMove.getStartX() + ", " + bestMove.getStartY() : "None") + " with score: " + bestScore);
         return bestMove;
     }
-
 
     private int minimax(Game game, int depth, boolean isMaximizing) {
         if (game.getGameSession().isGameOver()) {
@@ -131,7 +196,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
         }
     }
 
-
     private int evaluateBoard(Game game) {
         if (game.getGameSession().isGameOver()) {
             if (game.getGameSession().getWinner() == strategyAI) {
@@ -156,7 +220,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return score;
     }
 
-
     private boolean isWinningLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
         Piece[] pieces = new Piece[4];
@@ -167,7 +230,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
         }
         return allSame(pieces, "color") || allSame(pieces, "high") || allSame(pieces, "shape") || allSame(pieces, "fill");
     }
-
 
     private int evaluateLine(Board board, int startIndex, int step) {
         List<Tile> tiles = board.getTiles();
@@ -190,8 +252,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return score;
     }
 
-
-
     private boolean allSame(Piece[] pieces, String attribute) {
         String v1 = getAttribute(pieces[0], attribute);
         String v2 = getAttribute(pieces[1], attribute);
@@ -200,8 +260,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
 
         return v1.equals(v2) && v2.equals(v3) && v3.equals(v4);
     }
-
-
 
     private String getAttribute(Piece piece, String attribute) {
         return switch (attribute) {
@@ -212,8 +270,6 @@ public class MiniMaxStrategy implements PlayingStrategy {
             default -> "";
         };
     }
-
-
 
     private List<StrategyMove> getPossibleMoves(Game game) {
         List<StrategyMove> moves = new ArrayList<>();
@@ -228,12 +284,10 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return moves;
     }
 
-
     private void applyMove(Game game, StrategyMove move) {
         Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
         tile.setPiece(game.getSelectedPiece());
     }
-
 
     private void undoMove(Game game, StrategyMove move) {
         Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
