@@ -3,6 +3,8 @@ package be.kdg.quarto.helpers;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.PlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
+import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
+import be.kdg.quarto.model.strategies.RandomPlayingStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,10 @@ public class AICharacters {
     static {
         // Initializing the List
         characters = new ArrayList<>();
-        Ai bobAi = new Ai("Bob", AiLevel.EASY, null,"New to the game, understands \n the basic rules but has \n no other knowledge");
+        Ai bobAi = new Ai("Bob", AiLevel.EASY, new RandomPlayingStrategy(),"New to the game, understands \n the basic rules but has \n no other knowledge");
+        Ai robertAi = new Ai("Robert", AiLevel.HARD, new MiniMaxStrategy(),"Put Description here");
         characters.add(bobAi);
+        characters.add(robertAi);
         // Add more AI characters here...
     }
 

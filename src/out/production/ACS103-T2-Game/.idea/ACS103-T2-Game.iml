@@ -11,5 +11,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="postgresql" level="project" />
     <orderEntry type="library" name="javafx" level="application" />
+    <orderEntry type="library" name="postgresql-42.5.0" level="project" />
   </component>
 </module>

@@ -20,7 +20,7 @@ public class RegisterPresenter {
     UiSettings uiSettings = new UiSettings();
     private void addEventHandlers() {
         view.getBackButton().setOnAction(event -> {
-            StartView startView = new StartView(uiSettings);
+            StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
         });

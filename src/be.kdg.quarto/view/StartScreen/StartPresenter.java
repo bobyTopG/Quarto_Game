@@ -28,13 +28,12 @@ import java.util.Optional;
 public class StartPresenter {
 
     private StartView view;
-    private BoardView boardView = new BoardView();
-    private final String pathToBoard = "/images/Example_Board.png";
 
 
     public StartPresenter(StartView view) {
 
         this.view = view;
+        String pathToBoard = "/images/Example_Board.png";
         Image boardImage = new Image(pathToBoard);
         addEventHandlers();
         updateView();

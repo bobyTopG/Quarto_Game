@@ -2,6 +2,7 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,6 +19,12 @@ public class GameView extends StackPane {
     private SelectPieceView selectView;
     private Label turn, timer;
     private Button quarto,settings;
+    private  StackPane overlayContainer;
+    private  SettingsView settingsView;
+
+
+
+
     private BoardView board;
 
     // Constants for padding, spacing, and styling
@@ -36,6 +43,7 @@ public class GameView extends StackPane {
 
     private void initialiseNodes() {
         selectView = new SelectPieceView();
+        overlayContainer = new StackPane();
         board = new BoardView();
         selectedPiece = new PieceView();
         turn = createLabel("Your Turn", 20, FontWeight.BOLD, Color.WHITE);
@@ -71,6 +79,18 @@ public class GameView extends StackPane {
         vbox2.setSpacing(BUTTON_SPACING);
         vbox2.getChildren().addAll(grid, hbox);
         getChildren().add(vbox2);
+
+
+        overlayContainer.setVisible(false);
+        overlayContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        settingsView = new SettingsView();
+        StackPane.setAlignment(settingsView, Pos.CENTER);
+
+        overlayContainer.getChildren().add(settingsView);
+        this.getChildren().add(overlayContainer);
+
+
     }
 
     // Helper method to create the turn pane with a rounded rectangle background
@@ -83,7 +103,12 @@ public class GameView extends StackPane {
         pane.getChildren().addAll(r, turn);
         return pane;
     }
-
+    public void resetBoard(){
+        board = new BoardView();
+    }
+    public void resetSelectedPiece(){
+        selectedPiece = new PieceView();
+    }
     // Helper method to create a label with specific font and text color
     private Label createLabel(String text, int fontSize, FontWeight fontWeight, Color textColor) {
         Label label = new Label(text);
@@ -95,6 +120,8 @@ public class GameView extends StackPane {
     public SelectPieceView getSelectView() {
         return selectView;
     }
+    public StackPane getOverlayContainer() { return overlayContainer; }
+
 
     public BoardView getBoard() {
         return board;
@@ -110,4 +137,11 @@ public class GameView extends StackPane {
     public Button getQuarto() {
         return quarto;
     }
+    public SettingsView getSettingsView() { return settingsView; }
+
+
+    public Button getSettings() {
+        return settings;
+    }
+
 }

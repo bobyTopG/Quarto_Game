@@ -16,6 +16,7 @@ public class RegisterView extends BorderPane {
     private Label registerLabel;
     private TextField usernameTextField;
     private PasswordField passwordTextField;
+    private PasswordField confirmPasswordTextField;
     private Button registerButton;
     private Button continueAsGuestButton;
     private Button backButton;
@@ -34,10 +35,15 @@ public class RegisterView extends BorderPane {
 
         usernameTextField = new TextField();
         usernameTextField.setPromptText("Username");
+        usernameTextField.getStyleClass().addAll("default-button", "white-text-field");
+
         passwordTextField = new PasswordField();
         passwordTextField.setPromptText("Password");
-        usernameTextField.setFont(FontHelper.getMediumFont());
-        passwordTextField.setFont(FontHelper.getMediumFont());
+        passwordTextField.getStyleClass().addAll("default-button", "white-text-field");
+
+        confirmPasswordTextField = new PasswordField();
+        confirmPasswordTextField.setPromptText("Confirm Password");
+        confirmPasswordTextField.getStyleClass().addAll("default-button", "white-text-field");
 
         registerButton = CreateHelper.createButton("Register", new String[] {"green-button", "default-button"});
         continueAsGuestButton = CreateHelper.createButton("Continue as Guest", new String[] {"orange-button", "default-button"});
@@ -47,8 +53,15 @@ public class RegisterView extends BorderPane {
     }
 
     private void layoutNodes() {
+
+        HBox buttonHBox = CreateHelper.createHBox("login-button-hbox");
+        buttonHBox.getChildren().addAll(registerButton, backButton);
+        buttonHBox.setAlignment(Pos.CENTER);
+        buttonHBox.setSpacing(10);
+
         VBox vbox = CreateHelper.createVBox("login-main-vbox");
-        vbox.getChildren().addAll(registerLabel, usernameTextField, passwordTextField, registerButton, continueAsGuestButton, backButton);
+        vbox.getChildren().addAll(registerLabel, usernameTextField, passwordTextField, confirmPasswordTextField, buttonHBox, continueAsGuestButton);
+        vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
 
 
