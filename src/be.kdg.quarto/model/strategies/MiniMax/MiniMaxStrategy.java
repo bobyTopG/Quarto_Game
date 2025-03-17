@@ -2,7 +2,6 @@ package be.kdg.quarto.model.strategies.MiniMax;
 
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
-import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.model.PlayingStrategy;
@@ -264,7 +263,7 @@ public class MiniMaxStrategy implements PlayingStrategy {
     private String getAttribute(Piece piece, String attribute) {
         return switch (attribute) {
             case "color" -> piece.getColor().toString();
-            case "high" -> piece.getHeight().toString();
+            case "high" -> piece.getSize().toString();
             case "shape" -> piece.getShape().toString();
             case "fill" -> piece.getFill().toString();
             default -> "";

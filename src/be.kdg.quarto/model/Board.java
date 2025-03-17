@@ -2,7 +2,7 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.enums.Height;
+import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.enums.Shape;
 
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ public class Board {
 
     public void generateAllPieces() {
         for (Color color : Color.values()) {
-            for (Height height : Height.values()) {
+            for (Size size : Size.values()) {
                 for (Fill fill : Fill.values()) {
                     for (Shape shape : Shape.values()) {
-                        tiles.add(new Tile(new Piece(color, height, fill, shape)));
+                        tiles.add(new Tile(new Piece(color, size, fill, shape)));
                     }
                 }
             }

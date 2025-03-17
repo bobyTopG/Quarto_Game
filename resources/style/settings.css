@@ -1,0 +1,21 @@
+/* Settings Screen Styling */
+.settings-screen {
+    -fx-background-color: #ffe38c;
+    -fx-border-color: #ffa55d; /* Brownish color */
+    -fx-border-radius: 20px;
+    -fx-background-radius: 30px;
+    -fx-border-width: 10px;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+}
+
+/* Paused Label Styling */
+.paused-label {
+    -fx-text-fill: #ffa55d;
+    -fx-effect: dropshadow(three-pass-box, rgb(46, 46, 46), 0, 1.0, 6, 3);
+    -fx-border-width: 10px;
+    -fx-alignment: center;
+    -fx-padding: 20px 0 40px 0;
+}
+

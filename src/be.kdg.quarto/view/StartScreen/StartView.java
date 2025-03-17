@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.StartScreen;
 
+import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.view.BoardView.BoardView;
@@ -34,8 +35,8 @@ public class StartView extends BorderPane {
         label = CreateHelper.createLabel("Quarto!", "main-title");
         label.setFont(FontHelper.getExtraLargeFont());
 
-        newGame = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
-        continueButton = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
+        newGame = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "New Game" : "Register",  new String[]{"green-button", "default-button"});
+        continueButton = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "Continue" : "Login", new String[]{"orange-button", "default-button"});
         leaderBoard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
         statistics = CreateHelper.createButton("Statistics", new String[]{"blue-button", "default-button"});
         quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});

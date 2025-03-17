@@ -1,4 +1,5 @@
     package be.kdg.quarto.view.ChooseAIView;
+    import be.kdg.quarto.helpers.Auth.AuthHelper;
     import be.kdg.quarto.model.Ai;
     import be.kdg.quarto.model.Game;
     import be.kdg.quarto.model.Human;
@@ -56,7 +57,7 @@
             view.getSelectButton().setOnMouseClicked(event -> {
                 GameView gameView = new GameView();
                 view.getScene().setRoot(gameView);
-                new GamePresenter(new Game(new Human("Sample Player","98eu98u2e198"), aiSelected), gameView);
+                new GamePresenter(new Game(AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : new Human("Guest", null), aiSelected), gameView);
             });
         }
         private void addEventListenersForAICharacterButtons(){

@@ -1,12 +1,10 @@
 package be.kdg.quarto.model;
 
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.model.enums.Color;
-import be.kdg.quarto.model.enums.Height;
+import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 
 import java.util.Date;
 import java.util.List;
@@ -26,10 +24,6 @@ public class Game {
     private Piece selectedPiece;
 
     private final GameRules gameRules = new GameRules();
-
-    public Game() {
-        this(new Human("Me", "secretPassword"), new Ai("Open Ai", AiLevel.HARD, null, "Description"));
-    }
 
     public Game(Player human, Player ai) {
 
@@ -76,7 +70,7 @@ public class Game {
         try {
             return new Piece(
                     Color.valueOf(parts[2].toUpperCase()),
-                    Height.valueOf(parts[3].toUpperCase()),
+                    Size.valueOf(parts[3].toUpperCase()),
                     Fill.valueOf(parts[0].toUpperCase()),
                     Shape.valueOf(parts[1].toUpperCase())
             );

@@ -16,7 +16,7 @@ public class AICharacters {
         // Initializing the List
         characters = new ArrayList<>();
         Ai bobAi = new Ai("Bob", AiLevel.EASY, new RandomPlayingStrategy(),"New to the game, understands \n the basic rules but has \n no other knowledge");
-        Ai robertAi = new Ai("Robert", AiLevel.HARD, new MiniMaxStrategy(),"Put Description here");
+        Ai robertAi = new Ai("Robert", AiLevel.HARD, new MiniMaxStrategy(),"A robot specifically designed \n to beat you at the game.");
         characters.add(bobAi);
         characters.add(robertAi);
         // Add more AI characters here...

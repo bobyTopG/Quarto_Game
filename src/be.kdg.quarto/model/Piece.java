@@ -2,14 +2,14 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.enums.Height;
+import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.enums.Shape;
 
 import java.util.Objects;
 
 public class Piece {
     private  Color color;
-    private  Height height;
+    private Size size;
     private  Fill fill;
     private  Shape shape;
 
@@ -18,18 +18,18 @@ public class Piece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Piece piece = (Piece) o;
-        return color == piece.color && height == piece.height && fill == piece.fill && shape == piece.shape;
+        return color == piece.color && size == piece.size && fill == piece.fill && shape == piece.shape;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, height, fill, shape);
+        return Objects.hash(color, size, fill, shape);
     }
 
 
-    public Piece(Color color, Height height, Fill fill, Shape shape) {
+    public Piece(Color color, Size size, Fill fill, Shape shape) {
         this.color = color;
-        this.height = height;
+        this.size = size;
         this.fill = fill;
         this.shape = shape;
     }
@@ -38,8 +38,8 @@ public class Piece {
         return color;
     }
 
-    public Height getHeight() {
-        return height;
+    public Size getSize() {
+        return size;
     }
 
     public Fill getFill() {
@@ -52,6 +52,6 @@ public class Piece {
 
     @Override
     public String toString() {
-        return color + " " + height + " " + fill + " " + shape;
+        return color + " " + size + " " + fill + " " + shape;
     }
 }

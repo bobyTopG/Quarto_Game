@@ -2,10 +2,7 @@ package be.kdg.quarto.view.auth.RegisterView;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.helpers.CreateHelper;
@@ -87,4 +84,12 @@ public class RegisterView extends BorderPane {
     public Button getBackButton() {
         return backButton;
     }
+
+    public ButtonBase getRegisterButton() {
+        return  registerButton;
+    }
+    public PasswordField getConfirmPasswordTextField() {
+        return confirmPasswordTextField;
+    }
+
 }

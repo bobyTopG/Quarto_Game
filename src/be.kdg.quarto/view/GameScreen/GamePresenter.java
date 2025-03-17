@@ -2,18 +2,22 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-import javax.swing.text.View;
-
 public class GamePresenter {
     private final Game model;
     private final GameView view;
 
+    // Constants for piece sizes
+    private static final double SMALL_PIECE_SIZE = 23.0;
+    private static final double REGULAR_PIECE_SIZE = 30.0;
+    private static final double SELECT_SMALL_PIECE_SIZE = 25.0;
+    private static final double SELECT_REGULAR_PIECE_SIZE = 35.0;
 
     public GamePresenter(Game model, GameView view) {
         this.model = model;
@@ -74,8 +78,15 @@ public class GamePresenter {
         //Updates the current piece
         if (model.getSelectedPiece() != null) {
             view.getSelectedPiece().getPieceRect().setFill(Color.WHITE);
-            view.getSelectedPiece().getPieceImage().setImage
-                    (new Image(getPieceImage(model.getSelectedPiece())));
+
+            // Create image with proper sizing for selected piece
+            Image pieceImage = new Image(getPieceImage(model.getSelectedPiece()));
+            view.getSelectedPiece().getPieceImage().setImage(pieceImage);
+
+            // Apply size based on piece properties
+            boolean isSmall = model.getSelectedPiece().getSize() == Size.SMALL;
+            view.getSelectedPiece().getPieceImage().setFitHeight(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
+            view.getSelectedPiece().getPieceImage().setFitWidth(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
         }
 
 
@@ -83,8 +94,13 @@ public class GamePresenter {
         for (int i = 0; i < model.getPiecesToSelect().getTiles().size(); i++) {
             if (model.getPiecesToSelect().getTiles().get(i).getPiece() != null) {
                 Piece piece = model.getPiecesToSelect().getTiles().get(i).getPiece();
-                view.getSelectView().getPieceViews().get(i)
-                        .getPieceImage().setImage(new Image(getPieceImage(piece)));
+                Image pieceImage = new Image(getPieceImage(piece));
+                view.getSelectView().getPieceViews().get(i).getPieceImage().setImage(pieceImage);
+
+                // Apply size based on piece properties
+                boolean isSmall = piece.getSize() == Size.SMALL;
+                view.getSelectView().getPieceViews().get(i).getPieceImage().setFitHeight(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
+                view.getSelectView().getPieceViews().get(i).getPieceImage().setFitWidth(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
             }
             else {
                 view.getSelectView().getPieceViews().get(i).getPieceImage().setImage(null);
@@ -94,14 +110,21 @@ public class GamePresenter {
 
         //Updates playing board
         for (int i = 0; i < view.getBoard().getSpaceViews().size(); i++) {
-            if (model.getPlacedTiles().getTiles().get(i).getPiece() != null) {
-                ImageView imageView =
-                        new ImageView(getPieceImage(model.getPlacedTiles().getTiles().get(i).getPiece()));
-                imageView.setFitHeight(30);
-                imageView.setFitWidth(30);
+            // Clear previous pieces
+            if (view.getBoard().getSpaceViews().get(i).getChildren().size() > 1) {
+                view.getBoard().getSpaceViews().get(i).getChildren().remove(1);
+            }
 
-                view.getBoard().getSpaceViews().get(i)
-                        .getChildren().add(imageView);
+            if (model.getPlacedTiles().getTiles().get(i).getPiece() != null) {
+                Piece piece = model.getPlacedTiles().getTiles().get(i).getPiece();
+                ImageView imageView = new ImageView(getPieceImage(piece));
+
+                // Apply size based on piece properties
+                boolean isSmall = piece.getSize() == Size.SMALL;
+                imageView.setFitHeight(isSmall ? SMALL_PIECE_SIZE : REGULAR_PIECE_SIZE);
+                imageView.setFitWidth(isSmall ? SMALL_PIECE_SIZE : REGULAR_PIECE_SIZE);
+
+                view.getBoard().getSpaceViews().get(i).getChildren().add(imageView);
             }
         }
 
@@ -123,7 +146,7 @@ public class GamePresenter {
 
 
     private String getPieceImage(Piece piece) {
-        return String.format("/images/pieces/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getHeight());
+        return String.format("/images/pieces/%s_%s_%s_%s.PNG", piece.getFill(), piece.getShape(), piece.getColor(), piece.getSize());
     }
 
     public GameView getView() {

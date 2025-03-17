@@ -83,7 +83,7 @@ public class GameRules {
     private boolean piecesAreRelated(Piece piece1, Piece piece2, Piece piece3, Piece piece4) {
         return     (piece1.getColor() == piece2.getColor() && piece2.getColor() == piece3.getColor() && piece3.getColor() == piece4.getColor())
                 || (piece1.getFill() == piece2.getFill() && piece2.getFill() == piece3.getFill() && piece3.getFill() == piece4.getFill())
-                || (piece1.getHeight() == piece2.getHeight() && piece2.getHeight() == piece3.getHeight() && piece3.getHeight() == piece4.getHeight())
+                || (piece1.getSize() == piece2.getSize() && piece2.getSize() == piece3.getSize() && piece3.getSize() == piece4.getSize())
                 || (piece1.getShape() == piece2.getShape() && piece2.getShape() == piece3.getShape() && piece3.getShape() == piece4.getShape());
     }
     private boolean pieceHasBeenPlayedInThisOrLastMove(Piece piece1, Piece piece2, Piece piece3, Piece piece4, Piece lastPiecePlaced, Piece beforeLastPiecePlaced) {

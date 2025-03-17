@@ -1,5 +1,7 @@
 package be.kdg.quarto.view.StartScreen;
 
+import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Statistics;
@@ -22,41 +24,51 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
+import java.sql.Connection;
 import java.util.Optional;
 
 public class StartPresenter {
 
     private StartView view;
 
-
     public StartPresenter(StartView view) {
-
         this.view = view;
+
         String pathToBoard = "/images/Example_Board.png";
         Image boardImage = new Image(pathToBoard);
         addEventHandlers();
         updateView();
         view.loadBoardImage(boardImage);
-
-
     }
 
     private void addEventHandlers() {
+        // "New Game" button handler
         view.getNewGame().setOnAction(event -> {
-
-
-            RegisterView registerView = new RegisterView();
-            view.getScene().setRoot(registerView);
-            new RegisterPresenter(registerView);
+            // Check if user is already logged in
+            if (AuthHelper.isLoggedIn()) {
+                // User is logged in, go directly to Choose AI screen
+                goToChooseAIScreen();
+            } else {
+                // User is not logged in, go to Register screen
+                RegisterView registerView = new RegisterView();
+                view.getScene().setRoot(registerView);
+                new RegisterPresenter(registerView);
+            }
         });
 
+        // "Continue" button handler
         view.getContinueButton().setOnAction(event -> {
-            LoginView loginView = new LoginView();
-            view.getScene().setRoot(loginView);
-            new LoginPresenter(loginView);
+            // Check if user is already logged in
+            if (AuthHelper.isLoggedIn()) {
+                // User is logged in, go directly to Choose AI screen
+                goToChooseAIScreen();
+            } else {
+                // User is not logged in, go to Login screen
+                LoginView loginView = new LoginView();
+                view.getScene().setRoot(loginView);
+                new LoginPresenter(loginView);
+            }
         });
-
 
         view.getStatistics().setOnAction(event -> {
             StatisticsView statsView = new StatisticsView();
@@ -72,7 +84,6 @@ public class StartPresenter {
             statsStage.setHeight(400);
             statsStage.setResizable(false);
 
-
             new StatisticsPresenter(statsView, new Statistics(1, 1));
             statsStage.show();
         });
@@ -83,10 +94,19 @@ public class StartPresenter {
             alert.setHeaderText(null);
             alert.setContentText("Are you sure you want to exit?");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 System.exit(0);
             }
         });
+    }
+
+    /**
+     * Helper method to navigate to the Choose AI screen
+     */
+    private void goToChooseAIScreen() {
+        ChooseAIView chooseAIView = new ChooseAIView();
+        view.getScene().setRoot(chooseAIView);
+        new ChooseAIPresenter(chooseAIView);
     }
 
     private void updateView() {

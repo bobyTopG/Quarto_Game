@@ -9,6 +9,8 @@ import be.kdg.quarto.view.GameScreen.PieceView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 
 public class SettingsPresenter {
     private GamePresenter gamePresenter;
@@ -53,7 +55,7 @@ public class SettingsPresenter {
     }
 
     private void updateView() {
-        // You can add any view updates here if needed
+
     }
 
     private void closeSettings() {

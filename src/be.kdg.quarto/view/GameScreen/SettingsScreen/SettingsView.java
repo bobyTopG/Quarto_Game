@@ -1,23 +1,25 @@
 package be.kdg.quarto.view.GameScreen.SettingsScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.helpers.FontHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class SettingsView extends StackPane {
     private Button saveButton;
     private Button exitButton;
     private Button restartButton;
     private Button resumeButton;
-
+    Label pausedLabel;
 
     public SettingsView() {
-        this.setStyle("-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 20px;");
         this.setPrefSize(500, 300);
-        this.setMaxSize(500, 300);
+        this.setMaxSize(800, 300);
 
         initialiseNodes();
         layoutNodes();
@@ -29,24 +31,36 @@ public class SettingsView extends StackPane {
         exitButton = new Button("Exit");
         restartButton = new Button("Restart");
         resumeButton = new Button("Resume");
+        pausedLabel =  CreateHelper.createLabel("PAUSE","paused-label");
+
 
 
         saveButton = CreateHelper.createButton("Save Game",  new String[]{"green-button", "default-button"});
         exitButton = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
         restartButton = CreateHelper.createButton("Restart", new String[]{"red-button", "default-button"});
         resumeButton = CreateHelper.createButton("Resume", new String[]{"blue-button", "default-button"});
+        this.getStyleClass().add("settings-screen");
+
 
     }
 
 
 
     private void layoutNodes() {
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+
         HBox hbox = new HBox();
         hbox.setSpacing(10);
         hbox.setPadding(new Insets(10, 10, 10, 10));
         hbox.getChildren().addAll( exitButton, saveButton ,resumeButton, restartButton);
         hbox.setAlignment(Pos.BOTTOM_CENTER);
-        this.getChildren().add(hbox);
+
+        pausedLabel.setFont(FontHelper.getExtraLargeFont());
+
+        vbox.getChildren().addAll(pausedLabel,hbox);
+        this.getChildren().add(vbox);
+
     }
 
 
