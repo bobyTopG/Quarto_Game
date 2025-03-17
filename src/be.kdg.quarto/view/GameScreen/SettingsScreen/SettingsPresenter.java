@@ -27,6 +27,7 @@ public class SettingsPresenter {
         });
 
         view.getResumeButton().setOnAction(event -> {
+            session.restartGame();
            closeSettings();
         });
 
