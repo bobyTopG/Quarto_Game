@@ -60,7 +60,7 @@ public class RegisterView extends BorderPane {
         buttonHBox.setSpacing(10);
 
         VBox vbox = CreateHelper.createVBox("login-main-vbox");
-        vbox.getChildren().addAll(registerLabel, usernameTextField, confirmPasswordTextField, passwordTextField, buttonHBox, continueAsGuestButton);
+        vbox.getChildren().addAll(registerLabel, usernameTextField, passwordTextField, confirmPasswordTextField, buttonHBox, continueAsGuestButton);
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
 
