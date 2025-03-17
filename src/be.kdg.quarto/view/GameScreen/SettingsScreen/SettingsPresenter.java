@@ -27,21 +27,21 @@ public class SettingsPresenter {
         });
 
         view.getResumeButton().setOnAction(event -> {
-            session.restartGame();
-           closeSettings();
+            closeSettings();
         });
 
         view.getExitButton().setOnAction(event -> {
-           StartView startView= new StartView();
-           view.getScene().setRoot(startView);
-           new StartPresenter(session, startView);
+            session.restartGame();
+            StartView startView = new StartView();
+            view.getScene().setRoot(startView);
+            new StartPresenter(session, startView);
         });
     }
 
     private void updateView() {
     }
 
-    private void closeSettings(){
+    private void closeSettings() {
         gamePresenter.getView().getOverlayContainer().setVisible(false);
     }
 }

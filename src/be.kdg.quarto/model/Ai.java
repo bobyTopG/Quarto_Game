@@ -36,6 +36,10 @@ public class Ai extends Player{
         return this.description;
     }
 
+    public void resetStrategy() {
+        this.strategy = null;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

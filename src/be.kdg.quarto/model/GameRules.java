@@ -14,10 +14,6 @@ public class GameRules {
         placingBoard = game.getPlacedTiles();
     }
 
-    public boolean isTie() {
-        return isTie;
-    }
-
     public boolean isGameOver() {
         placingBoard = game.getPlacedTiles(); // Ensure board is updated
         List<Tile> tiles = placingBoard.getTiles();

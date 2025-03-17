@@ -23,19 +23,21 @@ public class GameSession {
         this.model = model;
         this.currentPlayer = human;
 
-        ai.setStrategy(new DifficultStrategy(this));
+        //ai.setStrategy(new DifficultStrategy(this));
         if (isAiTurn()) {
             handleAiTurn();
         }
     }
 
     public void restartGame() {
+        System.out.println("Restarting game session");
         model.getTilesToSelect().getTiles().clear();
         model.getPlacedTiles().getTiles().clear();
         model.getCurrentTile().setPiece(null);
 
         model.getTilesToSelect().generateAllTiles();
         model.getPlacedTiles().createEmptyTiles();
+        getAi().resetStrategy();
 
         if (isAiTurn()) {
             handleAiTurn();

@@ -8,6 +8,7 @@
     import be.kdg.quarto.view.GameScreen.GameView;
     import be.kdg.quarto.view.StartScreen.StartPresenter;
     import be.kdg.quarto.view.StartScreen.StartView;
+    import javafx.scene.control.Alert;
     import javafx.scene.control.Button;
     import javafx.scene.image.Image;
     import be.kdg.quarto.helpers.AICharacters;
@@ -49,15 +50,25 @@
             addEventListenersForAICharacterButtons();
 
             view.getBackButton().setOnMouseClicked(event -> {
+                session.getAi().getStrategy();
                 StartView startView = new StartView();
                 view.getScene().setRoot(startView);
                 new StartPresenter(session, startView);
             });
 
             view.getSelectButton().setOnMouseClicked(event -> {
-                GameView gameView = new GameView();
-                view.getScene().setRoot(gameView);
-                new GamePresenter(session ,gameView);
+                if (session.getAi().getStrategy() != null) {
+                    GameView gameView = new GameView();
+                    view.getScene().setRoot(gameView);
+                    new GamePresenter(session ,gameView);
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("No Ai selected");
+                    alert.setHeaderText("Please select an AI character");
+                    alert.showAndWait();
+                }
+
             });
         }
         private void addEventListenersForAICharacterButtons(){
@@ -68,8 +79,9 @@
                     view.setSelectedCharacter(id);
                     if(id  == 0 )
                             session.getAi().setStrategy(new RandomPlayingStrategy(session.getModel().getTilesToSelect() , session.getModel().getPlacedTiles()));
-                    else
+                    else if (id  == 1 ) {
                         session.getAi().setStrategy(new DifficultStrategy(session));
+                    }
                 });
                 count++;
             }
