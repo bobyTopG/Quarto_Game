@@ -30,6 +30,16 @@ public class BoardView extends Pane {
         layoutNodes();
     }
 
+    private void createBoardSpaces() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                BoardSpaceView boardSpaceView = new BoardSpaceView();
+                getSpaceViews().add(boardSpaceView);
+                getSpaces().add(boardSpaceView, i, j);
+            }
+        }
+    }
+
     public GridPane getSpaces() {
         return spaces;
     }
@@ -43,13 +53,8 @@ public class BoardView extends Pane {
         frame.setFill(Color.TRANSPARENT);
         frame.setStroke(Color.WHITE);
         frame.setStrokeWidth(5);
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                BoardSpaceView boardSpaceView = new BoardSpaceView();
-                getSpaceViews().add(boardSpaceView);
-                getSpaces().add(boardSpaceView, i, j);
-            }
-        }
+        createBoardSpaces();
+
     }
 
     private void layoutNodes() {

@@ -1,4 +1,10 @@
-package be.kdg.quarto.model;
+package be.kdg.quarto.model.strategies;
+
+import be.kdg.quarto.model.Board;
+import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.PlayingStrategy;
+import be.kdg.quarto.model.Tile;
 
 import java.util.List;
 import java.util.Random;
@@ -6,17 +12,21 @@ import java.util.Random;
 public class RandomPlayingStrategy implements PlayingStrategy {
     //selectPiece = pieces that are not on the board
     // placePiece = the board
-    private Board selectPiece, placePiece;
+    private Board selectPiece, board;
 
-    public RandomPlayingStrategy(Board selectPiece, Board placePiece) {
-        this.placePiece = placePiece;
-        this.selectPiece = selectPiece;
+
+    public RandomPlayingStrategy() {
+
+    }
+    public void fillNecessaryData(Game game) {
+        this.selectPiece = game.getPiecesToSelect();
+        this.board = game.getBoard();
     }
 
 
     @Override
     public Piece selectPiece() {
-            return selectRandomPiece().getPiece();
+            return selectRandomPiece();
     }
     @Override
     public Tile selectTile() {
@@ -29,12 +39,12 @@ public class RandomPlayingStrategy implements PlayingStrategy {
 
     @Override
     public boolean isCallingQuarto() {
-        int rand = new Random().nextInt(1);
+        int rand = new Random().nextInt(2);
         return rand == 0;
     }
 
 
-    private Tile selectRandomPiece() {
+    private Piece selectRandomPiece() {
         List<Tile> availableTiles = selectPiece.getTiles().stream()
                 .filter(tile -> tile.getPiece() != null)
                 .toList();
@@ -42,13 +52,13 @@ public class RandomPlayingStrategy implements PlayingStrategy {
         if (availableTiles.isEmpty()) {
             return null;
         }
-        return availableTiles.get(new Random().nextInt(availableTiles.size()));
+        return availableTiles.get(new Random().nextInt(availableTiles.size())).getPiece();
     }
 
 
 
     public Tile getRandomFreeTile() {
-        List<Tile> emptyTiles = placePiece.getTiles().stream()
+        List<Tile> emptyTiles = board.getTiles().stream()
                 .filter(tile -> tile.getPiece() == null)
                 .toList();
 
@@ -58,5 +68,12 @@ public class RandomPlayingStrategy implements PlayingStrategy {
         return emptyTiles.get(new Random().nextInt(emptyTiles.size()));
     }
 
+    public void setSelectPiece(Board selectPiece) {
+        this.selectPiece = selectPiece;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }
 
