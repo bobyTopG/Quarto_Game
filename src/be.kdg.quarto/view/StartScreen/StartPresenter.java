@@ -73,8 +73,8 @@ public class StartPresenter {
             statsStage.setHeight(400);
             statsStage.setResizable(false);
 
-            // view.getScene().setRoot(statisticsView);
-            new StatisticsPresenter(statsView, new Statistics());
+
+            new StatisticsPresenter(statsView, new Statistics(1, 1));
             statsStage.show();
         });
 

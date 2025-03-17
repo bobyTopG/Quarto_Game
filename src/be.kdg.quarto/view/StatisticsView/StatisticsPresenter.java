@@ -1,6 +1,7 @@
 package be.kdg.quarto.view.StatisticsView;
 
 import be.kdg.quarto.model.Statistics;
+import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 
 public class StatisticsPresenter {
@@ -15,6 +16,7 @@ public class StatisticsPresenter {
 
         view.getPlayerBtn().fire();
         view.getBackBtn().fire();
+        view.getTitleLabel().setText("Player " + stats.getWinnerId() + " Won!");
     }
 
     private void updateView() {
@@ -23,23 +25,39 @@ public class StatisticsPresenter {
 
     private void addEventHandlers() {
         view.getPlayerBtn().setOnAction(event -> {
-            view.getInfoLabel().setText("Player");
+            stats.setPlayerIdTemp(1);
+            view.getInfoLabel().setText(stats.getGeneralStatistics());
             view.getPlayerBtn().setDisable(true);
             view.getAiBtn().setDisable(false);
         });
 
         view.getAiBtn().setOnAction(event -> {
-            view.getInfoLabel().setText("AI");
+            stats.setPlayerIdTemp(2);
+            view.getInfoLabel().setText(stats.getGeneralStatistics());
             view.getPlayerBtn().setDisable(false);
             view.getAiBtn().setDisable(true);
         });
 
         view.getBackBtn().setOnAction(event -> {
+            view.setCenter(view.getInfoGroup());
+
             view.getBackBtn().setDisable(true);
             view.getNextBtn().setDisable(false);
         });
 
         view.getNextBtn().setOnAction(event -> {
+            view.setCenter(view.getLineChart());
+            for (Statistics.Move move : stats.loadStatistics()) {
+                if (move.getPlayerId() == 1) {
+                    view.getSeries1().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
+                }
+                else {
+                    view.getSeries2().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
+                }
+            }
+            view.getLineChart().getData().clear();
+            view.getLineChart().getData().addAll(view.getSeries1(), view.getSeries2());
+
             view.getBackBtn().setDisable(false);
             view.getNextBtn().setDisable(true);
         });
