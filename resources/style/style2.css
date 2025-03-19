@@ -1,0 +1,63 @@
+#player-statistics-button {
+    -fx-border-radius: 40px 0px 0px 40px;
+    -fx-background-radius: 40px 0px 0px 40px;
+}
+
+#ai-statistics-button {
+    -fx-border-radius: 0px 40px 40px 0px;
+    -fx-background-radius: 0px 40px 40px 0px;
+}
+
+/* table styling */
+.table-view {
+    -fx-background-color: #E5F6FF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #9CC3DF;
+    -fx-border-width: 3px;
+    -fx-border-radius: 6px;
+    -fx-padding: 5px;
+}
+
+.table-view .column-header,
+.table-view .column-header-background {
+    -fx-background-color: #336699;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+.table-view .column-header .arrow {
+    -fx-background-color: white;
+}
+
+.table-row-cell {
+    -fx-background-color: #CFE8FF;
+    -fx-border-color: #A0C4E2;
+    -fx-border-width: 1px;
+    -fx-cell-size: 30px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #B3DAF2;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #72B4F2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #72B4F2;
+}
+
+.table-cell {
+    -fx-text-fill: #1A1A1A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
