@@ -13,11 +13,9 @@ import java.sql.SQLException;
  */
 public class AuthHelper {
     private static Human loggedInPlayer;
-    private static Connection dbConnection;
 
     // Static initialization block to set up database connection
     static {
-        dbConnection = DbConnection.connection;
     }
 
     // Private constructor to prevent instantiation
@@ -25,33 +23,19 @@ public class AuthHelper {
         // This class shouldn't be instantiated
     }
 
-    /**
-     * Check if a user is currently logged in
-     * @return true if a user is logged in, false otherwise
-     */
     public static boolean isLoggedIn() {
         return loggedInPlayer != null;
     }
 
-    /**
-     * Get the currently logged in player
-     * @return the logged in Human object, or null if no one is logged in
-     */
     public static Human getLoggedInPlayer() {
         return loggedInPlayer;
     }
 
-    /**
-     * Attempt to log in with the provided credentials
-     * @param username The username to log in with
-     * @param password The password to authenticate with
-     * @return The logged in Human object
-     * @throws AuthException If login fails for any reason
-     */
+
     public static Human login(String username, String password) throws AuthException {
         try {
             String query = "SELECT player_id, name, password FROM players WHERE name = ?";
-            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            PreparedStatement stmt = DbConnection.connection.prepareStatement(query);
             stmt.setString(1, username);
 
             ResultSet rs = stmt.executeQuery();
@@ -77,20 +61,11 @@ public class AuthHelper {
         }
     }
 
-    /**
-     * Log out the current user
-     */
     public static void logout() {
         loggedInPlayer = null;
     }
 
-    /**
-     * Register a new user
-     * @param username The username for the new account
-     * @param password The password for the new account
-     * @return The newly created Human object
-     * @throws AuthException If registration fails for any reason
-     */
+
     public static Human register(String username, String password) throws AuthException {
         if (username == null || username.trim().isEmpty()) {
             throw new AuthException("Username cannot be empty");
@@ -101,7 +76,7 @@ public class AuthHelper {
 
         try {
             String checkQuery = "SELECT COUNT(*) FROM players WHERE name = ?";
-            PreparedStatement checkStmt = dbConnection.prepareStatement(checkQuery);
+            PreparedStatement checkStmt = DbConnection.connection.prepareStatement(checkQuery);
             checkStmt.setString(1, username);
             ResultSet checkRs = checkStmt.executeQuery();
 
@@ -112,7 +87,7 @@ public class AuthHelper {
             String hashedPassword = LocalEncrypter.hashPassword(password);
 
             String insertQuery = "INSERT INTO players (name, password) VALUES (?, ?) RETURNING player_id";
-            PreparedStatement insertStmt = dbConnection.prepareStatement(insertQuery);
+            PreparedStatement insertStmt = DbConnection.connection.prepareStatement(insertQuery);
             insertStmt.setString(1, username);
             insertStmt.setString(2, hashedPassword);
 
@@ -132,12 +107,7 @@ public class AuthHelper {
         }
     }
 
-    /**
-     * Change the password for the currently logged in user
-     * @param currentPassword The current password for verification
-     * @param newPassword The new password to set
-     * @throws AuthException If the password change fails for any reason
-     */
+
     public static void changePassword(String currentPassword, String newPassword) throws AuthException {
         if (!isLoggedIn()) {
             throw new AuthException("No user is logged in");
@@ -145,7 +115,7 @@ public class AuthHelper {
 
         try {
             String query = "SELECT password FROM players WHERE player_id = ?";
-            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            PreparedStatement stmt = DbConnection.connection.prepareStatement(query);
             stmt.setInt(1, loggedInPlayer.getId());
 
             ResultSet rs = stmt.executeQuery();
@@ -170,7 +140,7 @@ public class AuthHelper {
             String hashedNewPassword = LocalEncrypter.hashPassword(newPassword);
 
             String query = "UPDATE players SET password = ? WHERE player_id = ?";
-            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            PreparedStatement stmt = DbConnection.connection.prepareStatement(query);
             stmt.setString(1, hashedNewPassword);
             stmt.setInt(2, loggedInPlayer.getId());
 
