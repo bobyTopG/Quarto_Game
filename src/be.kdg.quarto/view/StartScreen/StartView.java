@@ -16,7 +16,7 @@ import javafx.scene.layout.*;
 public class StartView extends BorderPane {
 
     private Label label;
-    private Button newGame, continueButton, leaderBoard, statistics, quit;
+    private Button newGame, continueButton, leaderboard, statistics, quit;
     private HBox mainHBox;
     private BoardView board;
     private UiSettings settings;
@@ -39,7 +39,7 @@ public class StartView extends BorderPane {
 
         newGame = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
         continueButton = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
-        leaderBoard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
+        leaderboard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
         statistics = CreateHelper.createButton("Statistics", new String[]{"blue-button", "default-button"});
         quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
         mainHBox = CreateHelper.createHBox("root-hbox");
@@ -49,7 +49,7 @@ public class StartView extends BorderPane {
     private void layoutNodes() {
         VBox vbox = CreateHelper.createVBox("start-main-vbox");
         vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
-        vbox.getChildren().addAll(label, newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.getChildren().addAll(label, newGame, continueButton, leaderboard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
 
 
@@ -78,6 +78,10 @@ public class StartView extends BorderPane {
 
     public Button getStatistics() {
         return statistics;
+    }
+
+    public Button getLeaderboard() {
+        return leaderboard;
     }
 
     public Button getQuit() {

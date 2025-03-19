@@ -1,16 +1,14 @@
 package be.kdg.quarto.view.StartScreen;
 
-import be.kdg.quarto.model.Board;
-import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
 import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
-import be.kdg.quarto.view.GameScreen.GamePresenter;
-import be.kdg.quarto.view.GameScreen.GameView;
-import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
-import be.kdg.quarto.view.StatisticsView.StatisticsView;
+import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
+import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -66,6 +64,12 @@ public class StartPresenter {
 
             new StatisticsPresenter(statsView, new Statistics(1, 1));
             statsStage.show();
+        });
+
+        view.getLeaderboard().setOnAction(event -> {
+            LeaderboardView leaderboardView = new LeaderboardView();
+            view.getScene().setRoot(leaderboardView);
+            new LeaderboardPresenter(leaderboardView, new Leaderboard());
         });
 
         view.getQuit().setOnAction(event -> {

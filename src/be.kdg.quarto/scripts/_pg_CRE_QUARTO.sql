@@ -12,7 +12,7 @@ CREATE TABLE players
         CONSTRAINT pk_player PRIMARY KEY,
     name      VARCHAR(50)
         CONSTRAINT nn_name NOT NULL,
-    password  VARCHAR(20)
+    password  VARCHAR(256)
         CONSTRAINT nn_password NOT NULL
 );
 

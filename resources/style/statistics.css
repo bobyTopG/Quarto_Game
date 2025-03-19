@@ -8,12 +8,75 @@
     -fx-background-radius: 0px 40px 40px 0px;
 }
 
-.win-title{
-    -fx-font-size: 32px;
-    -fx-font-family: "Berlin Sans FB Demi Bold";
+/* General TableView Styling */
+.table-view {
+    -fx-background-color: #fff4d5;
+    -fx-border-color: #000000;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
 }
 
-.info-label{
-    -fx-font-size: 16px;
-    -fx-font-family: "Berlin Sans FB Demi Bold";
+/* Table Background */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+}
+
+/* Table Headers */
+.table-view .column-header-background {
+    -fx-background-color: #0078D7;
+    -fx-border-color: #005a9e;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 6px;
+}
+
+/* Table Rows */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0.5px;
+}
+
+/* Alternating Row Colors */
+.table-row-cell:odd {
+    -fx-background-color: #f3f3f3;
+}
+
+/* Selected Row */
+.table-row-cell:selected {
+    -fx-background-color: #cce5ff !important;
+    -fx-text-fill: black;
+}
+
+/* Table Cell Styling */
+.table-cell {
+    -fx-text-fill: black;
+    -fx-font-size: 13px;
+    -fx-padding: 5px;
+}
+
+/* Hover Effect on Rows */
+.table-row-cell:hover {
+    -fx-background-color: #eaf3ff;
+}
+
+/* Scroll Bar */
+.scroll-bar {
+    -fx-background-color: white;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #d0d0d0;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #a0a0a0;
 }

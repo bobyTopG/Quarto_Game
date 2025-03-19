@@ -28,8 +28,8 @@ public class Statistics {
         return winnerId;
     }
 
-    public String getGeneralStatistics() {
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGeneralStatistics())) {
+    public String loadPartialStatistics() {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPartialStats())) {
             ps.setInt(1, gameSessionIdTemp);
             ps.setInt(2, playerIdTemp);
             ResultSet rs = ps.executeQuery();
@@ -51,7 +51,7 @@ public class Statistics {
 
     public ArrayList<Move> loadStatistics() {
         ArrayList<Move> moves = new ArrayList<>();
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGameStatistics())) {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getStatistics())) {
             ps.setInt(1, gameSessionIdTemp);
             ResultSet rs = ps.executeQuery();
 

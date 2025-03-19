@@ -1,6 +1,4 @@
-
-
-.default-button{
+.default-button {
     -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-pref-height: 50px;
     -fx-background-radius: 40px;
@@ -12,33 +10,41 @@
     -fx-cursor: hand;
 
 }
+
 .green-button {
     -fx-background-color: #18B235;
     -fx-border-color: #000000;
 }
-.green-button:hover{
+
+.green-button:hover {
     -fx-background-color: #389a3d;
 
 }
+
 /* Choose Piece Button */
 .orange-button {
     -fx-background-color: #F7931E;
     -fx-border-color: #070501;
 }
+
 .orange-button:hover {
     -fx-background-color: #e6621d;
 }
+
 .blue-button {
     -fx-background-color: #29ABE2;
     -fx-border-color: #000000;
 }
+
 .blue-button:hover {
     -fx-background-color: #2672cc;
 }
+
 .red-button {
     -fx-background-color: #FF1D25;
     -fx-border-color: #070303;
 }
+
 .red-button:hover {
     -fx-background-color: #b60f0f;
 }
@@ -47,7 +53,17 @@
     -fx-background-color: #939393;
     -fx-border-color: #000000;
 }
+
 .gray-button:hover {
     -fx-background-color: #6c6c6c;
 }
 
+.title {
+    -fx-font-size: 32px;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+}
+
+.info {
+    -fx-font-size: 22px;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+}

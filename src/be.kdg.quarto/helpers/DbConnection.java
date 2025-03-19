@@ -17,7 +17,7 @@ public class DbConnection {
     }
 
     // retrieves the winner, total number of moves, total time played and average time per move
-    public static String getGeneralStatistics() {
+    public static String getPartialStats() {
         return "SELECT winner,\n" +
                 "       count(*)                                                                    as total_moves,\n" +
                 "       concat\n" +
@@ -26,15 +26,15 @@ public class DbConnection {
                 "        sum(extract(second from age(move_end_time, move_start_time))), ' seconds') as total_time,\n" +
                 "       round(\n" +
                 "               (cast(sum(extract(epoch from age(move_end_time, move_start_time))) as integer) / 60.0),\n" +
-                "               4) / count(*)                                                       as average_per_move\n" +
+                "               4) / count(*)                                                       as avg_duration_per_move\n" +
                 "FROM moves m\n" +
-                "         INNER JOIN public.game_sessions gs on m.game_session_id = gs.game_session_id\n" +
+                "         INNER JOIN game_sessions gs on m.game_session_id = gs.game_session_id\n" +
                 "WHERE m.game_session_id = ?\n" +
                 "  and player_id = ?\n" +
                 "GROUP BY winner;";
     }
 
-    public static String getGameStatistics() {
+    public static String getStatistics() {
         return "SELECT player_id,\n" +
                 "       (select COUNT(*)\n" +
                 "        from moves m2\n" +
@@ -46,5 +46,23 @@ public class DbConnection {
                 "-- and player_id in (1, 2)\n" +
                 "GROUP BY player_id, move_start_time, move_end_time\n" +
                 "ORDER BY player_id, move_start_time;";
+    }
+
+    public static String getLeaderboard() {
+        return "SELECT p.player_id,\n" +
+                "       p.name,\n" +
+                "       count(distinct gs.*)                                                       as total_games,\n" +
+                "       count(case when gs.winner = p.player_id then 1 end)                        as wins,\n" +
+                "       count(distinct gs.*) - count(case when gs.winner = p.player_id then 1 end) as losses,\n" +
+                "       round(count(case when gs.winner = p.player_id then 1 end) * 100.0 / count(distinct gs.*),\n" +
+                "             2)                                                                   as percentage,\n" +
+                "       round(count(m.*) * 1.0 / count(distinct gs.*),\n" +
+                "             2)                                                                   as avg_moves,\n" +
+                "       round(sum(extract(epoch from age(m.move_end_time, m.move_start_time))::numeric / 60) / count(m.*),\n" +
+                "             2)                                                                   as avg_duration_per_move\n" +
+                "FROM players p\n" +
+                "         LEFT JOIN game_sessions gs on p.player_id in (gs.player1_id, gs.player2_id)\n" +
+                "         LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id\n" +
+                "GROUP BY p.player_id, p.name;";
     }
 }
