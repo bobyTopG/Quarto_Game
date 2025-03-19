@@ -2,6 +2,7 @@ package be.kdg.quarto.view.StatisticsScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -45,6 +46,9 @@ public class StatisticsView extends BorderPane {
         centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
         infoGroup = new VBox();
         infoGroup.getChildren().addAll(centerBtnBox, infoLabel);
+        infoGroup.setAlignment(Pos.TOP_CENTER);
+        infoGroup.setSpacing(30);
+        setMargin(infoGroup, new Insets(10, 0, 0, 0));
 
         // line chart
         lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
@@ -72,6 +76,7 @@ public class StatisticsView extends BorderPane {
 
     private void layoutNodes() {
         setPadding(new Insets(10, 10, 10, 10));
+        setAlignment(titleLabel, Pos.CENTER);
 
         playerBtn.setPrefWidth(200);
         aiBtn.setPrefWidth(200);
