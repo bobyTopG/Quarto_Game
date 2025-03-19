@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.StatisticsView;
+package be.kdg.quarto.view.StatisticsScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import javafx.geometry.Insets;
@@ -32,14 +32,14 @@ public class StatisticsView extends BorderPane {
     }
 
     private void initializeNodes() {
-        titleLabel = CreateHelper.createLabel("", "win-title");
+        titleLabel = CreateHelper.createLabel("", "title");
 
         playerBtn = CreateHelper.createButton("Player", new String[]{"default-button", "blue-button"});
         playerBtn.setId("player-statistics-button");
         aiBtn = CreateHelper.createButton("AI", new String[]{"default-button", "blue-button"});
         aiBtn.setId("ai-statistics-button");
 
-        infoLabel = CreateHelper.createLabel("", "info-label");
+        infoLabel = CreateHelper.createLabel("", "info");
 
         HBox centerBtnBox = new HBox();
         centerBtnBox.getChildren().addAll(playerBtn, aiBtn);

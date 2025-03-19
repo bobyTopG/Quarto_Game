@@ -4,15 +4,15 @@ import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
+import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
 import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
-import be.kdg.quarto.view.GameScreen.GamePresenter;
-import be.kdg.quarto.view.GameScreen.GameView;
-import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
-import be.kdg.quarto.view.StatisticsView.StatisticsView;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
 import be.kdg.quarto.view.auth.LoginView.LoginPresenter;
 import be.kdg.quarto.view.auth.LoginView.LoginView;
 import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
@@ -24,14 +24,18 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
+
 import java.util.Optional;
 
 public class StartPresenter {
 
     private StartView view;
+    private BoardView boardView = new BoardView();
+    private final String pathToBoard = "/images/Example_Board.png";
+
 
     public StartPresenter(StartView view) {
+
         this.view = view;
 
         String pathToBoard = "/images/Example_Board.png";
@@ -39,10 +43,11 @@ public class StartPresenter {
         addEventHandlers();
         updateView();
         view.loadBoardImage(boardImage);
+
+
     }
 
     private void addEventHandlers() {
-        // "New Game" button handler
         view.getNewGame().setOnAction(event -> {
             // Check if user is already logged in
             if (AuthHelper.isLoggedIn()) {
@@ -70,6 +75,7 @@ public class StartPresenter {
             }
         });
 
+
         view.getStatistics().setOnAction(event -> {
             StatisticsView statsView = new StatisticsView();
             Stage statsStage = new Stage();
@@ -84,8 +90,15 @@ public class StartPresenter {
             statsStage.setHeight(400);
             statsStage.setResizable(false);
 
+
             new StatisticsPresenter(statsView, new Statistics(1, 1));
             statsStage.show();
+        });
+
+        view.getLeaderboard().setOnAction(event -> {
+            LeaderboardView leaderboardView = new LeaderboardView();
+            view.getScene().setRoot(leaderboardView);
+            new LeaderboardPresenter(leaderboardView, new Leaderboard());
         });
 
         view.getQuit().setOnAction(event -> {

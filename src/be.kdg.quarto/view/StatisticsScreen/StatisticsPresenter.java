@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.StatisticsView;
+package be.kdg.quarto.view.StatisticsScreen;
 
 import be.kdg.quarto.model.Statistics;
 import javafx.scene.chart.XYChart;
@@ -26,14 +26,14 @@ public class StatisticsPresenter {
     private void addEventHandlers() {
         view.getPlayerBtn().setOnAction(event -> {
             stats.setPlayerIdTemp(1);
-            view.getInfoLabel().setText(stats.getGeneralStatistics());
+            view.getInfoLabel().setText(stats.loadPartialStatistics());
             view.getPlayerBtn().setDisable(true);
             view.getAiBtn().setDisable(false);
         });
 
         view.getAiBtn().setOnAction(event -> {
             stats.setPlayerIdTemp(2);
-            view.getInfoLabel().setText(stats.getGeneralStatistics());
+            view.getInfoLabel().setText(stats.loadPartialStatistics());
             view.getPlayerBtn().setDisable(false);
             view.getAiBtn().setDisable(true);
         });
