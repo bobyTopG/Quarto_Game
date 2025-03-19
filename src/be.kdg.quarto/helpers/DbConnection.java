@@ -63,6 +63,8 @@ public class DbConnection {
                 "FROM players p\n" +
                 "         LEFT JOIN game_sessions gs on p.player_id in (gs.player1_id, gs.player2_id)\n" +
                 "         LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id\n" +
-                "GROUP BY p.player_id, p.name;";
+                "GROUP BY p.player_id, p.name\n" +
+                "HAVING count(distinct gs.*) > 0\n" +
+                "ORDER BY name desc;";
     }
 }

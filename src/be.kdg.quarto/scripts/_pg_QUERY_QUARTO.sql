@@ -60,4 +60,5 @@ FROM players p
          LEFT JOIN game_sessions gs on p.player_id in (gs.player1_id, gs.player2_id)
          LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id
 GROUP BY p.player_id, p.name
+HAVING count(distinct gs.*) > 0
 ORDER BY name desc;
