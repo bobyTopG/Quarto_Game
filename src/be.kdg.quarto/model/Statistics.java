@@ -43,10 +43,10 @@ public class Statistics {
             throw new RuntimeException(e);
         }
 
-        return (playerIdTemp == winnerId ? "Wow, congrats!" : "Better luck next time!") +
+        return (playerIdTemp == winnerId ? "Wow, congrats. Well played!" : "Better luck next time!") +
                 "\nTotal moves: " + totalMoves +
                 "\nTotal time: " + totalTime +
-                "\nAverage time: " + averageTime;
+                "\nAverage move duration: " + averageTime + " m";
     }
 
     public ArrayList<Move> loadStatistics() {
