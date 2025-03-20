@@ -13,7 +13,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        GameSession session = new GameSession();
         StartView view = new StartView();
 
         Scene scene = new Scene(view);
@@ -21,7 +20,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
-        new StartPresenter(session,view);
+        new StartPresenter(view);
         primaryStage.setHeight(500);
         primaryStage.setWidth(900);
         primaryStage.show();

@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.StartScreen;
 
+import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.GameSession;
@@ -12,6 +13,8 @@ import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StatisticsView.StatisticsPresenter;
 import be.kdg.quarto.view.StatisticsView.StatisticsView;
+import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
+import be.kdg.quarto.view.auth.RegisterView.RegisterView;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -32,7 +35,7 @@ public class StartPresenter {
     private final String pathToBoard = "/images/Example_Board.png";
 
 
-    public StartPresenter(GameSession session, StartView view) {
+    public StartPresenter( StartView view) {
         this.session = session;
         this.model = session.getModel();
         this.view = view;
@@ -87,6 +90,12 @@ public class StartPresenter {
                 System.exit(0);
             }
         });
+    }
+
+    private void goToChooseAIScreen() {
+        ChooseAIView chooseAIView = new ChooseAIView();
+        view.getScene().setRoot(chooseAIView);
+        new ChooseAIPresenter(chooseAIView,session);
     }
 
     private void updateView() {

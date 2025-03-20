@@ -1,5 +1,8 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.model.enums.AiLevel;
+import be.kdg.quarto.model.strategy.DifficultStrategy;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,15 +10,19 @@ import java.util.List;
 public class GameSession {
     private final Game model;
     private Player winner;
-    private final Player player1;
-    private final Player player2;
+    private  Human player1;
+    private  Ai player2;
     private final List<Move> moves;
     private final Date startTime;
     private Date endTime;
 
+public GameSession () {
+    this(new Human("Bob" , "12345"),
+            new Ai("Robert" , AiLevel.HARD, new DifficultStrategy(null) , "") ,
+            new Game());
+}
 
-
-    public GameSession(Player player1, Player player2, Game model) {
+    public GameSession(Human player1, Ai player2, Game model) {
         this.player1 = player1;
         this.player2 = player2;
         this.moves = new ArrayList<>();
@@ -72,7 +79,7 @@ public class GameSession {
         return player1;
     }
 
-    public Player getPlayer2() {
+    public Ai getPlayer2() {
         return player2;
     }
 }

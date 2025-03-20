@@ -49,14 +49,14 @@
             addEventListenersForAICharacterButtons();
 
             view.getBackButton().setOnMouseClicked(event -> {
-                session.getAi().getStrategy();
+                session.getPlayer2().getStrategy();
                 StartView startView = new StartView();
                 view.getScene().setRoot(startView);
-                new StartPresenter(session, startView);
+                new StartPresenter( startView);
             });
 
             view.getSelectButton().setOnMouseClicked(event -> {
-                if (session.getAi().getStrategy() != null) {
+                if (session.getPlayer2().getStrategy() != null) {
                     GameView gameView = new GameView();
                     view.getScene().setRoot(gameView);
                     new GamePresenter(session ,gameView);
@@ -78,9 +78,9 @@
                 characterButton.setOnMouseClicked(event -> {
                     view.setSelectedCharacter(id);
                     if(id  == 0 )
-                            session.getAi().setStrategy(new RandomPlayingStrategy(session.getModel().getTilesToSelect() , session.getModel().getPlacedTiles()));
+                            session.getPlayer2().setStrategy(new RandomPlayingStrategy(session.getModel().getTilesToSelect() , session.getModel().getPlacedTiles()));
                     else if (id  == 1 ) {
-                        session.getAi().setStrategy(new DifficultStrategy(session));
+                        session.getPlayer2().setStrategy(new DifficultStrategy(session));
                     }
                 });
                 count++;
