@@ -20,19 +20,20 @@ public class LeaderboardView extends BorderPane {
     }
 
     private void initializeNodes() {
-        Label title = CreateHelper.createLabel("Leaderboard", "title");
+        Label titleLabel = CreateHelper.createLabel("Leaderboard", "title");
 
         backBtn = CreateHelper.createButton("Back", new String[]{"default-button", "red-button"});
 
-        setTop(title);
-        setAlignment(title, Pos.CENTER);
+        setTop(titleLabel);
+        setAlignment(titleLabel, Pos.CENTER);
+        setMargin(titleLabel, new Insets(0, 0, 5, 0));
         // center is set in the presenter
         setBottom(backBtn);
     }
 
     private void layoutNodes() {
-        setPadding(new Insets(10, 10, 10, 10));
-        setMargin(backBtn, new Insets(10, 0, 0, 0));
+        setPadding(new Insets(10, 5, 10, 5));
+        setMargin(backBtn, new Insets(5, 0, 0, 0));
         setAlignment(backBtn, Pos.CENTER);
     }
 

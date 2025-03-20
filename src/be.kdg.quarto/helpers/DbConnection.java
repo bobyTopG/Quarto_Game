@@ -40,7 +40,7 @@ public class DbConnection {
                 "        from moves m2\n" +
                 "        where m2.player_id = m1.player_id\n" +
                 "          and m2.move_start_time <= m1.move_start_time)                                          as move_number,\n" +
-                "       round(cast(extract(epoch from age(move_end_time, move_start_time)) as integer) / 60.0, 2) as mins\n" +
+                "       round(cast(extract(epoch from age(move_end_time, move_start_time)) as integer) / 60.0, 2) as minutes\n" +
                 "FROM moves m1\n" +
                 "WHERE game_session_id = ?\n" +
                 "-- and player_id in (1, 2)\n" +
@@ -55,7 +55,7 @@ public class DbConnection {
                 "       count(case when gs.winner = p.player_id then 1 end)                        as wins,\n" +
                 "       count(distinct gs.*) - count(case when gs.winner = p.player_id then 1 end) as losses,\n" +
                 "       round(count(case when gs.winner = p.player_id then 1 end) * 100.0 / count(distinct gs.*),\n" +
-                "             2)                                                                   as percentage,\n" +
+                "             2)                                                                   as win_percentage,\n" +
                 "       round(count(m.*) * 1.0 / count(distinct gs.*),\n" +
                 "             2)                                                                   as avg_moves,\n" +
                 "       round(sum(extract(epoch from age(m.move_end_time, m.move_start_time))::numeric / 60) / count(m.*),\n" +

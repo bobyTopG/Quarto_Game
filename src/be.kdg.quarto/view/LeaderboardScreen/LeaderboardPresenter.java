@@ -38,7 +38,7 @@ public class LeaderboardPresenter {
                 new ReadOnlyObjectWrapper<>(table.getItems().indexOf(cellData.getValue()) + 1));
 
         name = new TableColumn<>("Name");
-        name.setPrefWidth(155);
+        name.setPrefWidth(165);
         name.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         totalGames = new TableColumn<>("Total Games");
