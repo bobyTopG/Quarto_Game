@@ -1,130 +1,69 @@
 package be.kdg.quarto.model;
 
 import java.util.List;
+import java.util.Set;
 
 public class GameRules {
-    private boolean gameOver;
-    private boolean isTie;
-    private Player winner;
-    private final Game game;
-    private Board placingBoard;
+    private Piece lastPiecePlaced;
+    private Piece beforeLastPiecePlaced;
+    private Board board;
+    private List<Move> moves;
 
-    public GameRules(Game game) {
-        this.game = game;
-        placingBoard = game.getPlacedTiles();
+    public GameRules(Board board, List<Move> moves) {
+        this.board = board;
+        this.moves = moves;
     }
 
-    public boolean isTie() {
-        return isTie;
+    public boolean checkWin() {
+        if (moves.size() < 4) return false;
+
+        this.lastPiecePlaced = moves.get(moves.size() - 1).getPiece();
+        this.beforeLastPiecePlaced = moves.get(moves.size() - 2).getPiece();
+        this.board = board;
+
+        // Check all winning conditions
+        return checkLines(4, 1) || // Horizontal
+                checkLines(1, 4) || // Vertical
+                checkLines(5, 1) || // Main diagonal
+                checkLines(3, 1);   // Anti-diagonal
     }
 
     public boolean isGameOver() {
-        placingBoard = game.getPlacedTiles(); // Ensure board is updated
-        List<Tile> tiles = placingBoard.getTiles();
-
-        boolean hasWinner = checkRows() || checkColumns() || checkDiagonals();
-        boolean boardFull = tiles.stream().noneMatch(tile -> tile.getPiece() == null);
-
-
-        if (hasWinner) {
-            gameOver = true;
-            isTie = false;
-            return true;
-        }
-
-        if (boardFull) {
-            gameOver = true;
-            isTie = true;
-            return true;
-        }
-
-        gameOver = false;
-        return false;
+        return checkWin() || moves.size() == 16; // All tiles filled
     }
 
+    private boolean checkLines(int step, int iterations) {
+        for (int i = 0; i < 4 * iterations; i += step) {
+            Piece p1 = board.getTiles().get(i).getPiece();
+            Piece p2 = board.getTiles().get(i + step).getPiece();
+            Piece p3 = board.getTiles().get(i + 2 * step).getPiece();
+            Piece p4 = board.getTiles().get(i + 3 * step).getPiece();
 
-    private boolean checkRows() {
-        List<Tile> tiles = placingBoard.getTiles();
-        for (int row = 0; row < 4; row++) {
-            int startIndex = row * 4;
-            if (checkLine(tiles, startIndex, 1)) {
+            if (p1 != null && p2 != null && p3 != null && p4 != null &&
+                    pieceCombinationIsWinner(p1, p2, p3, p4)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkColumns() {
-        List<Tile> tiles = placingBoard.getTiles();
-        for (int col = 0; col < 4; col++) {
-            if (checkLine(tiles, col, 4)) {
-                return true;
-            }
+    private boolean pieceCombinationIsWinner(Piece p1, Piece p2, Piece p3, Piece p4) {
+        return piecesAreRelated(p1, p2, p3, p4) &&
+                pieceHasBeenPlayedInThisOrLastMove(p1, p2, p3, p4);
+    }
+
+    private boolean piecesAreRelated(Piece p1, Piece p2, Piece p3, Piece p4) {
+        return (p1.getColor() == p2.getColor() && p2.getColor() == p3.getColor() && p3.getColor() == p4.getColor()) ||
+                (p1.getFill() == p2.getFill() && p2.getFill() == p3.getFill() && p3.getFill() == p4.getFill()) ||
+                (p1.getHeight() == p2.getHeight() && p2.getHeight() == p3.getHeight() && p3.getHeight() == p4.getHeight()) ||
+                (p1.getShape() == p2.getShape() && p2.getShape() == p3.getShape() && p3.getShape() == p4.getShape());
+    }
+
+    private boolean pieceHasBeenPlayedInThisOrLastMove(Piece... pieces) {
+        Set<Piece> lastMoves = Set.of(lastPiecePlaced, beforeLastPiecePlaced);
+        for (Piece piece : pieces) {
+            if (lastMoves.contains(piece)) return true;
         }
         return false;
-    }
-
-    private boolean checkDiagonals() {
-        List<Tile> tiles = placingBoard.getTiles();
-        if (checkLine(tiles, 0, 5)) {
-            return true;
-        }
-        if (checkLine(tiles, 3, 3)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkLine(List<Tile> tiles, int startIndex, int step) {
-        Piece p1 = tiles.get(startIndex).getPiece();
-        Piece p2 = tiles.get(startIndex + step).getPiece();
-        Piece p3 = tiles.get(startIndex + 2 * step).getPiece();
-        Piece p4 = tiles.get(startIndex + 3 * step).getPiece();
-
-        if (p1 == null || p2 == null || p3 == null || p4 == null) {
-            return false; // Prevents early false win detection
-        }
-
-        boolean sameColor = allSame(p1, p2, p3, p4, "color");
-        boolean sameHeight = allSame(p1, p2, p3, p4, "height");
-        boolean sameShape = allSame(p1, p2, p3, p4, "shape");
-        boolean sameFill = allSame(p1, p2, p3, p4, "fill");
-
-        if (sameColor || sameHeight || sameShape || sameFill) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    private boolean allSame(Piece p1, Piece p2, Piece p3, Piece p4, String attribute) {
-        String v1 = getAttribute(p1, attribute);
-        String v2 = getAttribute(p2, attribute);
-        String v3 = getAttribute(p3, attribute);
-        String v4 = getAttribute(p4, attribute);
-
-        if (v1 == null || v2 == null || v3 == null || v4 == null) return false;
-
-        return v1.equals(v2) && v2.equals(v3) && v3.equals(v4);
-    }
-
-    private String getAttribute(Piece piece, String attribute) {
-        if (piece == null) return null; // Prevent NullPointerException
-        return switch (attribute) {
-            case "color" -> piece.getColor() != null ? piece.getColor().toString() : null;
-            case "height" -> piece.getHeight() != null ? piece.getHeight().toString() : null;
-            case "shape" -> piece.getShape() != null ? piece.getShape().toString() : null;
-            case "fill" -> piece.getFill() != null ? piece.getFill().toString() : null;
-            default -> null;
-        };
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
-    }
-
-    public Player getWinner() {
-        return winner;
     }
 }

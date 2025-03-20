@@ -5,6 +5,8 @@ import be.kdg.quarto.model.enums.Height;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Fill;
 
+import java.util.ArrayList;
+
 public class Game {
 
     private final Board tilesToSelect;
@@ -16,7 +18,7 @@ public class Game {
     public Game() {
         this.tilesToSelect = new Board();
         this.tilesToPlace = new Board();
-        gameRules = new GameRules(this);
+        gameRules = new GameRules(tilesToPlace , new ArrayList<Move>());
         tilesToSelect.generateAllTiles();
         tilesToPlace.createEmptyTiles();
     }

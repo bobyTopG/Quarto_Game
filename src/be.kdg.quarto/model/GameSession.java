@@ -1,93 +1,78 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.model.enums.AiLevel;
-import be.kdg.quarto.model.strategy.DifficultStrategy;
-import be.kdg.quarto.model.strategy.PlayingStrategy;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class GameSession {
-    private Game model;
-    private final Ai ai;
-    private PlayingStrategy strategy;
-    private final Human human;
-    private Player currentPlayer;
+    private final Game model;
+    private Player winner;
+    private final Player player1;
+    private final Player player2;
+    private final List<Move> moves;
+    private final Date startTime;
+    private Date endTime;
 
 
-    public GameSession () {
-        this(new Human("Human", "secretPassword"),
-                new Ai("Computer", AiLevel.HARD, null, "Description") , new Game());
-    }
 
-    public GameSession(Human human, Ai ai , Game model) {
-        this.human = human;
-        this.ai = ai;
+    public GameSession(Player player1, Player player2, Game model) {
+        this.player1 = player1;
+        this.player2 = player2;
+        this.moves = new ArrayList<>();
         this.model = model;
-        this.currentPlayer = human;
-
-        //ai.setStrategy(new DifficultStrategy(this));
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
+        this.startTime = new Date();
     }
 
-    public void restartGame() {
-        model.getTilesToSelect().getTiles().clear();
-        model.getPlacedTiles().getTiles().clear();
-        model.getCurrentTile().setPiece(null);
-
-        model.getTilesToSelect().generateAllTiles();
-        model.getPlacedTiles().createEmptyTiles();
-
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
+    public Player getOtherPlayer(Player currentPlayer) {
+        if (currentPlayer.equals(player1)) return player2;
+        if (currentPlayer.equals(player2)) return player1;
+        throw new IllegalArgumentException("Given player is not part of this session.");
     }
 
-    private void handleAiTurn() {
-        if (currentPlayer == ai) {
-            if (model.getCurrentTile().getPiece() != null) {
-                //Placing
-                ai.getStrategy().placePiece().setPiece(model.getCurrentTile().getPiece());//set piece to the chosen tile
-                model.getCurrentTile().setPiece(null);
-                model.getGameRules().isGameOver();
-                handleAiTurn();
-            } else {
-                //Picking
-
-                model.getCurrentTile().setPiece(ai.getStrategy().selectPiece().getPiece());
-                model.getTilesToSelect().getTiles()
-                        .get(model.getTilesToSelect().getTiles()
-                                .indexOf(model.getCurrentTile())).setPiece(null);
-                if (model.getGameRules().isGameOver()) {
-                    model.getGameRules().setWinner(currentPlayer);
-                }
-
-                switchTurns();
-            }
-        }
+    public boolean hasWinner() {
+        return winner != null;
     }
 
-    public void switchTurns() {
-        currentPlayer = currentPlayer == ai ? human : ai;
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
+    public void addMove(Move move) {
+        moves.add(move);
     }
 
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-    public Ai getAi() {
-        return ai;
-    }
-    private boolean isAiTurn() {
-        return currentPlayer == ai;
+    public List<Move> getMoves() {
+        return new ArrayList<>(moves); // Return a copy to prevent modification from outside
     }
 
-    public Player getHuman() {
-        return human;
+    public Date getStartTime() {
+        return new Date(startTime.getTime()); // Return a copy to maintain immutability
+    }
+
+    public Date getEndTime() {
+        return (endTime != null) ? new Date(endTime.getTime()) : null; // Handle null case
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = (endTime != null) ? new Date(endTime.getTime()) : null;
     }
 
     public Game getModel() {
         return model;
+    }
+
+    public boolean isGameOver() {
+        return winner != null;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) { // Fixed naming convention from SetWinner to setWinner
+        this.winner = winner;
+    }
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
     }
 }
