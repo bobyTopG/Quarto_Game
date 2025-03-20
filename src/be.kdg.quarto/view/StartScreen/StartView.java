@@ -15,7 +15,7 @@ import javafx.scene.layout.*;
 public class StartView extends BorderPane {
 
     private Label label;
-    private Button newGame, continueButton, leaderBoard, statistics, quit;
+    private Button registerB ,loginB, continueButton, leaderBoard, statistics, quit;
     private HBox mainHBox;
     private BoardView board;
 
@@ -35,7 +35,8 @@ public class StartView extends BorderPane {
         label = CreateHelper.createLabel("Quarto!", "main-title");
         label.setFont(FontHelper.getExtraLargeFont());
 
-        newGame = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
+        registerB = CreateHelper.createButton("New Game",  new String[]{"green-button", "default-button"});
+        loginB = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
         continueButton = CreateHelper.createButton("Continue", new String[]{"orange-button", "default-button"});
         leaderBoard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
         statistics = CreateHelper.createButton("Statistics", new String[]{"blue-button", "default-button"});
@@ -47,7 +48,7 @@ public class StartView extends BorderPane {
     private void layoutNodes() {
         VBox vbox = CreateHelper.createVBox("start-main-vbox");
         vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
-        vbox.getChildren().addAll(label, newGame, continueButton, leaderBoard, statistics, quit);
+        vbox.getChildren().addAll(label, registerB ,loginB, continueButton, leaderBoard, statistics, quit);
         vbox.setAlignment(Pos.CENTER);
 
 
@@ -70,8 +71,12 @@ public class StartView extends BorderPane {
         mainHBox.getChildren().add(stackPane);
     }
 
-    public Button getNewGame() {
-        return newGame;
+    public Button getLoginB() {
+        return loginB;
+    }
+
+    public Button getRegisterB() {
+        return registerB;
     }
 
     public Button getStatistics() {

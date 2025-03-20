@@ -46,10 +46,17 @@ public class StartPresenter {
     }
 
     private void addEventHandlers() {
-        view.getNewGame().setOnAction(event -> {
-            ChooseAIView chooseAIView = new ChooseAIView();
-            view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView, session);
+        view.getRegisterB().setOnAction(event -> {
+            // Check if user is already logged in
+            if (AuthHelper.isLoggedIn()) {
+                // User is logged in, go directly to Choose AI screen
+                goToChooseAIScreen();
+            } else {
+                // User is not logged in, go to Register screen
+                RegisterView registerView = new RegisterView();
+                view.getScene().setRoot(registerView);
+                new RegisterPresenter(registerView);
+            }
         });
 
 
