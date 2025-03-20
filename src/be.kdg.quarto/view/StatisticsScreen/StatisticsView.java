@@ -47,8 +47,7 @@ public class StatisticsView extends BorderPane {
         infoGroup = new VBox();
         infoGroup.getChildren().addAll(centerBtnBox, infoLabel);
         infoGroup.setAlignment(Pos.TOP_CENTER);
-        infoGroup.setSpacing(30);
-        setMargin(infoGroup, new Insets(10, 0, 0, 0));
+        infoGroup.setSpacing(20);
 
         // line chart
         lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
@@ -70,12 +69,15 @@ public class StatisticsView extends BorderPane {
         bottomLayout.setLeft(closeBtn);
         bottomLayout.setRight(bottomBtnBox);
 
+        setMargin(titleLabel, new Insets(0, 0, 5, 0));
+        setMargin(bottomLayout, new Insets(5, 0, 0, 0));
+
         setTop(titleLabel);
         setBottom(bottomLayout);
     }
 
     private void layoutNodes() {
-        setPadding(new Insets(10, 10, 10, 10));
+        setPadding(new Insets(10, 5, 10, 5));
         setAlignment(titleLabel, Pos.CENTER);
 
         playerBtn.setPrefWidth(200);
