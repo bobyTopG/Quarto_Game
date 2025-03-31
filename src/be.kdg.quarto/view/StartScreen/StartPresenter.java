@@ -5,7 +5,7 @@ import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
-import be.kdg.quarto.view.GameScreen.BoardView.BoardView;
+
 import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
@@ -27,7 +27,7 @@ import java.util.Optional;
 public class StartPresenter {
 
     private StartView view;
-    private BoardView boardView = new BoardView();
+   // private BoardView boardView = new BoardView();
     private final String pathToBoard = "/images/Example_Board.png";
 
 
