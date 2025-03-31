@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.GameScreen;
+package be.kdg.quarto.view.GameScreen.BoardView;
 
 import javafx.scene.layout.GridPane;
 

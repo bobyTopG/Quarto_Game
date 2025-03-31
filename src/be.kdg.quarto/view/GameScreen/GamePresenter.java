@@ -2,12 +2,19 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.BoardView.PieceView;
 import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class GamePresenter {
     private final Game model;
@@ -37,8 +44,6 @@ public class GamePresenter {
 
                 int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
                 model.placePiece(model.getBoard().findTile(place) ,model.getHuman());
-
-
                 view.getSelectedPiece().getPieceImage().setImage(null);
                 updateView();
 
@@ -50,7 +55,6 @@ public class GamePresenter {
             pieceView.getPieceImage().setOnMouseClicked(event -> {
                 //place piece before picking
                 if (model.getSelectedPiece() == null) {
-
                     Piece selectedPiece = model.createPieceFromImageName(pieceView.getPieceImage().getImage().getUrl());
                     if(selectedPiece != null) {
                         model.pickPiece(selectedPiece, model.getHuman());
@@ -64,6 +68,26 @@ public class GamePresenter {
         });
         view.getQuarto().setOnMouseClicked(event -> {
             model.callQuarto();
+
+            if(model.getGameSession().isGameOver()){
+                StatisticsView statsView = new StatisticsView();
+                Stage statsStage = new Stage();
+                statsStage.initOwner(view.getScene().getWindow());
+                statsStage.initModality(Modality.APPLICATION_MODAL);
+                Scene statsScene = new Scene(statsView);
+                statsScene.getStylesheets().addAll(view.getScene().getStylesheets());
+                statsStage.setScene(statsScene);
+
+                statsStage.setTitle("Statistics");
+                statsStage.setWidth(425);
+                statsStage.setHeight(400);
+                statsStage.setResizable(false);
+
+
+                new StatisticsPresenter(statsView, new Statistics(1, 1));
+                statsStage.show();
+            }
+
         });
 
         view.getSettings().setOnAction(event -> {
