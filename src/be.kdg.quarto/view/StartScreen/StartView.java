@@ -3,7 +3,6 @@ package be.kdg.quarto.view.StartScreen;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;
-import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.UiSettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -1,14 +1,11 @@
 package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.helpers.DbConnection;
-import be.kdg.quarto.model.Board;
-import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
-import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.BoardView.BoardView;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
@@ -86,7 +83,7 @@ public class StartPresenter {
             statsStage.setScene(statsScene);
 
             statsStage.setTitle("Statistics");
-            statsStage.setWidth(400);
+            statsStage.setWidth(425);
             statsStage.setHeight(400);
             statsStage.setResizable(false);
 

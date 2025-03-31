@@ -11,6 +11,9 @@ public class DbConnection {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://10.134.178.22:5432/game", "game", "7sur7");
             System.out.println("Connection established");
+
+            //close connection when app is shutdown
+            Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -34,6 +37,16 @@ public class DbConnection {
                 "WHERE m.game_session_id = ?\n" +
                 "  and player_id = ?\n" +
                 "GROUP BY winner;";
+    }
+    public static void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Database connection closed");
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
     }
 
     public static String getStatistics() {

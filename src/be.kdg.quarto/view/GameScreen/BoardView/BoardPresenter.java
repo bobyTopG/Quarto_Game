@@ -1,7 +1,6 @@
-package be.kdg.quarto.view.BoardView;
+package be.kdg.quarto.view.GameScreen.BoardView;
 
 import be.kdg.quarto.model.Game;
-import be.kdg.quarto.view.GameScreen.PieceView;
 
 public class BoardPresenter {
 
@@ -20,9 +19,6 @@ public class BoardPresenter {
     private void addEventHandlers() {
 
     }
-
-
-
 
 
     private void updateView() {

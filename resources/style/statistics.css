@@ -1,3 +1,5 @@
+/*FOR CHARTS AND STATISTIC RELATED COMPONENTS*/
+
 #player-statistics-button {
     -fx-border-radius: 40px 0px 0px 40px;
     -fx-background-radius: 40px 0px 0px 40px;
@@ -75,7 +77,7 @@
     -fx-border-color: #FBB77C;
     -fx-border-width: 3px;
     -fx-border-radius: 6px;
-    -fx-padding: 5px;
+    -fx-padding: 15px;
 }
 
 .chart-title {
@@ -88,7 +90,10 @@
     -fx-background-color: #FFE0B2;
     -fx-border-color: #FBB77C;
     -fx-border-width: 1px;
-    -fx-border-radius: 4px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-pref-width: 160px;
+    -fx-alignment: center;
     -fx-padding: 5px;
     -fx-hgap: 15px; /* Adjust horizontal spacing */
 }
