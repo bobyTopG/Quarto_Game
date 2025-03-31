@@ -70,22 +70,7 @@ public class GamePresenter {
             model.callQuarto();
 
             if(model.getGameSession().isGameOver()){
-                StatisticsView statsView = new StatisticsView();
-                Stage statsStage = new Stage();
-                statsStage.initOwner(view.getScene().getWindow());
-                statsStage.initModality(Modality.APPLICATION_MODAL);
-                Scene statsScene = new Scene(statsView);
-                statsScene.getStylesheets().addAll(view.getScene().getStylesheets());
-                statsStage.setScene(statsScene);
-
-                statsStage.setTitle("Statistics");
-                statsStage.setWidth(425);
-                statsStage.setHeight(400);
-                statsStage.setResizable(false);
-
-
-                new StatisticsPresenter(statsView, new Statistics(1, 1));
-                statsStage.show();
+                //todo: show statistics
             }
 
         });
