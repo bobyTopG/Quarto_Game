@@ -85,7 +85,10 @@ public class Game {
     }
 
     public void switchTurns() {
-        if (gameSession.hasWinner()) return;
+        if (gameSession.hasWinner()){
+
+            return;
+        }
 
         currentPlayer = gameSession.getOtherPlayer(currentPlayer);
         if (isAiTurn()) {
@@ -98,8 +101,9 @@ public class Game {
             if (selectedPiece != null) {
                 //Placing
                 placePiece(ai.getStrategy().selectTile(), ai);
-                if(ai.getStrategy().isCallingQuarto())
-                   gameSession.SetWinner(callQuarto());
+                if(ai.getStrategy().isCallingQuarto()){
+                    gameSession.SetWinner(callQuarto());
+                }
                 //after placing piece -> pick piece
                 handleAiTurn();
 

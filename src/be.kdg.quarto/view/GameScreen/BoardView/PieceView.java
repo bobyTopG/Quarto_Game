@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.GameScreen;
+package be.kdg.quarto.view.GameScreen.BoardView;
 
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.enums.Size;

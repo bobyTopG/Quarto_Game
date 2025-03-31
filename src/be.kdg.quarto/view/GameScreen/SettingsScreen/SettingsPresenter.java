@@ -1,16 +1,10 @@
 package be.kdg.quarto.view.GameScreen.SettingsScreen;
 
 import be.kdg.quarto.model.Game;
-import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.view.BoardView.BoardView;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
-import be.kdg.quarto.view.GameScreen.PieceView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.text.Font;
 
 public class SettingsPresenter {
     private GamePresenter gamePresenter;

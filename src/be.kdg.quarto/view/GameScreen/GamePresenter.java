@@ -2,12 +2,19 @@ package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.view.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.BoardView.BoardPresenter;
+import be.kdg.quarto.view.GameScreen.BoardView.PieceView;
 import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class GamePresenter {
     private final Game model;
@@ -37,8 +44,6 @@ public class GamePresenter {
 
                 int place = view.getBoard().getSpaceViews().indexOf(boardSpaceView);
                 model.placePiece(model.getBoard().findTile(place) ,model.getHuman());
-
-
                 view.getSelectedPiece().getPieceImage().setImage(null);
                 updateView();
 
@@ -50,7 +55,6 @@ public class GamePresenter {
             pieceView.getPieceImage().setOnMouseClicked(event -> {
                 //place piece before picking
                 if (model.getSelectedPiece() == null) {
-
                     Piece selectedPiece = model.createPieceFromImageName(pieceView.getPieceImage().getImage().getUrl());
                     if(selectedPiece != null) {
                         model.pickPiece(selectedPiece, model.getHuman());
@@ -64,6 +68,11 @@ public class GamePresenter {
         });
         view.getQuarto().setOnMouseClicked(event -> {
             model.callQuarto();
+
+            if(model.getGameSession().isGameOver()){
+                //todo: show statistics
+            }
+
         });
 
         view.getSettings().setOnAction(event -> {

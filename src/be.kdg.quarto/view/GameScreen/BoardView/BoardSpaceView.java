@@ -1,6 +1,5 @@
-package be.kdg.quarto.view.BoardView;
+package be.kdg.quarto.view.GameScreen.BoardView;
 
-import be.kdg.quarto.view.GameScreen.SelectPieceView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;

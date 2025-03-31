@@ -1,3 +1,5 @@
+/*FOR GENERAL USE (COMPONENTS THAT ARE IN MOST OF THE VIEWS)*/
+
 .default-button {
     -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-pref-height: 50px;

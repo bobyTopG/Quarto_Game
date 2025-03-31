@@ -1,7 +1,9 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.view.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.BoardView.BoardView;
+import be.kdg.quarto.view.GameScreen.BoardView.PieceView;
+import be.kdg.quarto.view.GameScreen.BoardView.SelectPieceView;
 import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
