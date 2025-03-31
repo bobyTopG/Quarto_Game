@@ -16,7 +16,7 @@ public class DbConnection {
         }
     }
 
-    // retrieves the winner, total number of moves, total time played and average time per move
+
     public static String getPartialStats() {
         return "SELECT winner,\n" +
                 "       count(*)   as total_moves,\n" +

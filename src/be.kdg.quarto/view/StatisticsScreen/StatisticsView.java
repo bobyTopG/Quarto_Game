@@ -41,26 +41,34 @@ public class StatisticsView extends BorderPane {
         aiBtn.setId("ai-statistics-button");
 
         infoLabel = CreateHelper.createLabel("", "info");
-
-        HBox centerBtnBox = new HBox();
-        centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
         infoGroup = new VBox();
-        infoGroup.getChildren().addAll(centerBtnBox, infoLabel);
-        infoGroup.setAlignment(Pos.TOP_CENTER);
-        infoGroup.setSpacing(20);
 
-        // line chart
         lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
-        lineChart.setTitle("Performance Statistics");
-        lineChart.setAnimated(false);
         series1 = new XYChart.Series<>();
-        series1.setName("Player 1");
         series2 = new XYChart.Series<>();
-        series2.setName("Player 2");
 
         closeBtn = CreateHelper.createButton("Close", new String[]{"default-button", "red-button"});
         backBtn = CreateHelper.createButton("Back", new String[]{"default-button", "orange-button"});
         nextBtn = CreateHelper.createButton("Next", new String[]{"default-button", "green-button"});
+    }
+
+    private void layoutNodes() {
+        HBox centerBtnBox = new HBox();
+        centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
+        infoGroup.getChildren().addAll(centerBtnBox, infoLabel);
+        infoGroup.setAlignment(Pos.TOP_CENTER);
+        infoGroup.setSpacing(20);
+
+        lineChart.setTitle("Performance Statistics");
+        lineChart.setAnimated(false);
+        series1.setName("Player 1");
+        series2.setName("Player 2");
+
+        setPadding(new Insets(10, 5, 10, 5));
+        setAlignment(titleLabel, Pos.CENTER);
+
+        playerBtn.setPrefWidth(200);
+        aiBtn.setPrefWidth(200);
 
         HBox bottomBtnBox = new HBox();
         bottomBtnBox.getChildren().addAll(backBtn, nextBtn);
@@ -74,14 +82,6 @@ public class StatisticsView extends BorderPane {
 
         setTop(titleLabel);
         setBottom(bottomLayout);
-    }
-
-    private void layoutNodes() {
-        setPadding(new Insets(10, 5, 10, 5));
-        setAlignment(titleLabel, Pos.CENTER);
-
-        playerBtn.setPrefWidth(200);
-        aiBtn.setPrefWidth(200);
     }
 
     // Package private getters
