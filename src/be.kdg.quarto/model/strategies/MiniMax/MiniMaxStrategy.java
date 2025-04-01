@@ -10,7 +10,7 @@ import be.kdg.quarto.model.PlayingStrategy;
 import java.util.*;
 
 public class MiniMaxStrategy implements PlayingStrategy {
-    private static final int MAX_DEPTH = 4;
+    private static final int MAX_DEPTH = 6;
     private GameSession gameSession;
     private Player aiPlayer;
 
