@@ -2,7 +2,6 @@ package be.kdg.quarto;
 
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
-import be.kdg.quarto.view.UiSettings;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,23 +11,16 @@ import java.net.MalformedURLException;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        UiSettings uiSettings = new UiSettings();
+
         StartView view = new StartView();
 
         Scene scene = new Scene(view);
         loadStyleSheets(scene);
 
-        if (uiSettings.styleSheetAvailable()){
-            try {
-                scene.getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
-            } catch (MalformedURLException ex) {
-                // do nothing, if toURL-conversion fails, program can continue
-            }
-        }
+
         primaryStage.setScene(scene);
         //primaryStage.setHeight(uiSettings.getLowestRes() / 4);
         //primaryStage.setWidth(uiSettings.getLowestRes() / 4);
-        primaryStage.setTitle(uiSettings.getApplicationName());
         primaryStage.setResizable(false);
 
 

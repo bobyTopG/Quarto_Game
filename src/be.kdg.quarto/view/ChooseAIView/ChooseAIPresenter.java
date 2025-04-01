@@ -52,6 +52,7 @@ public class ChooseAIPresenter {
         view.getSelectButton().setOnMouseClicked(event -> {
             if (aiSelected != null) {
                 GameView gameView = new GameView();
+
                 GameSession model = new GameSession(
                         AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : new Human("Guest", null),
                         aiSelected

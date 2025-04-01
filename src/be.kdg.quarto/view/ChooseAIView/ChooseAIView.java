@@ -133,7 +133,7 @@ public class ChooseAIView extends BorderPane {
     }
 
 
-    public void initialise(List<Image> images, List<Ai> characters, Image notFoundImage) {
+     void initialise(List<Image> images, List<Ai> characters, Image notFoundImage) {
         this.AIImages = images;
         this.AiCharacters = characters;
         this.notFoundImage = notFoundImage;
