@@ -1,6 +1,6 @@
 package be.kdg.quarto.view.GameScreen.SettingsScreen;
 
-import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -9,9 +9,9 @@ import be.kdg.quarto.view.StartScreen.StartView;
 public class SettingsPresenter {
     private GamePresenter gamePresenter;
     private SettingsView view;
-    private Game model;
+    private GameSession model;
 
-    public SettingsPresenter(GamePresenter game, SettingsView view, Game model) {
+    public SettingsPresenter(GamePresenter game, SettingsView view, GameSession model) {
         this.gamePresenter = game;
         this.view = view;
         this.model = model;
@@ -25,7 +25,7 @@ public class SettingsPresenter {
             // Close the settings overlay
             closeSettings();
             // Create a new Game instance with the same players from the current game
-            Game newGame = new Game(model.getHuman(), model.getAI());
+            GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent());
             // Create a new view (this will properly initialize all UI components)
             GameView newView = new GameView();
 
@@ -33,7 +33,7 @@ public class SettingsPresenter {
             view.getScene().setRoot(newView);
 
             // Create a new presenter with the new model and new view
-            new GamePresenter(newGame, newView);
+            new GamePresenter(newGameSession, newView);
         });
 
         view.getResumeButton().setOnAction(event -> {

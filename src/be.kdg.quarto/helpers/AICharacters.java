@@ -3,6 +3,7 @@ package be.kdg.quarto.helpers;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.PlayingStrategy;
 import be.kdg.quarto.model.enums.AiLevel;
+//import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 import be.kdg.quarto.model.strategies.RandomPlayingStrategy;
 

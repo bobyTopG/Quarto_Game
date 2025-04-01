@@ -1,16 +1,15 @@
 package be.kdg.quarto.view.GameScreen;
 
-import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 public class GamePresenter {
-    private final Game model;
+    private final GameSession model;
     private final GameView view;
 
     // Constants for piece sizes
@@ -19,7 +18,7 @@ public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 25.0;
     private static final double SELECT_REGULAR_PIECE_SIZE = 35.0;
 
-    public GamePresenter(Game model, GameView view) {
+    public GamePresenter(GameSession model, GameView view) {
         this.model = model;
         this.view = view;
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
@@ -36,8 +35,8 @@ public class GamePresenter {
                 int finalRow = row;
                 int finalCol = col;
                 view.getBoardSpaces()[row][col].setOnMouseClicked(event -> {
-                    model.placePiece(model.getBoard().findTile(index), model.getHuman());
-                    view.getSelectedPieceImage().setImage(null);
+                    model.getGame().placePiece(model.getGame().getBoard().findTile(index), model.getOpponent());
+                    model.getGame().setSelectedPiece(null);
                     updateView();
                 });
             }
@@ -48,10 +47,14 @@ public class GamePresenter {
             for (int col = 0; col < 4; col++) {
                 ImageView pieceImageView = view.getSelectPieceImages()[row][col];
                 pieceImageView.setOnMouseClicked(event -> {
-                    if (model.getSelectedPiece() == null) {
+                    if (model.getGame().getSelectedPiece() == null) {
                         Piece selectedPiece = model.createPieceFromImageName(pieceImageView.getImage().getUrl());
                         if (selectedPiece != null) {
-                            model.pickPiece(selectedPiece, model.getHuman());
+                            model.pickPiece(selectedPiece, model.getOpponent());
+                            model.getGame().getPiecesToSelect().getTiles().stream()
+                                    .filter(tile -> selectedPiece.equals(tile.getPiece()))
+                                    .findFirst()
+                                    .ifPresent(tile -> tile.setPiece(null));
                             updateView();
                         } else {
                             System.out.println("Selected Piece is null!");
@@ -63,7 +66,7 @@ public class GamePresenter {
 
         view.getQuarto().setOnMouseClicked(event -> {
             model.callQuarto();
-            if (model.getGameSession().isGameOver()) {
+            if (model.getGame().getGameRules().checkWin()) {
                 // todo: show statistics
             }
         });
@@ -76,21 +79,23 @@ public class GamePresenter {
 
     public void updateView() {
         // Update selected piece
-        if (model.getSelectedPiece() != null) {
-            Image pieceImage = new Image(getPieceImage(model.getSelectedPiece()));
+        if (model.getGame().getSelectedPiece() != null) {
+            Image pieceImage = new Image(getPieceImage(model.getGame().getSelectedPiece()));
             view.getSelectedPieceImage().setImage(pieceImage);
-            boolean isSmall = model.getSelectedPiece().getSize() == Size.SMALL;
+            boolean isSmall = model.getGame().getSelectedPiece().getSize() == Size.SMALL;
             view.getSelectedPieceImage().setFitHeight(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
             view.getSelectedPieceImage().setFitWidth(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
         }
+        else   view.getSelectedPieceImage().setImage(null);
+
 
         // Update selection grid
-        for (int i = 0; i < model.getPiecesToSelect().getTiles().size(); i++) {
+        for (int i = 0; i < model.getGame().getPiecesToSelect().getTiles().size(); i++) {
             int row = i / 4;
             int col = i % 4;
             ImageView imageView = view.getSelectPieceImages()[row][col];
-            if (model.getPiecesToSelect().getTiles().get(i).getPiece() != null) {
-                Piece piece = model.getPiecesToSelect().getTiles().get(i).getPiece();
+            if (model.getGame().getPiecesToSelect().getTiles().get(i).getPiece() != null) {
+                Piece piece = model.getGame().getPiecesToSelect().getTiles().get(i).getPiece();
                 Image img = new Image(getPieceImage(piece));
                 imageView.setImage(img);
                 boolean isSmall = piece.getSize() == Size.SMALL;
@@ -102,10 +107,10 @@ public class GamePresenter {
         }
 
         // Update board grid
-        for (int i = 0; i < model.getPlacedTiles().getTiles().size(); i++) {
+        for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
             int row = i / 4;
             int col = i % 4;
-            Piece piece = model.getPlacedTiles().getTiles().get(i).getPiece();
+            Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
             StackPane space = view.getBoardSpaces()[row][col];
 
             // Remove any piece image
@@ -123,7 +128,7 @@ public class GamePresenter {
         }
 
         // Update turn label
-        boolean isHumanTurn = model.getCurrentPlayer().equals(model.getHuman());
+        boolean isHumanTurn = model.getCurrentPlayer().equals(model.getOpponent());
         view.getTurn().setText(isHumanTurn ? "Your Turn!" : "AI Turn!");
     }
 

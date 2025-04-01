@@ -31,7 +31,7 @@ ORDER BY player_id, move_start_time;
 
 -- leaderboard -> name, total games played, wins,
 -- losses, % of wins,
--- avg of turns per game,
+-- avg of turns per gameSession,
 -- avg duration per move
 SELECT p.player_id,
        p.name,

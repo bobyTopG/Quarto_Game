@@ -1,11 +1,12 @@
 package be.kdg.quarto.model.strategies.MiniMax;
 
+
+import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.Board;
-import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.model.PlayingStrategy;
-import be.kdg.quarto.model.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,20 +14,21 @@ import java.util.Random;
 
 public class MiniMaxStrategy implements PlayingStrategy {
     private static final int MAX_DEPTH = 4;
-    private Game game;
+    private GameSession gameSession;
     private Player strategyAI;
+
 
     public MiniMaxStrategy() {
     }
 
-    public void fillNecessaryData(Game game) {
-        this.game = game;
-        this.strategyAI = game.getAI();
+    public void fillNecessaryData(GameSession gameSession) {
+        this.gameSession = gameSession;
+        this.strategyAI = gameSession.getOpponent();
     }
 
     @Override
     public Piece selectPiece() {
-        List<Tile> availableTiles = game.getPiecesToSelect().getTiles().stream()
+        List<Tile> availableTiles = gameSession.getGame().getPiecesToSelect().getTiles().stream()
                 .filter(tile -> tile.getPiece() != null)
                 .toList();
 
@@ -78,20 +80,19 @@ public class MiniMaxStrategy implements PlayingStrategy {
 
     private void applyTemporarySelection(Tile tile) {
         // Store the current selected piece temporarily
-        game.setSelectedPiece(tile.getPiece());
+        gameSession.getGame().setSelectedPiece(tile.getPiece());
     }
 
     private void undoTemporarySelection() {
         // Restore the previous state
-        game.setSelectedPiece(null);
+        gameSession.getGame().setSelectedPiece(null);
     }
 
     private boolean opponentCanWin() {
-        for (StrategyMove move : getPossibleMoves(game)) {
-            applyMove(game, move);
-            boolean wins = game.getGameSession().isGameOver();
-            undoMove(game, move);
-            if (wins) {
+        for (StrategyMove move : getPossibleMoves(gameSession)) {
+            applyMove(gameSession, move);
+            undoMove(gameSession, move);
+            if (checkWin()) {
                 System.out.println("!Opponent has a winning move!");
                 return true;
             }
@@ -101,10 +102,10 @@ public class MiniMaxStrategy implements PlayingStrategy {
 
     private int evaluateOpponentOptions() {
         int bestScore = Integer.MIN_VALUE;
-        for (StrategyMove move : getPossibleMoves(game)) {
-            applyMove(game, move);
-            int score = minimax(game, 1, false); // Check one depth level ahead
-            undoMove(game, move);
+        for (StrategyMove move : getPossibleMoves(gameSession)) {
+            applyMove(gameSession, move);
+            int score = minimax(gameSession, 1, false); // Check one depth level ahead
+            undoMove(gameSession, move);
             bestScore = Math.max(bestScore, score);
         }
         return bestScore;
@@ -112,11 +113,11 @@ public class MiniMaxStrategy implements PlayingStrategy {
 
     @Override
     public Tile selectTile() {
-        StrategyMove bestMove = getBestMove(game);
+        StrategyMove bestMove = getBestMove(gameSession);
         if (bestMove == null) {
             return null; // No valid StrategyMove found (should not happen in a normal game)
         }
-        return game.getPlacedTiles().getTiles().get(bestMove.getStartY() * 4 + bestMove.getStartX());
+        return gameSession.getGame().getBoard().getTiles().get(bestMove.getStartY() * 4 + bestMove.getStartX());
     }
 
     @Override
@@ -128,23 +129,23 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return true;
     }
 
-    public StrategyMove getBestMove(Game game) {
-        if (game.getGameSession().isGameOver()) {
+    public StrategyMove getBestMove(GameSession gameSession) {
+        if (checkWin()) {
             return null; // AI should not play after winning
         }
         int bestScore = Integer.MIN_VALUE;
         StrategyMove bestMove = null;
 
-        for (StrategyMove move : getPossibleMoves(game)) {
-            applyMove(game, move);
+        for (StrategyMove move : getPossibleMoves(gameSession)) {
+            applyMove(gameSession, move);
 
-            if (game.getGameSession().isGameOver()) {
-                undoMove(game, move);
+            if (checkWin()) {
+                undoMove(gameSession, move);
                 return move; // Stop immediately and return winning move
             }
 
-            int score = minimax(game, MAX_DEPTH, false);
-            undoMove(game, move);
+            int score = minimax(gameSession, MAX_DEPTH, false);
+            undoMove(gameSession, move);
 
             if (score > bestScore) {
                 bestScore = score;
@@ -156,56 +157,56 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return bestMove;
     }
 
-    private int minimax(Game game, int depth, boolean isMaximizing) {
-        if (game.getGameSession().isGameOver()) {
-            int score = (game.getGameSession().getWinner() == strategyAI) ? 1000 : -1000;
+    private int minimax(GameSession gameSession, int depth, boolean isMaximizing) {
+        if (checkWin()) {
+            int score = (gameSession.getWinner() == strategyAI) ? 1000 : -1000;
             return score;
         }
 
         if (depth == 0) {
-            return evaluateBoard(game);
+            return evaluateBoard(gameSession);
         }
 
         if (isMaximizing) {
             int maxEval = Integer.MIN_VALUE;
-            for (StrategyMove move : getPossibleMoves(game)) {
-                applyMove(game, move);
-                if (game.getGameSession().isGameOver()) {
-                    undoMove(game, move);
+            for (StrategyMove move : getPossibleMoves(gameSession)) {
+                applyMove(gameSession, move);
+                if (checkWin()) {
+                    undoMove(gameSession, move);
                     return 1000; // Stop searching if AI finds a win
                 }
-                int eval = minimax(game, depth - 1, false);
-                undoMove(game, move);
+                int eval = minimax(gameSession, depth - 1, false);
+                undoMove(gameSession, move);
                 maxEval = Math.max(maxEval, eval);
             }
             return maxEval;
         } else {
             int minEval = Integer.MAX_VALUE;
-            for (StrategyMove move : getPossibleMoves(game)) {
-                applyMove(game, move);
-                if (game.getGameSession().isGameOver()) {
-                    undoMove(game, move);
+            for (StrategyMove move : getPossibleMoves(gameSession)) {
+                applyMove(gameSession, move);
+                if (checkWin()) {
+                    undoMove(gameSession, move);
                     return -1000; // Stop searching if human finds a win
                 }
-                int eval = minimax(game, depth - 1, true);
-                undoMove(game, move);
+                int eval = minimax(gameSession, depth - 1, true);
+                undoMove(gameSession, move);
                 minEval = Math.min(minEval, eval);
             }
             return minEval;
         }
     }
 
-    private int evaluateBoard(Game game) {
-        if (game.getGameSession().isGameOver()) {
-            if (game.getGameSession().getWinner() == strategyAI) {
+    private int evaluateBoard(GameSession gameSession) {
+        if (checkWin()) {
+            if (gameSession.getWinner() == strategyAI) {
                 return 1000; // AI wins
-            } else if (game.getGameSession().getWinner() != strategyAI) {
+            } else if (gameSession.getWinner() != strategyAI) {
                 return -1000; // Human wins
             }
         }
 
         int score = 0;
-        Board board = game.getPlacedTiles();
+        Board board = gameSession.getGame().getBoard();
 
         for (int row = 0; row < 4; row++) {
             score += evaluateLine(board, row * 4, 1); // Rows
@@ -270,9 +271,9 @@ public class MiniMaxStrategy implements PlayingStrategy {
         };
     }
 
-    private List<StrategyMove> getPossibleMoves(Game game) {
+    private List<StrategyMove> getPossibleMoves(GameSession gameSession) {
         List<StrategyMove> moves = new ArrayList<>();
-        Board board = game.getPlacedTiles();
+        Board board = gameSession.getGame().getBoard();
         List<Tile> tiles = board.getTiles();
 
         for (int i = 0; i < tiles.size(); i++) {
@@ -283,13 +284,18 @@ public class MiniMaxStrategy implements PlayingStrategy {
         return moves;
     }
 
-    private void applyMove(Game game, StrategyMove move) {
-        Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
-        tile.setPiece(game.getSelectedPiece());
+    private void applyMove(GameSession gameSession, StrategyMove move) {
+        Tile tile = gameSession.getGame().getBoard().getTiles().get(move.getStartY() * 4 + move.getStartX());
+        tile.setPiece(gameSession.getGame().getSelectedPiece());
     }
 
-    private void undoMove(Game game, StrategyMove move) {
-        Tile tile = game.getPlacedTiles().getTiles().get(move.getStartY() * 4 + move.getStartX());
+    private void undoMove(GameSession gameSession, StrategyMove move) {
+        Tile tile = gameSession.getGame().getBoard().getTiles().get(move.getStartY() * 4 + move.getStartX());
         tile.setPiece(null);
+    }
+
+
+    public boolean checkWin() {
+        return gameSession.getGame().getGameRules().checkWin();
     }
 }

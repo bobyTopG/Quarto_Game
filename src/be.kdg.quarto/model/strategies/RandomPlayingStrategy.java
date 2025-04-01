@@ -1,10 +1,10 @@
 package be.kdg.quarto.model.strategies;
 
 import be.kdg.quarto.model.Board;
-import be.kdg.quarto.model.Game;
+import be.kdg.quarto.model.Tile;
+import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.PlayingStrategy;
-import be.kdg.quarto.model.Tile;
 
 import java.util.List;
 import java.util.Random;
@@ -18,9 +18,14 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     public RandomPlayingStrategy() {
 
     }
-    public void fillNecessaryData(Game game) {
-        this.selectPiece = game.getPiecesToSelect();
-        this.board = game.getBoard();
+    public void fillNecessaryData(GameSession gameSession) {
+        this.selectPiece = gameSession.getGame().getPiecesToSelect();
+        this.board = gameSession.getGame().getBoard();
+
+        // Safeguard: ensure board has tiles
+        if (this.board.getTiles().isEmpty()) {
+            this.board.createEmptyBoard();
+        }
     }
 
 

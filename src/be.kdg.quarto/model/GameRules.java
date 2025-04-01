@@ -7,7 +7,14 @@ public class GameRules {
     Piece lastPiecePlaced;
     Piece beforeLastPiecePlaced;
     Board board;
-    public boolean checkWin(Board board, List<Move> moves) {
+    List<Move> moves;
+
+   public GameRules(Board board , List<Move> moves) {
+       this.board = board;
+       this.moves = moves;
+    }
+
+    public boolean checkWin() {
         // no one can possibly win with under 4 moves made
         if(moves.size() < 4) {
             return false;
@@ -92,5 +99,6 @@ public class GameRules {
                (lastPiecePlaced == piece3 || beforeLastPiecePlaced == piece3) ||
                (lastPiecePlaced == piece4 || beforeLastPiecePlaced == piece4);
     }
+
 
 }

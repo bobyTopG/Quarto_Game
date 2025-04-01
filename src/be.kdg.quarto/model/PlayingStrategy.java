@@ -4,6 +4,6 @@ public interface PlayingStrategy {
     Tile selectTile();
     Piece selectPiece();
     String getName();
-    void fillNecessaryData(Game game);
+    void fillNecessaryData(GameSession gameSession);
     boolean isCallingQuarto();
 }
