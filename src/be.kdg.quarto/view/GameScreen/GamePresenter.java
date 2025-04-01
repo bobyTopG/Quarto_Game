@@ -11,7 +11,6 @@ public class GamePresenter {
     private final GameSession model;
     private final GameView view;
 
-    // Constants for piece sizes
     private static final double SMALL_PIECE_SIZE = 23.0;
     private static final double REGULAR_PIECE_SIZE = 30.0;
     private static final double SELECT_SMALL_PIECE_SIZE = 25.0;
@@ -49,7 +48,7 @@ public class GamePresenter {
                 ImageView pieceImageView = view.getSelectPieceImages()[row][col];
                 pieceImageView.setOnMouseClicked(event -> {
                     if (model.getGame().getSelectedPiece() == null) {
-                        Piece selectedPiece = model.createPieceFromImageName(pieceImageView.getImage().getUrl());
+                        Piece selectedPiece = model.getGame().createPieceFromImageName(pieceImageView.getImage().getUrl());
                         if (selectedPiece != null) {
                             model.pickPiece(selectedPiece, model.getOpponent());
                             model.getGame().getPiecesToSelect().getTiles().stream()

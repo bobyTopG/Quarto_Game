@@ -44,7 +44,6 @@ public class GameSession {
         return rand == 1 ? opponent : player;
     }
 
-
     public Player callQuarto() {
         if (game.getGameRules().checkWin()) {
             System.out.println(currentPlayer.getName() + " Has won the game!");
@@ -54,30 +53,6 @@ public class GameSession {
         return null;
     }
 
-
-    public Piece createPieceFromImageName(String path) {
-        String filename = path.substring(path.indexOf("/pieces/") + 8, path.lastIndexOf("."));
-        String[] parts = filename.split("_");
-
-        if (parts.length != 4) throw new IllegalArgumentException("Invalid image name format: " + path);
-
-        try {
-            return new Piece(
-                    Color.valueOf(parts[2].toUpperCase()),
-                    Size.valueOf(parts[3].toUpperCase()),
-                    Fill.valueOf(parts[0].toUpperCase()),
-                    Shape.valueOf(parts[1].toUpperCase())
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid enum value in image name.");
-            return null;
-        }
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
     public void switchTurns() {
         currentPlayer = currentPlayer == player ? opponent : player;
         if (isAiTurn()) {
@@ -85,6 +60,9 @@ public class GameSession {
         }
     }
 
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
 
     private void handleAiTurn() {
         Ai ai = getAiPlayer();

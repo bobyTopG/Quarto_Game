@@ -26,7 +26,7 @@ public class Human extends Player {
     }
     public boolean loginPlayer(String password, AuthHelper authHelper) throws AuthException {
         try {
-            Human loggedInHuman = (Human) authHelper.login(getName(), password);
+            Human loggedInHuman = (Human) AuthHelper.login(getName(), password);
             return loggedInHuman != null;
         } catch (AuthException e) {
             return false;

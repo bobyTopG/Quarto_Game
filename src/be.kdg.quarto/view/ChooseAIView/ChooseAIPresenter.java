@@ -41,30 +41,8 @@ public class ChooseAIPresenter {
     }
 
     private void addEventHandlers() {
-        addEventListenersForAICharacterButtons();
-
-        view.getBackButton().setOnMouseClicked(event -> {
-            StartView startView = new StartView();
-            view.getScene().setRoot(startView);
-            new StartPresenter(startView);
-        });
-
-        view.getSelectButton().setOnMouseClicked(event -> {
-            if (aiSelected != null) {
-                GameView gameView = new GameView();
-
-                GameSession model = new GameSession(
-                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : new Human("Guest", null),
-                        aiSelected
-                );
-                view.getScene().setRoot(gameView);
-                new GamePresenter(model, gameView);
-            }
-        });
-    }
-
-    private void addEventListenersForAICharacterButtons() {
         int count = 0;
+
         for (Button characterButton : view.getCharacterButtons()) {
             final int id = count;
             characterButton.setOnMouseClicked(event -> {
@@ -75,6 +53,8 @@ public class ChooseAIPresenter {
             count++;
         }
 
+
+
         for (Button notFoundButton : view.getNotFoundButtons()) {
             notFoundButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(-1);
@@ -82,6 +62,28 @@ public class ChooseAIPresenter {
                 aiSelected = null;
             });
         }
+
+
+
+        view.getBackButton().setOnMouseClicked(event -> {
+            StartView startView = new StartView();
+            view.getScene().setRoot(startView);
+            new StartPresenter(startView);
+        });
+
+
+
+        view.getSelectButton().setOnMouseClicked(event -> {
+            if (aiSelected != null) {
+                GameView gameView = new GameView();
+                GameSession model = new GameSession(
+                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : new Human("Guest", null),
+                        aiSelected
+                );
+                view.getScene().setRoot(gameView);
+                new GamePresenter(model, gameView);
+            }
+        });
     }
 
     private void updateView() {
