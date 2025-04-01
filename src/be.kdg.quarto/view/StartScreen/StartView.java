@@ -66,23 +66,23 @@ public class StartView extends BorderPane {
     }
     // Getters
 
-    public Button getNewGame() {
+     Button getNewGame() {
         return newGame;
     }
 
-    public Button getContinueButton() {
+     Button getContinueButton() {
         return continueButton;
     }
 
-    public Button getStatistics() {
+     Button getStatistics() {
         return statistics;
     }
 
-    public Button getLeaderboard() {
+     Button getLeaderboard() {
         return leaderboard;
     }
 
-    public Button getQuit() {
+     Button getQuit() {
         return quit;
     }
 }

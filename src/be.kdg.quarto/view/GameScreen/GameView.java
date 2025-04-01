@@ -146,17 +146,43 @@ public class GameView extends StackPane {
     }
 
     // Getters
-    public StackPane getOverlayContainer() { return overlayContainer; }
-    public SettingsView getSettingsView() { return settingsView; }
+    StackPane getOverlayContainer() {
+        return overlayContainer;
+    }
 
-    public StackPane getSelectedPieceContainer() { return selectedPieceContainer; }
-    public ImageView getSelectedPieceImage() { return selectedPieceImage; }
+    SettingsView getSettingsView() {
+        return settingsView;
+    }
 
-    public StackPane[][] getBoardSpaces() { return boardSpaces; }
-    public ImageView[][] getSelectPieceImages() { return pieceSlots; }
+    StackPane getSelectedPieceContainer() {
+        return selectedPieceContainer;
+    }
 
-    public Label getTurn() { return turn; }
-    public Label getTimer() { return timer; }
-    public Button getQuarto() { return quarto; }
-    public Button getSettings() { return settings; }
+    ImageView getSelectedPieceImage() {
+        return selectedPieceImage;
+    }
+
+    StackPane[][] getBoardSpaces() {
+        return boardSpaces;
+    }
+
+    ImageView[][] getSelectPieceImages() {
+        return pieceSlots;
+    }
+
+    Label getTurn() {
+        return turn;
+    }
+
+    Label getTimer() {
+        return timer;
+    }
+
+    Button getQuarto() {
+        return quarto;
+    }
+
+    Button getSettings() {
+        return settings;
+    }
 }
