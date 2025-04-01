@@ -3,7 +3,6 @@ package be.kdg.quarto.view.GameScreen;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.view.GameScreen.SettingsScreen.SettingsPresenter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -35,9 +34,11 @@ public class GamePresenter {
                 int finalRow = row;
                 int finalCol = col;
                 view.getBoardSpaces()[row][col].setOnMouseClicked(event -> {
-                    model.getGame().placePiece(model.getGame().getBoard().findTile(index), model.getOpponent());
-                    model.getGame().setSelectedPiece(null);
-                    updateView();
+                    if (model.getGame().getBoard().findTile(index).getPiece() == null) {
+                        model.getGame().placePiece(model.getGame().getBoard().findTile(index), model.getOpponent());
+                        model.getGame().setSelectedPiece(null);
+                        updateView();
+                    }
                 });
             }
         }

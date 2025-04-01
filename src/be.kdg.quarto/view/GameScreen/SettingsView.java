@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.GameScreen.SettingsScreen;
+package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;

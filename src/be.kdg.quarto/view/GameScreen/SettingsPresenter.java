@@ -1,8 +1,6 @@
-package be.kdg.quarto.view.GameScreen.SettingsScreen;
+package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.view.GameScreen.GamePresenter;
-import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 
