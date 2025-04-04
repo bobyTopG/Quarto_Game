@@ -174,12 +174,17 @@ public class ChooseAIView extends BorderPane {
 
         return AICharactersHBox;
     }
+
+
+
      Button getBackButton() {
         return backButton;
     }
+
      List<Button> getCharacterButtons(){
         return characterButtons;
     }
+
      List<Button> getNotFoundButtons(){
         return notFoundButtons;
     }
