@@ -32,6 +32,7 @@ public class GameSession {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
 
+
         if (isAiTurn()) {
             handleAiTurn();
         }
