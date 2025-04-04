@@ -47,7 +47,6 @@ public class GameSession {
 
     public Player callQuarto() {
         if (game.getGameRules().checkWin()) {
-            System.out.println(currentPlayer.getName() + " Has won the game!");
             CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             return currentPlayer;
         }
