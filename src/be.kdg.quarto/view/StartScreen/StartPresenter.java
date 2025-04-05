@@ -1,6 +1,7 @@
 package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
@@ -74,24 +75,10 @@ public class StartPresenter {
 
 
         view.getStatistics().setOnAction(event -> {
-            StatisticsView statsView = new StatisticsView();
-            Stage statsStage = new Stage();
-            statsStage.initOwner(view.getScene().getWindow());
-            statsStage.initModality(Modality.APPLICATION_MODAL);
-            Scene statsScene = new Scene(statsView);
-            statsScene.getStylesheets().addAll(view.getScene().getStylesheets());
-            statsStage.setScene(statsScene);
-
-            statsStage.setTitle("Statistics");
-            statsStage.setWidth(425);
-            statsStage.setHeight(400);
-            statsStage.setResizable(false);
-
-
-            new StatisticsPresenter(statsView, new Statistics(1, 1));
-            statsStage.show();
+            StatisticsView statisticView = new StatisticsView();
+            StatisticsView configuredView = CreateHelper.createPopUp(statisticView, view, "Statistics", 425, 400);
+            new StatisticsPresenter(configuredView, new Statistics(1, 1));
         });
-
         view.getLeaderboard().setOnAction(event -> {
             LeaderboardView leaderboardView = new LeaderboardView();
             view.getScene().setRoot(leaderboardView);
