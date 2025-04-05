@@ -41,13 +41,37 @@ public class ChooseAIPresenter {
     }
 
     private void addEventHandlers() {
-        addEventListenersForAICharacterButtons();
+        int count = 0;
+
+        for (Button characterButton : view.getCharacterButtons()) {
+            final int id = count;
+            characterButton.setOnMouseClicked(event -> {
+                view.setSelectedCharacter(id);
+                view.getSelectButton().setDisable(false);
+                aiSelected = AICharacters.getCharacters().get(id);
+            });
+            count++;
+        }
+
+
+
+        for (Button notFoundButton : view.getNotFoundButtons()) {
+            notFoundButton.setOnMouseClicked(event -> {
+                view.setSelectedCharacter(-1);
+                view.getSelectButton().setDisable(true);
+                aiSelected = null;
+            });
+        }
+
+
 
         view.getBackButton().setOnMouseClicked(event -> {
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
         });
+
+
 
         view.getSelectButton().setOnMouseClicked(event -> {
             if (aiSelected != null) {
@@ -60,27 +84,6 @@ public class ChooseAIPresenter {
                 new GamePresenter(model, gameView);
             }
         });
-    }
-
-    private void addEventListenersForAICharacterButtons() {
-        int count = 0;
-        for (Button characterButton : view.getCharacterButtons()) {
-            final int id = count;
-            characterButton.setOnMouseClicked(event -> {
-                view.setSelectedCharacter(id);
-                view.getSelectButton().setDisable(false);
-                aiSelected = AICharacters.getCharacters().get(id);
-            });
-            count++;
-        }
-
-        for (Button notFoundButton : view.getNotFoundButtons()) {
-            notFoundButton.setOnMouseClicked(event -> {
-                view.setSelectedCharacter(-1);
-                view.getSelectButton().setDisable(true);
-                aiSelected = null;
-            });
-        }
     }
 
     private void updateView() {

@@ -2,17 +2,11 @@ package be.kdg.quarto.view.auth.LoginView;
 
 import be.kdg.quarto.helpers.Auth.AuthException;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Human;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
-import be.kdg.quarto.view.UiSettings;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-
-import java.sql.Connection;
 
 public class LoginPresenter {
 
@@ -24,7 +18,6 @@ public class LoginPresenter {
         addEventHandlers();
     }
 
-    UiSettings uiSettings = new UiSettings();
 
     private void addEventHandlers() {
         // Back button handler - return to Start screen

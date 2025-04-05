@@ -61,16 +61,16 @@ public class LoginView extends BorderPane {
 
     }
 
-    public TextField getUsernameTextField() {
+     TextField getUsernameTextField() {
         return usernameTextField;
     }
-    public PasswordField getPasswordTextField() {
+     PasswordField getPasswordTextField() {
         return passwordTextField;
     }
-    public Button getLoginButton() {
+     Button getLoginButton() {
         return loginButton;
     }
-    public Button getBackButton() {
+     Button getBackButton() {
         return backButton;
     }
 }

@@ -2,16 +2,12 @@ package be.kdg.quarto.view.auth.RegisterView;
 
 import be.kdg.quarto.helpers.Auth.AuthException;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Human;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
 import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
-import be.kdg.quarto.view.UiSettings;
-import javafx.application.Application;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 
 public class RegisterPresenter {
 
@@ -23,7 +19,6 @@ public class RegisterPresenter {
         addEventHandlers();
     }
 
-    UiSettings uiSettings = new UiSettings();
     private void addEventHandlers() {
         view.getBackButton().setOnAction(event -> {
             StartView startView = new StartView();

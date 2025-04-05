@@ -64,19 +64,19 @@ public class SettingsView extends StackPane {
     }
 
 
-    public Button getExitButton() {
+     Button getExitButton() {
         return exitButton;
     }
 
-    public Button getRestartButton() {
+     Button getRestartButton() {
         return restartButton;
     }
 
-    public Button getResumeButton() {
+     Button getResumeButton() {
         return resumeButton;
     }
 
-    public Button getSaveButton() {
+     Button getSaveButton() {
         return saveButton;
     }
 

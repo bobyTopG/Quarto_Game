@@ -69,26 +69,26 @@ public class RegisterView extends BorderPane {
 
     }
 
-    public TextField getUsernameTextField() {
+     TextField getUsernameTextField() {
         return usernameTextField;
     }
-    public PasswordField getPasswordTextField() {
+     PasswordField getPasswordTextField() {
         return passwordTextField;
     }
-    public Button getLoginButton() {
+     Button getLoginButton() {
         return registerButton;
     }
-    public Button getContinueAsGuestButton() {
+     Button getContinueAsGuestButton() {
         return continueAsGuestButton;
     }
-    public Button getBackButton() {
+     Button getBackButton() {
         return backButton;
     }
 
-    public ButtonBase getRegisterButton() {
+     ButtonBase getRegisterButton() {
         return  registerButton;
     }
-    public PasswordField getConfirmPasswordTextField() {
+     PasswordField getConfirmPasswordTextField() {
         return confirmPasswordTextField;
     }
 
