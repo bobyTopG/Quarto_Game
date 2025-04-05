@@ -53,4 +53,36 @@ public class Board {
         return tiles.get(pos);
     }
 
+    public boolean endMoveAIPossible() {
+        // TODO: Implement logic to determine if AI can finish the game
+        return false;
+    }
+
+    public boolean endMovePlayerPossible() {
+        // TODO: Implement logic to check if player is about to win
+        return false;
+    }
+
+    public boolean endWinningPositionAIPossible() {
+        // TODO: Check if AI can force a win in a turn or two
+        return false;
+    }
+
+    public boolean endWinningPositionPlayerPossible() {
+        // TODO: Check if player can win in a few moves
+        return false;
+    }
+
+    public void determineEndMove(Move move) {
+        // TODO: Set the move that finishes the game for the AI
+    }
+
+    public void determineRandomMove(Move move) {
+        // TODO: Set a random valid move on the board
+    }
+
+    public Tile getTile(int pos) {
+        return findTile(pos);
+    }
+
 }
