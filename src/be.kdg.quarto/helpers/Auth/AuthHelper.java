@@ -33,9 +33,7 @@ public class AuthHelper {
 
 
     public static Human login(String username, String password) throws AuthException {
-        try {
-            String query = "SELECT player_id, name, password FROM players WHERE name = ?";
-            PreparedStatement stmt = DbConnection.connection.prepareStatement(query);
+        try(PreparedStatement stmt = DbConnection.connection.prepareStatement("SELECT player_id, name, password FROM players WHERE name = ?")) {
             stmt.setString(1, username);
 
             ResultSet rs = stmt.executeQuery();
@@ -74,9 +72,7 @@ public class AuthHelper {
             throw new AuthException("Password must be at least 4 characters");
         }
 
-        try {
-            String checkQuery = "SELECT COUNT(*) FROM players WHERE name = ?";
-            PreparedStatement checkStmt = DbConnection.connection.prepareStatement(checkQuery);
+        try(PreparedStatement checkStmt = DbConnection.connection.prepareStatement("SELECT COUNT(*) FROM players WHERE name = ?")) {
             checkStmt.setString(1, username);
             ResultSet checkRs = checkStmt.executeQuery();
 

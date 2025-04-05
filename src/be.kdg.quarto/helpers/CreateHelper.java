@@ -1,10 +1,18 @@
 package be.kdg.quarto.helpers;
 
+import be.kdg.quarto.model.Statistics;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class CreateHelper {
     public static Button createButton(String text, String styleClass) {
@@ -47,4 +55,30 @@ public class CreateHelper {
         alert.showAndWait();
 
     }
-}
+    //we use T instead of Parent to keep the View type instead of sending a generic View
+    public static <T extends Parent> T createPopUp(T popupView, Parent mainView, String title, int width, int height) {
+        Stage stage = new Stage();
+
+        // Get the owner window directly from the main view
+        if (mainView.getScene() != null && mainView.getScene().getWindow() != null) {
+            stage.initOwner(mainView.getScene().getWindow());
+        }
+
+        stage.initModality(Modality.APPLICATION_MODAL);
+        Scene scene = new Scene(popupView);
+
+        // Copy stylesheets from the main view
+        if (mainView.getScene() != null) {
+            scene.getStylesheets().addAll(mainView.getScene().getStylesheets());
+        }
+
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.setWidth(width);
+        stage.setHeight(height);
+        stage.setResizable(false);
+        stage.show();
+
+        // Return the popup view for further configuration
+        return popupView;
+    }}
