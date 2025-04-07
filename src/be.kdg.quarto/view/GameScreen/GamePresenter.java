@@ -1,7 +1,10 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.ImageHelper;
-import be.kdg.quarto.model.*;
+import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Statistics;
+import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
@@ -47,13 +50,8 @@ public class GamePresenter {
             for (int col = 0; col < 4; col++) {
                 int index = row * 4 + col;
                 BoardCell boardCell = board[row][col];
-                boardCell.getCellVisual().setOnMouseEntered(mouseEvent -> {
-                    boardCell.hover();
-
-                });
-                boardCell.getCellVisual().setOnMouseExited(mouseEvent -> {
-                    boardCell.unhover();
-                });
+                boardCell.getCellVisual().setOnMouseEntered(mouseEvent -> boardCell.hover());
+                boardCell.getCellVisual().setOnMouseExited(mouseEvent -> boardCell.unhover());
                 boardCell.getCellVisual().setOnMouseClicked(event -> {
 
                     if (model.getGame().getBoard().findTile(index).getPiece() == null) {
@@ -71,15 +69,13 @@ public class GamePresenter {
         }
 
         //ChoosePiece View
-        view.getBackButton().setOnAction(event -> {
-            view.switchToMainSection();
-        });
+        view.getBackButton().setOnAction(event -> view.switchToMainSection());
 
         view.getChoosePieceConfirmButton().setOnAction(event -> {
             if (selectedPiece != null) {
                 model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
                 model.getGame().getPiecesToSelect().getTiles().stream()
-                        .filter(tile -> selectedPiece.equals(tile.getPiece()))
+                        .filter(tile -> selectedPiece.getPiece().equals(tile.getPiece()))
                         .findFirst()
                         .ifPresent(tile -> tile.setPiece(null));
                 selectedPiece.deselect();
@@ -87,10 +83,8 @@ public class GamePresenter {
                 selectedPiece = null;
                 view.switchToMainSection();
 
-                // Start AI turn but DON'T call updateView() immediately after
                 handleAiTurn();
 
-                // Don't call updateView() here - it's called inside handleAiTurn() after actions complete
             } else {
                 System.out.println("Selected Piece is null!");
             }
@@ -109,22 +103,15 @@ public class GamePresenter {
 
                     });
 
-                    selectCell.getCellVisual().setOnMouseEntered(mouseEvent -> {
-                        selectCell.hover();
-                    });
-                    selectCell.getCellVisual().setOnMouseExited(mouseEvent -> {
-                        selectCell.unhover();
-                    });
+                    selectCell.getCellVisual().setOnMouseEntered(mouseEvent -> selectCell.hover());
+                    selectCell.getCellVisual().setOnMouseExited(mouseEvent -> selectCell.unhover());
                 }
 
             }
         }
 
 
-        view.getChoosePiece().setOnMouseClicked(event -> {
-            view.switchToChoosePiece();
-
-        });
+        view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
         view.getPlacePiece().setOnAction(event -> {
             if(selectedTile != null) {
                 Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow()*4 + selectedTile.getColumn());

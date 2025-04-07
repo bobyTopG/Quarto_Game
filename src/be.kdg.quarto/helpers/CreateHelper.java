@@ -1,8 +1,5 @@
 package be.kdg.quarto.helpers;
 
-import be.kdg.quarto.model.Statistics;
-import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
-import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,7 +9,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 public class CreateHelper {
     public static Button createButton(String text, String styleClass) {
@@ -30,11 +26,6 @@ public class CreateHelper {
     public static Label createLabel(String text, String styleClass) {
         Label label = new Label(text);
         label.getStyleClass().add(styleClass);
-        return label;
-    }
-    public static Label createLabel(String text, String[] styleClasses) {
-        Label label = new Label(text);
-        label.getStyleClass().addAll(styleClasses);
         return label;
     }
     public static VBox createVBox(String styleClass) {
