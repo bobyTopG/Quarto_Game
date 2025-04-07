@@ -8,6 +8,8 @@ import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
+import be.kdg.quarto.view.StartScreen.StartPresenter;
+import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
 import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
@@ -24,7 +26,7 @@ public class GamePresenter {
 
 
     //to make a delay between AI moves (in seconds)
-    int AiThinkingDuration = 2;
+    int AiThinkingDuration = 0;
 
 
     BoardCell[][] board;
@@ -133,7 +135,12 @@ public class GamePresenter {
             model.callQuarto();
             if (model.getGame().getGameRules().checkWin()) {
                 view.showStatisticsScreen();
-                //todo: calculate the player ID && GameSessionID
+                //todo: calculate GameSessionID
+                view.getStatisticsView().getCloseBtn().setOnMouseClicked(statisticsEvent -> {
+                    StartView startView = new StartView();
+                    view.getScene().setRoot(startView);
+                    new StartPresenter(startView);
+                });
                 new StatisticsPresenter(view.getStatisticsView(), new Statistics(1));
             }
         });

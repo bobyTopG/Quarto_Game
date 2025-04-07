@@ -47,13 +47,14 @@ public class StatisticsView extends BorderPane {
         series1 = new XYChart.Series<>();
         series2 = new XYChart.Series<>();
 
-        closeBtn = CreateHelper.createButton("Close", new String[]{"default-button", "red-button"});
+        closeBtn = CreateHelper.createButton("Back to Menu", new String[]{"default-button", "red-button"});
         backBtn = CreateHelper.createButton("Back", new String[]{"default-button", "orange-button"});
         nextBtn = CreateHelper.createButton("Next", new String[]{"default-button", "green-button"});
     }
 
     private void layoutNodes() {
         HBox centerBtnBox = new HBox();
+        centerBtnBox.setAlignment(Pos.CENTER);
         centerBtnBox.getChildren().addAll(playerBtn, aiBtn);
         infoGroup.getChildren().addAll(centerBtnBox, infoLabel);
         infoGroup.setAlignment(Pos.TOP_CENTER);
@@ -81,6 +82,7 @@ public class StatisticsView extends BorderPane {
 
         setTop(titleLabel);
         setBottom(bottomLayout);
+        this.getStyleClass().add("statistics-screen");
     }
 
     // Package private getters
@@ -116,7 +118,7 @@ public class StatisticsView extends BorderPane {
         return infoLabel;
     }
 
-    Button getCloseBtn() {
+    public Button getCloseBtn() {
         return closeBtn;
     }
 

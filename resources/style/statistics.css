@@ -1,5 +1,14 @@
 /*FOR CHARTS AND STATISTIC RELATED COMPONENTS*/
-
+.statistics-screen{
+    -fx-background-color: #fff4d5;
+    -fx-background-radius: 12px;
+    -fx-border-color: #232323;
+    -fx-border-width: 4px;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+    -fx-max-width: 400px;
+    -fx-max-height: 425;
+}
 #player-statistics-button {
     -fx-border-radius: 40px 0px 0px 40px;
     -fx-background-radius: 40px 0px 0px 40px;

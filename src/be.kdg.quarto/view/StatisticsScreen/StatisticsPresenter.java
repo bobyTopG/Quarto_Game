@@ -2,7 +2,6 @@ package be.kdg.quarto.view.StatisticsScreen;
 
 import be.kdg.quarto.model.Statistics;
 import javafx.scene.chart.XYChart;
-import javafx.stage.Stage;
 
 public class StatisticsPresenter {
     private final StatisticsView view;
@@ -66,7 +65,7 @@ public class StatisticsPresenter {
         });
 
         view.getCloseBtn().setOnAction(event -> {
-            ((Stage) view.getCloseBtn().getScene().getWindow()).close();
+
         });
     }
 
