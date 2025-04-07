@@ -11,7 +11,6 @@ public class GameSession {
     private Game game;
     private Player currentPlayer;
     private Player winner;
-    private int numberOfMoves = 1;
     private Date startTime;
     private Date endTime;
     private boolean isCallingQuarto = false;
