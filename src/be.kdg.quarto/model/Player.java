@@ -48,9 +48,6 @@ public abstract class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "Player{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 }

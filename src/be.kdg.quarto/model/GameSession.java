@@ -1,7 +1,12 @@
 package be.kdg.quarto.model;
 
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.helpers.DbConnection;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.Random;
 
@@ -15,6 +20,8 @@ public class GameSession {
     private Date endTime;
     private boolean isCallingQuarto = false;
 
+    private int gameSessionId;
+
 
     public GameSession(Player player, Player opponent) {
         this.game = new Game();
@@ -27,9 +34,25 @@ public class GameSession {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
 
-
         if (isAiTurn()) {
             handleAiTurn();
+        }
+
+        // insert a new game session into db
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(),
+                Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, this.player.getId());
+            ps.setInt(2, this.opponent.getId());
+            ps.executeUpdate();
+
+            // save the new game session id
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                this.gameSessionId = rs.getInt(1);
+                System.out.println("game session: " + gameSessionId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
@@ -43,8 +66,10 @@ public class GameSession {
     public Player callQuarto() {
 
         if (game.getGameRules().checkWin()) {
-            //CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
+//            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
+
+            saveGameSession(currentPlayer.getId());
             return currentPlayer;
         }
         return null;
@@ -57,7 +82,8 @@ public class GameSession {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-    public void placePieceAi(){
+
+    public void placePieceAi() {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
         if (game.getSelectedPiece() != null) {
@@ -65,14 +91,15 @@ public class GameSession {
             game.placePiece(ai.getStrategy().selectTile(), ai);
 
             if (ai.getStrategy().isCallingQuarto()) {
-                //check for win later if calling quarto
+                // check for win later if calling quarto
                 isCallingQuarto = true;
             }
 
             game.setSelectedPiece(null);
         }
     }
-    public void pickPieceAi(){
+
+    public void pickPieceAi() {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
 
@@ -88,7 +115,8 @@ public class GameSession {
             }
         }
     }
-     public void handleAiTurn() {
+
+    public void handleAiTurn() {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
 
@@ -125,24 +153,35 @@ public class GameSession {
 
     public void pickPiece(Piece piece, Player player) {
         game.setSelectedPiece(piece);
-        game.getPiecesToSelect().getTiles().stream()
-                .filter(tile -> piece.equals(tile.getPiece()))
-                .findFirst()
-                .ifPresent(tile -> tile.setPiece(null));
+        game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
 
         game.endMove(player);
         switchTurns();
     }
 
-    //to prevent error in case if AI won during the counting of  timer
-    public void handlePendingWin() {
-            if (isCallingQuarto) {
-                javafx.application.Platform.runLater(() -> {
-                    callQuarto();
-                    isCallingQuarto = false;
-                });
-            }
+    // save game session to db
+    public void saveGameSession(int playerId) {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
+            System.out.println("game session: " + gameSessionId);
+            ps.setInt(1, playerId);
+            ps.setBoolean(2, true);
+            ps.setInt(3, gameSessionId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    // to prevent error in case if AI won during the counting of timer
+    public void handlePendingWin() {
+        if (isCallingQuarto) {
+            javafx.application.Platform.runLater(() -> {
+                callQuarto();
+                isCallingQuarto = false;
+            });
+        }
+    }
 
     public Player getPlayer() {
         return player;

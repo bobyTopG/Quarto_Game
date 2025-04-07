@@ -11,7 +11,8 @@ CREATE TABLE players
     player_id INTEGER GENERATED ALWAYS AS IDENTITY
         CONSTRAINT pk_player PRIMARY KEY,
     name      varchar(20) NOT NULL,
-    password  varchar(256)
+    password  varchar(256),
+    is_ai     BOOLEAN DEFAULT false
 );
 
 CREATE TABLE game_sessions
