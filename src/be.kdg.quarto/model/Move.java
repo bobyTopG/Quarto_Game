@@ -5,7 +5,7 @@ import java.util.Date;
 public class Move {
 
     private Player player;
-    private int position;
+    private int position = -1;
     private Piece piece;
     private Piece selectedPiece;
     private int moveNumber;
@@ -91,6 +91,14 @@ public class Move {
     public float getDuration() {
         // todo: this is a placeholder return value
         return 0f;
+    }
+
+    public boolean isPositionSet() {
+        return position >= 0;
+    }
+
+    public boolean isPieceSet() {
+        return piece != null || selectedPiece != null;
     }
 
     @Override

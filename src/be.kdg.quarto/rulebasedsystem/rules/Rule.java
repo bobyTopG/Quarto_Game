@@ -1,5 +1,6 @@
 package be.kdg.quarto.rulebasedsystem.rules;
 
+
 import be.kdg.quarto.rulebasedsystem.facts.FactsHandler;
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Move;

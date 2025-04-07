@@ -6,6 +6,7 @@ import be.kdg.quarto.model.enums.AiLevel;
 //import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 import be.kdg.quarto.model.strategies.MiniMax.MiniMaxStrategy;
 import be.kdg.quarto.model.strategies.RandomPlayingStrategy;
+import be.kdg.quarto.model.strategies.RuleBasedStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class AICharacters {
         // Initializing the List
         characters = new ArrayList<>();
         Ai bobAi = new Ai("Bob", AiLevel.EASY, new RandomPlayingStrategy(),"New to the game, understands \n the basic rules but has \n no other knowledge");
-        Ai robertAi = new Ai("Robert", AiLevel.HARD, new MiniMaxStrategy(),"A robot specifically designed \n to beat you at the game.");
+        Ai robertAi = new Ai("Robert", AiLevel.HARD, new RuleBasedStrategy(),"A robot specifically designed \n to beat you at the game.");
         characters.add(bobAi);
         characters.add(robertAi);
         // Add more AI characters here...

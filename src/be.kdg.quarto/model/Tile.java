@@ -35,4 +35,8 @@ public class Tile {
     public void removePiece() {
         this.piece = null;
     }
+
+    public boolean isEmpty() {
+        return this.piece == null;
+    }
 }

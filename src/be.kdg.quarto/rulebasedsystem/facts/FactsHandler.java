@@ -51,4 +51,11 @@ public class FactsHandler {
     public void setFactsChanged(boolean value) {
         this.factsChanged = value;
     }
+
+    public void printFacts() {
+        System.out.println("Current facts:");
+        for (FactValues fact : facts) {
+            System.out.println(" - " + fact);
+        }
+    }
 }

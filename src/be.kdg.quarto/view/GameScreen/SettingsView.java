@@ -36,7 +36,7 @@ public class SettingsView extends StackPane {
 
 
         saveButton = CreateHelper.createButton("Save Game",  new String[]{"green-button", "default-button"});
-        exitButton = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
+        exitButton = CreateHelper.createButton("Menu", new String[]{"red-button", "default-button"});
         restartButton = CreateHelper.createButton("Restart", new String[]{"red-button", "default-button"});
         resumeButton = CreateHelper.createButton("Resume", new String[]{"blue-button", "default-button"});
         this.getStyleClass().add("settings-screen");

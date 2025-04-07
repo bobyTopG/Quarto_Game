@@ -13,7 +13,11 @@ public class RulesHandler {
     public RulesHandler() {
         rules = new ArrayList<>();
         rules.add(new RuleEndMoveAi());
-        // Add more rules in priority order as needed
+        rules.add(new RuleBlockEndMovePlayer());
+        rules.add(new RuleWinningPositionAi());
+        rules.add(new RuleBlockWinningPositionPlayer());
+        rules.add(new RuleGoodMove());
+        rules.add(new RuleDefaultFallback());
     }
 
     public boolean checkConditionRule(int index, FactsHandler facts) {
@@ -27,4 +31,10 @@ public class RulesHandler {
     public int numberOfRules() {
         return rules.size();
     }
+
+    public String getRuleName(int i) {
+        return rules.get(i).getClass().getSimpleName();
+    }
+
+
 }

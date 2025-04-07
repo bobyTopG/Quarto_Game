@@ -32,21 +32,25 @@ public class InterfaceEngine {
     public void applyRules(Board board, Move move) {
         if (currentFacts.factsObserved()) {
             ruleFired = false;
-            int i;
-            do {
+
+            for (int attempt = 0; attempt < currentRules.numberOfRules(); attempt++) {
                 currentFacts.setFactsEvolved(false);
-                i = 0;
-                while (i < currentRules.numberOfRules() && !ruleFired && !currentFacts.factsChanged()) {
-                    if (currentRules.checkConditionRule(i, currentFacts)) {
-                        ruleFired = currentRules.fireActionRule(i, currentFacts, board, move);
+
+                for (int i = 0; i < currentRules.numberOfRules(); i++) {
+                    if (!ruleFired) {
+                        if (currentRules.checkConditionRule(i, currentFacts)) {
+                            System.out.println("Firing rule: " + currentRules.getRuleName(i));
+                            ruleFired = currentRules.fireActionRule(i, currentFacts, board, move);
+                            if (ruleFired) break;
+                        }
                     }
-                    i++;
                 }
-            } while (i < currentRules.numberOfRules() && !ruleFired);
+
+                if (ruleFired || currentFacts.factsChanged()) break;
+            }
         }
 
         if (!ruleFired) {
-            System.out.println("No rules were fired!!");
             board.determineRandomMove(move);
         }
     }
