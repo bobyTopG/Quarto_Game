@@ -16,23 +16,27 @@ public class StatisticsPresenter {
 
         view.getPlayerBtn().fire();
         view.getBackBtn().fire();
-        view.getTitleLabel().setText(stats.getWinner() == 0 ? "Draw!" : stats.getWinner() + " Won!");
+        view.getTitleLabel().setText(stats.getWinner() == null ? "Draw!" : stats.getWinner() + " Won!");
     }
 
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
+        view.getPlayerBtn().setText(stats.getPlayer1());
+        view.getAiBtn().setText(stats.getPlayer2());
+        view.getSeries1().setName(stats.getPlayer1());
+        view.getSeries2().setName(stats.getPlayer2());
     }
 
     private void addEventHandlers() {
         view.getPlayerBtn().setOnAction(event -> {
-            stats.setPlayerIdTemp(1);
+            stats.setPlayerIdTemp(stats.getPlayerId1());
             view.getInfoLabel().setText(stats.loadPartialStatistics());
             view.getPlayerBtn().setDisable(true);
             view.getAiBtn().setDisable(false);
         });
 
         view.getAiBtn().setOnAction(event -> {
-            stats.setPlayerIdTemp(2);
+            stats.setPlayerIdTemp(stats.getPlayerId2());
             view.getInfoLabel().setText(stats.loadPartialStatistics());
             view.getPlayerBtn().setDisable(false);
             view.getAiBtn().setDisable(true);
@@ -48,10 +52,9 @@ public class StatisticsPresenter {
         view.getNextBtn().setOnAction(event -> {
             view.setCenter(view.getLineChart());
             for (Statistics.Move move : stats.loadStatistics()) {
-                if (move.getPlayerId() == 1) {
+                if (move.getPlayerId() == stats.getPlayerId1()) {
                     view.getSeries1().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
-                }
-                else {
+                } else {
                     view.getSeries2().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
                 }
             }

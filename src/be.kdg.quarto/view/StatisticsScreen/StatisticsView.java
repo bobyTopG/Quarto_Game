@@ -35,9 +35,9 @@ public class StatisticsView extends BorderPane {
     private void initializeNodes() {
         titleLabel = CreateHelper.createLabel("", "title");
 
-        playerBtn = CreateHelper.createButton("Player", new String[]{"default-button", "blue-button"});
+        playerBtn = CreateHelper.createButton("", new String[]{"default-button", "blue-button"});
         playerBtn.setId("player-statistics-button");
-        aiBtn = CreateHelper.createButton("AI", new String[]{"default-button", "blue-button"});
+        aiBtn = CreateHelper.createButton("", new String[]{"default-button", "blue-button"});
         aiBtn.setId("ai-statistics-button");
 
         infoLabel = CreateHelper.createLabel("", "info");
@@ -61,8 +61,7 @@ public class StatisticsView extends BorderPane {
 
         lineChart.setTitle("Performance Statistics");
         lineChart.setAnimated(false);
-        series1.setName("Player 1");
-        series2.setName("Player 2");
+
 
         setPadding(new Insets(10, 5, 10, 5));
         setAlignment(titleLabel, Pos.CENTER);

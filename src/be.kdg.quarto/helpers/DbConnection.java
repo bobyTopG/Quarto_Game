@@ -30,15 +30,17 @@ public class DbConnection {
         }
     }
 
-    public static String getWinner() {
-        return "SELECT winner_id\n" +
-                "FROM game_sessions\n" +
+    public static String getPlayers() {
+        return "SELECT winner_id, w.name, player_id1, p1.name, player_id2, p2.name\n" +
+                "FROM game_sessions gs\n" +
+                "         LEFT JOIN players w on (w.player_id = gs.winner_id)\n" +
+                "         INNER JOIN players p1 on (p1.player_id = gs.player_id1)\n" +
+                "         INNER JOIN players p2 on (p2.player_id = gs.player_id2)\n" +
                 "WHERE game_session_id = ?;";
     }
 
-    public static String getPartialStats() {
+    public static String getPartialStatistics() {
         return "SELECT p.player_id,\n" +
-                "       name,\n" +
                 "       count(*)                                                                                as total_moves,\n" +
                 "       sum(extract(epoch from age(end_time, start_time))::numeric)                             as total_duration,\n" +
                 "       round(sum(extract(epoch from age(end_time, start_time)))::numeric / 60.0 / count(*), 2) as avg\n" +

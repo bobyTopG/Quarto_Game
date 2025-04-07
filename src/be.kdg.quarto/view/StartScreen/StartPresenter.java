@@ -28,7 +28,7 @@ import java.util.Optional;
 public class StartPresenter {
 
     private StartView view;
-   // private BoardView boardView = new BoardView();
+    // private BoardView boardView = new BoardView();
     private final String pathToBoard = "/images/Example_Board.png";
 
 
@@ -66,7 +66,7 @@ public class StartPresenter {
                 // User is logged in, go directly to Choose AI screen
                 goToChooseAIScreen();
             } else {
-                // User is not logged in, go to Login screen
+                // User is not logged in, go to Log in screen
                 LoginView loginView = new LoginView();
                 view.getScene().setRoot(loginView);
                 new LoginPresenter(loginView);
@@ -77,7 +77,7 @@ public class StartPresenter {
         view.getStatistics().setOnAction(event -> {
             StatisticsView statisticView = new StatisticsView();
             StatisticsView configuredView = CreateHelper.createPopUp(statisticView, view, "Statistics", 425, 400);
-            new StatisticsPresenter(configuredView, new Statistics(1, 1));
+            new StatisticsPresenter(configuredView, new Statistics(1));
         });
         view.getLeaderboard().setOnAction(event -> {
             LeaderboardView leaderboardView = new LeaderboardView();
