@@ -2,30 +2,33 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.helpers.DbConnection;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Statistics {
-    private int gameSessionIdTemp;
-    private int playerIdTemp;
-    private int winner;
+    private int gameSessionId;
+
     private int totalMoves;
-    private String totalTime;
-    private float averageTime;
+    private int totalDuration;
+    private float averageMoveDuration;
 
-    private String playerNameTemp;
+    private int winnerId, playerId1, playerId2, playerIdTemp;
+    private String winner, player1, player2;
 
-    public Statistics(int gameSessionId, int playerId) {
-        this.gameSessionIdTemp = gameSessionId;
-        this.playerIdTemp = playerId;
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getWinner())) {
+    public Statistics(int gameSessionId) {
+        this.gameSessionId = gameSessionId;
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPlayers())) {
             ps.setInt(1, gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                winner = rs.getInt(1);
+                winnerId = rs.getInt(1);
+                winner = rs.getString(2);
+                playerId1 = rs.getInt(3);
+                player1 = rs.getString(4);
+                playerId2 = rs.getInt(5);
+                player2 = rs.getString(6);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,35 +39,50 @@ public class Statistics {
         this.playerIdTemp = playerIdTemp;
     }
 
-    public int getWinner() {
+    public String getWinner() {
         return winner;
     }
 
+    public int getPlayerId1() {
+        return playerId1;
+    }
+
+    public int getPlayerId2() {
+        return playerId2;
+    }
+
+    public String getPlayer1() {
+        return player1;
+    }
+
+    public String getPlayer2() {
+        return player2;
+    }
+
     public String loadPartialStatistics() {
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPartialStats())) {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPartialStatistics())) {
             ps.setInt(1, playerIdTemp);
-            ps.setInt(2, gameSessionIdTemp);
+            ps.setInt(2, gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.playerNameTemp = rs.getString(2);
-                this.totalMoves = rs.getInt(3);
-                this.totalTime = rs.getString(4);
-                this.averageTime = rs.getFloat(5);
+                this.totalMoves = rs.getInt(2);
+                this.totalDuration = rs.getInt(3);
+                this.averageMoveDuration = rs.getFloat(4);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return (playerIdTemp == winner ? "Wow, congrats. Well played!" : "Better luck next time!") +
+        return (playerIdTemp == winnerId ? "Wow, congrats. Well played!" : "Better luck next time!") +
                 "\nTotal moves: " + totalMoves +
-                "\nTotal time: " + totalTime +
-                "\nAverage move duration: " + averageTime + " m";
+                "\nTotal duration: " + (totalDuration / 60) + " m " + (totalDuration % 60) + " s" +
+                "\nAverage move duration: " + averageMoveDuration + " m";
     }
 
     public ArrayList<Move> loadStatistics() {
         ArrayList<Move> moves = new ArrayList<>();
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getStatistics())) {
-            ps.setInt(1, gameSessionIdTemp);
+            ps.setInt(1, gameSessionId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
