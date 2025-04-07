@@ -2,6 +2,7 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.helpers.DbConnection;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,40 +11,51 @@ import java.util.ArrayList;
 public class Statistics {
     private int gameSessionIdTemp;
     private int playerIdTemp;
-    private int winnerId;
+    private int winner;
     private int totalMoves;
     private String totalTime;
     private float averageTime;
 
+    private String playerNameTemp;
+
     public Statistics(int gameSessionId, int playerId) {
         this.gameSessionIdTemp = gameSessionId;
         this.playerIdTemp = playerId;
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getWinner())) {
+            ps.setInt(1, gameSessionId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                winner = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPlayerIdTemp(int playerIdTemp) {
         this.playerIdTemp = playerIdTemp;
     }
 
-    public int getWinnerId() {
-        return winnerId;
+    public int getWinner() {
+        return winner;
     }
 
     public String loadPartialStatistics() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPartialStats())) {
-            ps.setInt(1, gameSessionIdTemp);
-            ps.setInt(2, playerIdTemp);
+            ps.setInt(1, playerIdTemp);
+            ps.setInt(2, gameSessionIdTemp);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.winnerId = rs.getInt(1);
-                this.totalMoves = rs.getInt(2);
-                this.totalTime = rs.getString(3);
-                this.averageTime = rs.getFloat(4);
+                this.playerNameTemp = rs.getString(2);
+                this.totalMoves = rs.getInt(3);
+                this.totalTime = rs.getString(4);
+                this.averageTime = rs.getFloat(5);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
-        return (playerIdTemp == winnerId ? "Wow, congrats. Well played!" : "Better luck next time!") +
+        return (playerIdTemp == winner ? "Wow, congrats. Well played!" : "Better luck next time!") +
                 "\nTotal moves: " + totalMoves +
                 "\nTotal time: " + totalTime +
                 "\nAverage move duration: " + averageTime + " m";
