@@ -134,7 +134,7 @@ public class GamePresenter {
             if (model.getGame().getGameRules().checkWin()) {
                 view.showStatisticsScreen();
                 //todo: calculate the player ID && GameSessionID
-                new StatisticsPresenter(view.getStatisticsView(), new Statistics(1,1));
+                new StatisticsPresenter(view.getStatisticsView(), new Statistics(1));
             }
         });
 
