@@ -33,20 +33,22 @@ public class Board {
             tiles.add(new Tile());
         }
     }
+
     public boolean isEmpty() {
         for (Tile tile : tiles) {
-            if(tile.getPiece() != null)
+            if (tile.getPiece() != null)
                 return false;
         }
         return true;
     }
+
     public List<Tile> getTiles() {
         return tiles;
     }
 
     public Tile findTile(Piece piece) {
         for (Tile tile : tiles) {
-            if(tile.getPiece() == null)
+            if (tile.getPiece() == null)
                 continue;
             if (tile.getPiece().equals(piece)) {
                 return tile;
@@ -55,7 +57,7 @@ public class Board {
         return null;
     }
 
-    public Tile findTile(int pos){
+    public Tile findTile(int pos) {
         return tiles.get(pos);
     }
 
