@@ -1,55 +1,69 @@
--- Insert sample data into the player table
 INSERT INTO players (name, password)
-VALUES ('Alice', 'a1234'),
-       ('Bob', 'b1234'),
-       ('Charlie', 'c1234'),
-       ('David', 'd1234');
+VALUES ('Alice', 'password'),
+       ('Bob', 'password'),
+       ('Charlie', 'password'),
+       ('David', 'password');
 
--- Insert sample data into the game_session table
-INSERT INTO game_sessions (player1_id, player2_id, start_time, end_time, winner)
-VALUES (1, 2, '2024-07-26 10:00:00', '2024-07-26 11:30:00', 2),
-       (3, 1, '2024-07-26 12:00:00', '2024-07-26 13:00:00', 1),
-       (2, 4, '2024-07-26 14:00:00', '2024-07-26 15:00:00', 4);
+-- Game session 1: Alice vs. Bob (Winner: Alice)
+INSERT INTO game_sessions (player_id1, player_id2, winner_id, is_completed)
+VALUES (1, 2, 1, true);
+-- Alice wins
 
--- Insert sample data into the board table
-INSERT INTO boards (game_session_id)
-VALUES (1),
-       (2),
-       (3);
+-- Game session 2: Charlie vs. David (Draw)
+INSERT INTO game_sessions (player_id1, player_id2, winner_id, is_completed)
+VALUES (3, 4, NULL, true);
+-- Draw
 
--- Insert sample data into the piece table
-INSERT INTO pieces (board_id, pos, color, size, fill, shape)
-VALUES (1, 1, 'black', 'small', 'solid', 'circle'),
-       (1, 2, 'white', 'large', 'hollow', 'square'),
-       (1, 3, 'black', 'large', 'solid', 'square'),
-       (1, 4, 'white', 'small', 'hollow', 'circle'),
-       (1, 5, 'black', 'small', 'hollow', 'square'),
-       (1, 6, 'white', 'large', 'solid', 'circle'),
-       (1, 7, 'black', 'large', 'hollow', 'circle'),
-       (1, 8, 'white', 'small', 'solid', 'square'),
-       (1, 9, 'black', 'large', 'solid', 'circle'),
-       (1, 10, 'white', 'small', 'hollow', 'square'),
+-- Game 1: Alice vs. Bob
+INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)
+VALUES (1, 1, '2025-04-01 10:05:00', '2025-04-01 10:07:10', 1),
+       (1, 2, '2025-04-01 10:07:00', '2025-04-01 10:08:20', 2),
+       (1, 1, '2025-04-01 10:10:00', '2025-04-01 10:14:30', 3),
+       (1, 2, '2025-04-01 10:12:00', '2025-04-01 10:14:40', 4),
+       (1, 1, '2025-04-01 10:15:00', '2025-04-01 10:16:50', 5),
+       (1, 2, '2025-04-01 10:17:00', '2025-04-01 10:19:00', 6);
 
-       (2, 1, 'black', 'small', 'hollow', 'circle'),
-       (2, 2, 'white', 'small', 'hollow', 'square'),
-       (3, 1, 'white', 'large', 'solid', 'square'),
-       (3, 2, 'black', 'large', 'hollow', 'circle');
+-- Game 2: Charlie vs. David
+INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)
+VALUES (2, 3, '2025-04-01 14:05:00', '2025-04-01 14:08:10', 1),
+       (2, 4, '2025-04-01 14:07:00', '2025-04-01 14:09:20', 2),
+       (2, 3, '2025-04-01 14:10:00', '2025-04-01 14:12:30', 3),
+       (2, 4, '2025-04-01 14:12:00', '2025-04-01 14:13:40', 4),
+       (2, 3, '2025-04-01 14:15:00', '2025-04-01 14:17:50', 5),
+       (2, 4, '2025-04-01 14:17:00', '2025-04-01 14:20:00', 6);
 
--- Insert sample data into the move table
-INSERT INTO moves (game_session_id, player_id, piece_id, move_start_time, move_end_time)
-VALUES (1, 1, 1, '2024-07-26 10:05:12', '2024-07-26 10:06:43'),
-       (1, 2, 2, '2024-07-26 10:07:30', '2024-07-26 10:09:02'),
-       (1, 1, 3, '2024-07-26 10:10:20', '2024-07-26 10:12:48'),
-       (1, 2, 4, '2024-07-26 10:13:55', '2024-07-26 10:16:01'),
-       (1, 1, 5, '2024-07-26 10:17:14', '2024-07-26 10:18:45'),
-       (1, 2, 6, '2024-07-26 10:20:05', '2024-07-26 10:22:49'),
-       (1, 1, 7, '2024-07-26 10:24:10', '2024-07-26 10:25:35'),
-       (1, 2, 8, '2024-07-26 10:26:50', '2024-07-26 10:29:32'),
-       (1, 1, 9, '2024-07-26 10:30:40', '2024-07-26 10:32:59'),
-       (1, 2, 10, '2024-07-26 10:34:10', '2024-07-26 10:35:46'),
+INSERT INTO piece_types (fill, shape, color, size)
+VALUES ('Full', 'Circle', 'White', 'Small'),
+       ('Full', 'Circle', 'White', 'Big'),
+       ('Full', 'Circle', 'Black', 'Small'),
+       ('Full', 'Circle', 'Black', 'Big'),
+       ('Full', 'Square', 'White', 'Small'),
+       ('Full', 'Square', 'White', 'Big'),
+       ('Full', 'Square', 'Black', 'Small'),
+       ('Full', 'Square', 'Black', 'Big'),
+       ('Hallow', 'Circle', 'White', 'Small'),
+       ('Hallow', 'Circle', 'White', 'Big'),
+       ('Hallow', 'Circle', 'Black', 'Small'),
+       ('Hallow', 'Circle', 'Black', 'Big'),
+       ('Hallow', 'Square', 'White', 'Small'),
+       ('Hallow', 'Square', 'White', 'Big'),
+       ('Hallow', 'Square', 'Black', 'Small'),
+       ('Hallow', 'Square', 'Black', 'Big');
 
-       (2, 3, 4, '2024-07-26 12:05:00', '2024-07-26 12:06:00'),
-       (2, 1, 5, '2024-07-26 12:10:00', '2024-07-26 12:11:00'),
-       (3, 2, 6, '2024-07-26 14:05:00', '2024-07-26 14:06:00'),
-       (3, 4, 7, '2024-07-26 14:10:00', '2024-07-26 14:11:00');
+-- Pieces for Game 1
+INSERT INTO pieces (piece_type_id, move_id, pos)
+VALUES (1, 1, 1),
+       (2, 2, 2),
+       (3, 3, 3),
+       (4, 4, 4),
+       (5, 5, 5),
+       (6, 6, 6);
 
+-- Pieces for Game 2
+INSERT INTO pieces (piece_type_id, move_id, pos)
+VALUES (7, 7, 1),
+       (8, 8, 2),
+       (9, 9, 3),
+       (10, 10, 4),
+       (11, 11, 5),
+       (12, 12, 6);

@@ -18,13 +18,13 @@ public class Leaderboard {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 playerList.add(new Player(
-                        rs.getString(2),
+                        rs.getString(1),
+                        rs.getInt(2),
                         rs.getInt(3),
                         rs.getInt(4),
-                        rs.getInt(5),
+                        rs.getFloat(5),
                         rs.getFloat(6),
-                        rs.getFloat(7),
-                        rs.getFloat(8)
+                        rs.getFloat(7)
                 ));
             }
         } catch (SQLException e) {
