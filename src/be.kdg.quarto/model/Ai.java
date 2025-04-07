@@ -2,14 +2,14 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.model.enums.AiLevel;
 
-public class Ai extends Player{
+public class Ai extends Player {
     private AiLevel difficultyLevel;
     private PlayingStrategy strategy;
     private String description;
 
 
-    public Ai(String name , AiLevel difficultyLevel , PlayingStrategy strategy, String description) {
-        super(name);
+    public Ai(int id, String name, AiLevel difficultyLevel, PlayingStrategy strategy, String description) {
+        super(id, name);
         setDifficultyLevel(difficultyLevel);
         this.strategy = strategy;
         this.description = description;

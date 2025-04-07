@@ -75,6 +75,28 @@ public class DbConnection {
                 "         LEFT JOIN game_sessions gs on p.player_id in (gs.player_id1, gs.player_id2)\n" +
                 "         LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id\n" +
                 "GROUP BY name, is_completed\n" +
-                "HAVING count(distinct gs.game_session_id) > 0 and is_completed = true;";
+                "HAVING count(distinct gs.game_session_id) > 0 and is_completed = true and is_ai = false;";
+    }
+
+    public static String setGameSession() {
+        return "INSERT INTO game_sessions (player_id1, player_id2)\n" +
+                "VALUES (?, ?);";
+    }
+
+    public static String updateGameSession() {
+        return "UPDATE game_sessions\n" +
+                "SET winner_id    = ?,\n" +
+                "    is_completed = ?\n" +
+                "WHERE game_session_id = ?;";
+    }
+
+    public static String setMove() {
+        return "INSERT INTO moves (game_session_id, player_id, start_time, move_nr)\n" +
+                "VALUES (?, ?, ?, ?);\n";
+    }
+
+    public static String updateMove() {
+        return "UPDATE moves SET end_time = current_timestamp\n" +
+                "WHERE player_id = ? and game_session_id = ?;";
     }
 }

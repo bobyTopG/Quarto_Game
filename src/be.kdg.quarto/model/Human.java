@@ -8,6 +8,7 @@ import be.kdg.quarto.helpers.Auth.AuthHelper;
  */
 public class Human extends Player {
     private String password;
+
     public Human(String name, String password) {
         super(name);
         this.password = password;
@@ -17,6 +18,7 @@ public class Human extends Player {
         super(id, name);
         this.password = password;
     }
+
     public String getPassword() {
         return password;
     }
@@ -24,6 +26,7 @@ public class Human extends Player {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public boolean loginPlayer(String password, AuthHelper authHelper) throws AuthException {
         try {
             Human loggedInHuman = (Human) AuthHelper.login(getName(), password);
@@ -32,11 +35,9 @@ public class Human extends Player {
             return false;
         }
     }
+
     @Override
     public String toString() {
-        return "Human{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                '}';
+        return "Human{" + "id=" + getId() + ", name='" + getName() + '\'' + '}';
     }
 }
