@@ -1,7 +1,10 @@
 -- winner
-SELECT winner_id
-FROM game_sessions
-WHERE game_session_id = 1;
+SELECT winner_id, w.name, player_id1, p1.name, player_id2, p2.name
+FROM game_sessions gs
+         LEFT JOIN players w on (w.player_id = gs.winner_id)
+         INNER JOIN players p1 on (p1.player_id = gs.player_id1)
+         INNER JOIN players p2 on (p2.player_id = gs.player_id2)
+WHERE game_session_id = 2;
 
 -- 1.
 SELECT p.player_id,
@@ -12,7 +15,7 @@ SELECT p.player_id,
 FROM moves m
          INNER JOIN game_sessions gs on (gs.game_session_id = m.game_session_id)
          INNER JOIN players p on (p.player_id = m.player_id)
-WHERE p.player_id = 1 and gs.game_session_id = 1
+WHERE p.player_id = 3 and gs.game_session_id = 2
 GROUP BY p.player_id, name;
 
 -- 2.
