@@ -16,7 +16,7 @@ public class StatisticsPresenter {
 
         view.getPlayerBtn().fire();
         view.getBackBtn().fire();
-        view.getTitleLabel().setText("Player " + stats.getWinnerId() + " Won!");
+        view.getTitleLabel().setText(stats.getWinner() == 0 ? "Draw!" : stats.getWinner() + " Won!");
     }
 
     private void updateView() {
