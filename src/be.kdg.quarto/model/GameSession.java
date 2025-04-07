@@ -1,14 +1,8 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.helpers.AICharacters;
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.model.enums.Color;
-import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.model.enums.Shape;
-import be.kdg.quarto.model.enums.Fill;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class GameSession {
@@ -17,16 +11,18 @@ public class GameSession {
     private Game game;
     private Player currentPlayer;
     private Player winner;
-    private Move currentMove;
     private int numberOfMoves = 1;
     private Date startTime;
     private Date endTime;
+    private boolean isCallingQuarto = false;
+
 
     public GameSession(Player player, Player opponent) {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
         this.currentPlayer = getRandomPlayer();
+        startTime = new Date();
 
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
@@ -46,8 +42,10 @@ public class GameSession {
     }
 
     public Player callQuarto() {
+
         if (game.getGameRules().checkWin()) {
-            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
+            //CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
+            endTime = new Date();
             return currentPlayer;
         }
         return null;
@@ -55,16 +53,43 @@ public class GameSession {
 
     public void switchTurns() {
         currentPlayer = currentPlayer == player ? opponent : player;
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
     }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
+    public void placePieceAi(){
+        Ai ai = getAiPlayer();
+        if (ai == null || currentPlayer != ai) return; // Not AI’s turn
+        if (game.getSelectedPiece() != null) {
+            // Placing
+            game.placePiece(ai.getStrategy().selectTile(), ai);
 
-    private void handleAiTurn() {
+            if (ai.getStrategy().isCallingQuarto()) {
+                //check for win later if calling quarto
+                isCallingQuarto = true;
+            }
+
+            game.setSelectedPiece(null);
+        }
+    }
+    public void pickPieceAi(){
+        Ai ai = getAiPlayer();
+        if (ai == null || currentPlayer != ai) return; // Not AI’s turn
+
+        if (game.getSelectedPiece() == null) {
+            // Picking
+            try {
+                pickPiece(ai.getStrategy().selectPiece(), ai);
+            } catch (NullPointerException e) {
+                for (Move move : game.getMoves()) {
+                    System.out.println(move);
+                }
+                CreateHelper.createAlert("Game Over", "Game Over", "It is a tie!");
+            }
+        }
+    }
+     public void handleAiTurn() {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
 
@@ -106,37 +131,19 @@ public class GameSession {
                 .findFirst()
                 .ifPresent(tile -> tile.setPiece(null));
 
-        endMove(player);
+        game.endMove(player);
         switchTurns();
     }
 
-    public void startMove(Player player, Tile selectedTile) {
-        currentMove = new Move(player, game.getBoard().getTiles().indexOf(selectedTile), game.getSelectedPiece(), numberOfMoves, getStartTimeForMove());
-        game.addMove(currentMove);
-        numberOfMoves++;
-    }
-
-    public void endMove(Player player) {
-        if (currentMove != null) {
-            currentMove.setSelectedPiece(game.getSelectedPiece());
-            currentMove.setEndTime(new Date());
-        } else {
-            //first move made will be only choosing the piece without placing any
-            currentMove = new Move(player, game.getSelectedPiece(), getStartTimeForMove(), new Date());
-            game.addMove(currentMove);
+    //to prevent error in case if AI won during the counting of  timer
+    public void handlePendingWin() {
+            if (isCallingQuarto) {
+                javafx.application.Platform.runLater(() -> {
+                    callQuarto();
+                    isCallingQuarto = false;
+                });
+            }
         }
-    }
-
-    public Date getStartTimeForMove() {
-        List<Move> moves = game.getMoves();
-        if (moves == null || moves.isEmpty()) { // Check for null and empty
-            return null;
-        } else {
-            //noinspection SequencedCollectionMethodCanBeUsed
-            return moves.get(moves.size() - 1).getEndTime();
-        }
-    }
-
 
     public Player getPlayer() {
         return player;

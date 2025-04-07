@@ -1,6 +1,7 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,7 +14,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class GameView extends BorderPane {
+public class GameView extends StackPane {
+
+    private final BorderPane root = new BorderPane();
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
 
@@ -37,6 +40,7 @@ public class GameView extends BorderPane {
     private final Button placePiece = CreateHelper.createButton("Place Piece", new String[]{ "blue-button", "game-button"});
     private final StackPane overlayContainer = new StackPane();
     private final SettingsView settingsView = new SettingsView();
+    private final StatisticsView statisticsView = new StatisticsView();
 
     public GameView() {
         initialiseNodes();
@@ -84,14 +88,14 @@ public class GameView extends BorderPane {
         topBar.setSpacing(10);
         topBar.setPadding(new Insets(10));
 
-        this.setTop(topBar);
+        root.setTop(topBar);
 
-        this.setLeft(buttonsBox);
+        root.setLeft(buttonsBox);
 
         //to move the board a bit up
         BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
 
-        this.setCenter(rotatedBoardPane);
+        root.setCenter(rotatedBoardPane);
 
 
         VBox quartoBox = new VBox(quarto);
@@ -99,11 +103,11 @@ public class GameView extends BorderPane {
         //creating margin not to change the pos of other elements
         BorderPane.setMargin(quartoBox, new Insets(-15, 15, 15, -15));
 
-        this.setRight(quartoBox);
+        root.setRight(quartoBox);
         choosePiece.toFront();
 
-        BorderPane.setMargin(overlayContainer, new Insets(-500, 0, 0, 0));
-        this.setBottom(overlayContainer);
+
+        this.getChildren().addAll(root,overlayContainer);
     }
 
     private void createSettingsScreen() {
@@ -111,8 +115,18 @@ public class GameView extends BorderPane {
         overlayContainer.setPrefHeight(500);
         overlayContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         StackPane.setAlignment(settingsView, Pos.CENTER);
-        overlayContainer.getChildren().add(settingsView);
 
+    }
+
+    void showSettingsScreen() {
+        overlayContainer.setVisible(true);
+        overlayContainer.getChildren().clear();
+        overlayContainer.getChildren().add(settingsView);
+    }
+    void showStatisticsScreen() {
+        overlayContainer.setVisible(true);
+        overlayContainer.getChildren().clear();
+        overlayContainer.getChildren().add(statisticsView);
     }
     private void createSelectedPieceHolder() {
         VBox vbox = new VBox();
@@ -162,11 +176,11 @@ public class GameView extends BorderPane {
     void switchToChoosePiece(){
 
         BorderPane.setMargin(choosePieceBox, new Insets(0, 0, 0, 10));
-        this.setLeft(choosePieceBox);
+        root.setLeft(choosePieceBox);
     }
 
     void switchToMainSection(){
-        this.setLeft(buttonsBox);
+        root.setLeft(buttonsBox);
     }
 
     private void createSettingsButton(){
@@ -226,6 +240,10 @@ public class GameView extends BorderPane {
 
     SettingsView getSettingsView() {
         return settingsView;
+    }
+
+    StatisticsView getStatisticsView() {
+        return statisticsView;
     }
 
     BorderPane getSelectedPieceContainer() {

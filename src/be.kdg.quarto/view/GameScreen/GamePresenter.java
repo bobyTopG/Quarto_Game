@@ -1,19 +1,14 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.ImageHelper;
-import be.kdg.quarto.model.Board;
-import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.*;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 30.0;
@@ -24,9 +19,16 @@ public class GamePresenter {
     SelectCell selectedPiece;
     BoardCell selectedTile;
 
+
+    //to make a delay between AI moves (in seconds)
+    int AiThinkingDuration = 2;
+
+
     BoardCell[][] board;
     SelectCell[][] piecesToSelect;
-    // Constants for piece sizes
+
+
+
 
 
     public GamePresenter(GameSession model, GameView view) {
@@ -84,12 +86,15 @@ public class GamePresenter {
                 selectedPiece.setPiece(null);
                 selectedPiece = null;
                 view.switchToMainSection();
-                updateView();
+
+                // Start AI turn but DON'T call updateView() immediately after
+                handleAiTurn();
+
+                // Don't call updateView() here - it's called inside handleAiTurn() after actions complete
             } else {
                 System.out.println("Selected Piece is null!");
             }
         });
-
         //onclick for selectGrid
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -122,11 +127,17 @@ public class GamePresenter {
         });
         view.getPlacePiece().setOnAction(event -> {
             if(selectedTile != null) {
+                Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow()*4 + selectedTile.getColumn());
+                if(tile.getPiece() != null){
+                    System.out.println("You can't place a piece on a tile that already has a piece!");
 
-                model.getGame().placePiece(model.getGame().getBoard().findTile(selectedTile.getRow()*4 + selectedTile.getColumn()), model.getPlayer());
-                model.getGame().setSelectedPiece(null);
+                }else{
+                    model.getGame().placePiece(tile, model.getPlayer());
+                    model.getGame().setSelectedPiece(null);
+                }
                 selectedTile.deselect();
                 selectedTile = null;
+
                 updateView();
             }
 
@@ -134,17 +145,41 @@ public class GamePresenter {
         view.getQuarto().setOnMouseClicked(event -> {
             model.callQuarto();
             if (model.getGame().getGameRules().checkWin()) {
-                // todo: show statistics
+                view.showStatisticsScreen();
+                //todo: calculate the player ID && GameSessionID
+                new StatisticsPresenter(view.getStatisticsView(), new Statistics(1,1));
             }
         });
 
         view.getSettings().setOnAction(event -> {
-            view.getOverlayContainer().setVisible(true);
-            view.getOverlayContainer().toFront();
+            view.showSettingsScreen();
             new SettingsPresenter(this, view.getSettingsView(), this.model);
         });
     }
 
+    private void handleAiTurn() {
+        // First delay before placing a piece
+        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+        updateView();
+
+        placePieceDelay.setOnFinished(event -> {
+            model.placePieceAi();
+            updateView();
+
+
+            model.handlePendingWin();
+
+            // Second delay before picking a piece
+            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+            pickPieceDelay.setOnFinished(e -> {
+                model.pickPieceAi();
+                updateView();
+            });
+            pickPieceDelay.play();
+        });
+
+        placePieceDelay.play();
+    }
     private void createBoard(){
         board = new BoardCell[4][4];
         for(int r = 0; r < 4; r++) {
@@ -155,6 +190,8 @@ public class GamePresenter {
             }
         }
     }
+
+
     private void createSelectPieces(){
         piecesToSelect = new SelectCell[4][4];
 
@@ -203,15 +240,29 @@ public class GamePresenter {
 //         Update turn label
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
         if(isHumanTurn){
+            view.getTurn().setStyle("-fx-background-color: #29ABE2");
+
             if(model.getGame().getSelectedPiece() != null){
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
+                view.getTurn().setText("Your turn to place your piece");
             }else{
                 view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
+                view.getTurn().setText("Your turn to choose a piece");
+
             }
         }else{
-            view.getTurn().setText("AI turn to select a piece");
+            view.getTurn().setStyle("-fx-background-color: #FF1D25");
+            if(model.getGame().getSelectedPiece() != null){
+                view.getChoosePiece().setDisable(true);
+                view.getPlacePiece().setDisable(true);
+                view.getTurn().setText("Opponent's turn to place a piece");
+            }else{
+                view.getChoosePiece().setDisable(true);
+                view.getPlacePiece().setDisable(true);
+                view.getTurn().setText("Opponent's turn to choose a piece");
+            }
         }
     }
 

@@ -34,7 +34,13 @@ public class Board {
             tiles.add(new Tile());
         }
     }
-
+    public boolean isEmpty() {
+        for (Tile tile : tiles) {
+            if(tile.getPiece() != null)
+                return false;
+        }
+        return true;
+    }
     public List<Tile> getTiles() {
         return tiles;
     }

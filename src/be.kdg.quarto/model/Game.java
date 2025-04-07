@@ -19,6 +19,7 @@ public class Game {
     private Board board;
     private Piece selectedPiece;
 
+
     private GameRules gameRules;
 
 
@@ -62,20 +63,28 @@ public class Game {
 
 
     public void startMove(Player player, Tile selectedTile) {
-        currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, getStartTimeForMove());
-        addMove(currentMove);
-        numberOfMoves++;
+
+            currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, getStartTimeForMove());
+            addCurentMove();
+            numberOfMoves++;
+            //if last move
+            if(piecesToSelect.isEmpty()){
+                currentMove.setEndTime(new Date());
+            }
+
     }
     public void endMove(Player player) {
-        if (currentMove != null) {
+        if (!board.isEmpty()) {
             currentMove.setSelectedPiece(getSelectedPiece());
             currentMove.setEndTime(new Date());
         } else {
             //first move made will be only choosing the piece without placing any
             currentMove = new Move(player, getSelectedPiece(), getStartTimeForMove(), new Date());
-            addMove(currentMove);
+            addCurentMove();
         }
     }
+
+
     public Date getStartTimeForMove() {
         List<Move> moves = getMoves();
         if (moves == null || moves.isEmpty()) { // Check for null and empty
@@ -103,8 +112,8 @@ public class Game {
         return piecesToSelect;
     }
 
-    public void addMove(Move move) {
-        moves.add(move);
+    public void addCurentMove() {
+        moves.add(currentMove);
     }
 
     public GameRules getGameRules() {
@@ -113,5 +122,12 @@ public class Game {
 
     public List<Move> getMoves() {
         return moves;
+    }
+
+    public Move getCurrentMove() {
+        return currentMove;
+    }
+    public void setCurrentMove(Move currentMove) {
+        this.currentMove = currentMove;
     }
 }
