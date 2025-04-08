@@ -13,7 +13,6 @@ public class Game {
 
     private final List<Move> moves;
     private Move currentMove;
-    private int numberOfMoves = 1;
 
     private Board piecesToSelect;
     private Board board;
@@ -55,17 +54,11 @@ public class Game {
     }
 
 
-    public void placePiece(Tile selectedTile, Player player) {
-        selectedTile.setPiece(selectedPiece);
-        startMove(player, selectedTile);
-    }
-
-
     public void startMove(Player player, Tile selectedTile) {
 
-        currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, numberOfMoves, getStartTimeForMove());
+        currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, currentMove.getMoveNumber(), getStartTimeForMove());
         addCurrentMove();
-        numberOfMoves++;
+        currentMove.setMoveNumber(currentMove.getMoveNumber() + 1);
         //if last move
         if (piecesToSelect.isEmpty()) {
             currentMove.setEndTime(new Date());
@@ -88,7 +81,7 @@ public class Game {
     public Date getStartTimeForMove() {
         List<Move> moves = getMoves();
         if (moves == null || moves.isEmpty()) { // Check for null and empty
-            return null;
+            return new Date();
         } else {
             //noinspection SequencedCollectionMethodCanBeUsed
             return moves.get(moves.size() - 1).getEndTime();

@@ -33,9 +33,6 @@ public class GamePresenter {
     SelectCell[][] piecesToSelect;
 
 
-
-
-
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;
         this.view = view;
@@ -57,12 +54,11 @@ public class GamePresenter {
                 boardCell.getCellVisual().setOnMouseClicked(event -> {
 
                     if (model.getGame().getBoard().findTile(index).getPiece() == null) {
-                        if(selectedTile != null){
+                        if (selectedTile != null) {
                             selectedTile.deselect();
                         }
                         boardCell.select();
                         selectedTile = boardCell;
-
 
 
                     }
@@ -95,13 +91,13 @@ public class GamePresenter {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 SelectCell selectCell = piecesToSelect[row][col];
-                if(selectCell.getPiece() != null){
+                if (selectCell.getPiece() != null) {
                     selectCell.getCellVisual().setOnMouseClicked(mouseEvent -> {
-                            if(selectedPiece != null){
-                                selectedPiece.deselect();
-                            }
-                            selectedPiece = selectCell;
-                            selectCell.select();
+                        if (selectedPiece != null) {
+                            selectedPiece.deselect();
+                        }
+                        selectedPiece = selectCell;
+                        selectCell.select();
 
                     });
 
@@ -115,13 +111,13 @@ public class GamePresenter {
 
         view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
         view.getPlacePiece().setOnAction(event -> {
-            if(selectedTile != null) {
-                Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow()*4 + selectedTile.getColumn());
-                if(tile.getPiece() != null){
+            if (selectedTile != null) {
+                Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
+                if (tile.getPiece() != null) {
                     System.out.println("You can't place a piece on a tile that already has a piece!");
 
-                }else{
-                    model.getGame().placePiece(tile, model.getPlayer());
+                } else {
+                    model.placePiece(tile, model.getPlayer());
                     model.getGame().setSelectedPiece(null);
                 }
                 selectedTile.deselect();
@@ -135,13 +131,12 @@ public class GamePresenter {
             model.callQuarto();
             if (model.getGame().getGameRules().checkWin()) {
                 view.showStatisticsScreen();
-                //todo: calculate GameSessionID
                 view.getStatisticsView().getCloseBtn().setOnMouseClicked(statisticsEvent -> {
                     StartView startView = new StartView();
                     view.getScene().setRoot(startView);
                     new StartPresenter(startView);
                 });
-                new StatisticsPresenter(view.getStatisticsView(), new Statistics(1));
+                new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
             }
         });
 
@@ -174,29 +169,30 @@ public class GamePresenter {
 
         placePieceDelay.play();
     }
-    private void createBoard(){
+
+    private void createBoard() {
         board = new BoardCell[4][4];
-        for(int r = 0; r < 4; r++) {
-            for(int c = 0; c < 4; c++) {
-                BoardCell cell = new BoardCell(r,c,21);
-                view.getBoardGrid().add(cell.getCellVisual(),r,c);
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                BoardCell cell = new BoardCell(r, c, 21);
+                view.getBoardGrid().add(cell.getCellVisual(), r, c);
                 board[r][c] = cell;
             }
         }
     }
 
 
-    private void createSelectPieces(){
+    private void createSelectPieces() {
         piecesToSelect = new SelectCell[4][4];
 
-        for(int r = 0; r < 4; r++) {
-            for(int c = 0; c < 4; c++) {
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
                 int index = r * 4 + c;
                 SelectCell cell;
-                if((r + c) % 2 == 0){
-                    cell = new SelectCell(r,c,"#ffffff");
-                }else{
-                    cell = new SelectCell(r,c,"#DBD6B2");
+                if ((r + c) % 2 == 0) {
+                    cell = new SelectCell(r, c, "#ffffff");
+                } else {
+                    cell = new SelectCell(r, c, "#DBD6B2");
                 }
 
                 cell.setPiece(model.getGame().getPiecesToSelect().getTiles().get(index).getPiece());
@@ -205,6 +201,7 @@ public class GamePresenter {
             }
         }
     }
+
     public void updateView() {
         // Update selected piece
         if (model.getGame().getSelectedPiece() != null) {
@@ -213,8 +210,7 @@ public class GamePresenter {
             boolean isSmall = model.getGame().getSelectedPiece().getSize() == Size.SMALL;
             view.getSelectedPieceImage().setFitHeight(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
             view.getSelectedPieceImage().setFitWidth(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
-        }
-        else  view.getSelectedPieceImage().setImage(null);
+        } else view.getSelectedPieceImage().setImage(null);
 
 
         // Update board grid
@@ -233,33 +229,32 @@ public class GamePresenter {
 
 //         Update turn label
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
-        if(isHumanTurn){
+        if (isHumanTurn) {
             view.getTurn().setStyle("-fx-background-color: #29ABE2");
 
-            if(model.getGame().getSelectedPiece() != null){
+            if (model.getGame().getSelectedPiece() != null) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
                 view.getTurn().setText("Your turn to place your piece");
-            }else{
+            } else {
                 view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
                 view.getTurn().setText("Your turn to choose a piece");
 
             }
-        }else{
+        } else {
             view.getTurn().setStyle("-fx-background-color: #FF1D25");
-            if(model.getGame().getSelectedPiece() != null){
+            if (model.getGame().getSelectedPiece() != null) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(true);
                 view.getTurn().setText("Opponent's turn to place a piece");
-            }else{
+            } else {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(true);
                 view.getTurn().setText("Opponent's turn to choose a piece");
             }
         }
     }
-
 
 
     public GameView getView() {
