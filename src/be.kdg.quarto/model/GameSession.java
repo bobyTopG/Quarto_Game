@@ -3,10 +3,7 @@ package be.kdg.quarto.model;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 import java.util.Random;
 
@@ -30,17 +27,8 @@ public class GameSession {
         this.currentPlayer = getRandomPlayer();
         startTime = new Date();
 
-        if (this.opponent instanceof Ai aiOpponent) {
-            aiOpponent.getStrategy().fillNecessaryData(this);
-        }
-
-        if (isAiTurn()) {
-            handleAiTurn();
-        }
-
         // insert a new game session into db
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(),
-                Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
             ps.setInt(2, this.opponent.getId());
             ps.executeUpdate();
@@ -49,12 +37,19 @@ public class GameSession {
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 this.gameSessionId = rs.getInt(1);
-                System.out.println("game session: " + gameSessionId);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        if (this.opponent instanceof Ai aiOpponent) {
+            aiOpponent.getStrategy().fillNecessaryData(this);
+        }
+
+        if (isAiTurn()) {
+            handleAiTurn();
+        }
     }
 
     public Player getRandomPlayer() {
@@ -69,7 +64,7 @@ public class GameSession {
 //            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
 
-            saveGameSession(currentPlayer.getId());
+            endGameSession(currentPlayer.getId());
             return currentPlayer;
         }
         return null;
@@ -88,7 +83,7 @@ public class GameSession {
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
         if (game.getSelectedPiece() != null) {
             // Placing
-            game.placePiece(ai.getStrategy().selectTile(), ai);
+            placePiece(ai.getStrategy().selectTile(), ai);
 
             if (ai.getStrategy().isCallingQuarto()) {
                 // check for win later if calling quarto
@@ -122,7 +117,7 @@ public class GameSession {
 
         if (game.getSelectedPiece() != null) {
             // Placing
-            game.placePiece(ai.getStrategy().selectTile(), ai);
+            placePiece(ai.getStrategy().selectTile(), ai);
 
             if (ai.getStrategy().isCallingQuarto()) {
                 setWinner(callQuarto());
@@ -156,14 +151,54 @@ public class GameSession {
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
 
         game.endMove(player);
+        int moveIdTemp = -1;
+
+        // insert move into db
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
+                Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, gameSessionId);
+            ps.setInt(2, currentPlayer.getId());
+            ps.setTimestamp(3,
+                    new java.sql.Timestamp(game.getCurrentMove().getStartTime().getTime()));
+            ps.setTimestamp(4,
+                    new java.sql.Timestamp(game.getCurrentMove().getEndTime().getTime()));
+            ps.setInt(5, game.getCurrentMove().getMoveNumber());
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                moveIdTemp = rs.getInt(1);
+            }
+            System.out.println("move id: " + moveIdTemp + " current player: " + currentPlayer.getId());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // insert piece into db
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
+            ps.setInt(1, piece.getPieceId());
+            ps.setInt(2, moveIdTemp);
+            ps.setInt(3, game.getCurrentMove().getPosition());
+            ps.executeUpdate();
+
+            System.out.println("move id: " + moveIdTemp + " position: " + game.getCurrentMove().getPosition());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         switchTurns();
     }
 
-    // save game session to db
-    public void saveGameSession(int playerId) {
+    public void placePiece(Tile selectedTile, Player player) {
+        selectedTile.setPiece(game.getSelectedPiece());
+        game.startMove(player, selectedTile);
+    }
+
+    // saves a finished game session to db
+    public void endGameSession(int winnerId) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            System.out.println("game session: " + gameSessionId);
-            ps.setInt(1, playerId);
+            ps.setInt(1, winnerId);
             ps.setBoolean(2, true);
             ps.setInt(3, gameSessionId);
             ps.executeUpdate();
@@ -181,6 +216,10 @@ public class GameSession {
                 isCallingQuarto = false;
             });
         }
+    }
+
+    public int getGameSessionId() {
+        return gameSessionId;
     }
 
     public Player getPlayer() {
@@ -216,4 +255,5 @@ public class GameSession {
     public Player getWinner() {
         return winner;
     }
+
 }

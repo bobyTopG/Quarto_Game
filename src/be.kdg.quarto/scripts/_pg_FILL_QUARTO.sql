@@ -45,14 +45,14 @@ VALUES ('Full', 'Circle', 'White', 'Small'),
        ('Full', 'Square', 'White', 'Big'),
        ('Full', 'Square', 'Black', 'Small'),
        ('Full', 'Square', 'Black', 'Big'),
-       ('Hallow', 'Circle', 'White', 'Small'),
-       ('Hallow', 'Circle', 'White', 'Big'),
-       ('Hallow', 'Circle', 'Black', 'Small'),
-       ('Hallow', 'Circle', 'Black', 'Big'),
-       ('Hallow', 'Square', 'White', 'Small'),
-       ('Hallow', 'Square', 'White', 'Big'),
-       ('Hallow', 'Square', 'Black', 'Small'),
-       ('Hallow', 'Square', 'Black', 'Big');
+       ('Hollow', 'Circle', 'White', 'Small'),
+       ('Hollow', 'Circle', 'White', 'Big'),
+       ('Hollow', 'Circle', 'Black', 'Small'),
+       ('Hollow', 'Circle', 'Black', 'Big'),
+       ('Hollow', 'Square', 'White', 'Small'),
+       ('Hollow', 'Square', 'White', 'Big'),
+       ('Hollow', 'Square', 'Black', 'Small'),
+       ('Hollow', 'Square', 'Black', 'Big');
 
 -- Pieces for Game 1
 INSERT INTO pieces (piece_type_id, move_id, pos)

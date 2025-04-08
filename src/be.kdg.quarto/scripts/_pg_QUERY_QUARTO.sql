@@ -60,8 +60,29 @@ SET winner_id    = 4,
     is_completed = true
 WHERE game_session_id = 2;
 
-SELECT name FROM players WHERE is_ai = true;
-SELECT * FROM game_sessions;
+SELECT name
+FROM players
+WHERE is_ai = true;
+SELECT *
+FROM game_sessions;
 
-UPDATE moves SET end_time = current_timestamp
-WHERE player_id = 1 and game_session_id = 1;
+
+SELECT piece_type_id
+FROM piece_types
+WHERE upper(fill) = 'FULL'
+  and upper(shape) = 'CIRCLE'
+  and upper(color) = 'BLACK'
+  and upper(size) = 'SMALL';
+
+INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)
+VALUES (1, 1, current_timestamp, 2);
+
+INSERT INTO pieces (piece_type_id, move_id, pos)
+VALUES (1, 1, 2);
+
+SELECT * FROM players;
+SELECT * FROM game_sessions;
+SELECT * FROM moves WHERE game_session_id > 4;
+SELECT * FROM pieces WHERE move_id > 32;
+
+SELECT * FROM piece_types;

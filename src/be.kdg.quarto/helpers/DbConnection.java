@@ -91,12 +91,20 @@ public class DbConnection {
     }
 
     public static String setMove() {
-        return "INSERT INTO moves (game_session_id, player_id, start_time, move_nr)\n" +
-                "VALUES (?, ?, ?, ?);\n";
+        return "INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)\n" +
+                "VALUES (?, ?, ?, ?, ?);";
     }
 
-    public static String updateMove() {
-        return "UPDATE moves SET end_time = current_timestamp\n" +
-                "WHERE player_id = ? and game_session_id = ?;";
+    public static String setPiece() {
+        return "INSERT INTO pieces (piece_type_id, move_id, pos)\n" +
+                "VALUES (?, ?, ?);";
+    }
+
+    public static String getPieceId() {
+        return "SELECT piece_type_id FROM piece_types\n" +
+                "WHERE upper(fill)  = ?\n" +
+                "  and upper(shape) = ?\n" +
+                "  and upper(color) = ?\n" +
+                "  and upper(size)  = ?;";
     }
 }
