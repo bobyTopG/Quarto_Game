@@ -27,21 +27,7 @@ public class GameSession {
         this.currentPlayer = getRandomPlayer();
         startTime = new Date();
 
-        // insert a new game session into db
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, this.player.getId());
-            ps.setInt(2, this.opponent.getId());
-            ps.executeUpdate();
-
-            // save the new game session id
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                this.gameSessionId = rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        insertGameSessionInDb();
 
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
@@ -51,7 +37,6 @@ public class GameSession {
             handleAiTurn();
         }
     }
-
     public Player getRandomPlayer() {
         int rand = new Random().nextInt(2);
 
@@ -151,9 +136,23 @@ public class GameSession {
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
 
         game.endMove(player);
-        int moveIdTemp = -1;
 
-        // insert move into db
+
+
+
+        switchTurns();
+    }
+
+    public void placePiece(Tile selectedTile, Player player) {
+        selectedTile.setPiece(game.getSelectedPiece());
+
+
+        insertMoveInDb(game.getSelectedPiece(), selectedTile);
+
+        game.startMove(player, selectedTile);
+    }
+    public void insertMoveInDb(Piece piece, Tile selectedTile){
+        int moveIdTemp = -1;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
                 Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, gameSessionId);
@@ -173,26 +172,37 @@ public class GameSession {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        insertPieceInDb(moveIdTemp, piece, selectedTile);
+    }
 
-        // insert piece into db
+    private void insertPieceInDb(int moveID, Piece piece, Tile selectedTile){
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
             ps.setInt(1, piece.getPieceId());
-            ps.setInt(2, moveIdTemp);
-            ps.setInt(3, game.getCurrentMove().getPosition());
+            ps.setInt(2, moveID);
+            ps.setInt(3, game.getBoard().findTileIndex(selectedTile));
             ps.executeUpdate();
 
-            System.out.println("move id: " + moveIdTemp + " position: " + game.getCurrentMove().getPosition());
+            System.out.println("move id: " + moveID + " position: " + game.getCurrentMove().getPosition());
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        switchTurns();
     }
+    public void insertGameSessionInDb(){
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, this.player.getId());
+            ps.setInt(2, this.opponent.getId());
+            ps.executeUpdate();
 
-    public void placePiece(Tile selectedTile, Player player) {
-        selectedTile.setPiece(game.getSelectedPiece());
-        game.startMove(player, selectedTile);
+            // save the new game session id
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                this.gameSessionId = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // saves a finished game session to db

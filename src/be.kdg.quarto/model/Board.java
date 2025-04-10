@@ -60,7 +60,9 @@ public class Board {
     public Tile findTile(int pos) {
         return tiles.get(pos);
     }
-
+    public int findTileIndex(Tile tile) {
+        return tiles.indexOf(tile);
+    }
     private boolean isWinningMovePossible() {
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);

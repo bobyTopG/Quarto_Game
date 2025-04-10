@@ -52,15 +52,22 @@ public class GamePresenter {
                 boardCell.getCellVisual().setOnMouseEntered(mouseEvent -> boardCell.hover());
                 boardCell.getCellVisual().setOnMouseExited(mouseEvent -> boardCell.unhover());
                 boardCell.getCellVisual().setOnMouseClicked(event -> {
-
+                    //handle board Cell click
                     if (model.getGame().getBoard().findTile(index).getPiece() == null) {
                         if (selectedTile != null) {
-                            selectedTile.deselect();
+                            if(selectedTile.equals(boardCell)){
+                                placePiece();
+                            }else{
+                                selectedTile.deselect();
+                                boardCell.select();
+                                selectedTile = boardCell;
+
+                            }
+                        }else{
+                            boardCell.select();
+                            selectedTile = boardCell;
+
                         }
-                        boardCell.select();
-                        selectedTile = boardCell;
-
-
                     }
                 });
             }
@@ -68,6 +75,7 @@ public class GamePresenter {
 
         //ChoosePiece View
         view.getBackButton().setOnAction(event -> view.switchToMainSection());
+
 
         view.getChoosePieceConfirmButton().setOnAction(event -> {
             if (selectedPiece != null) {
@@ -111,20 +119,7 @@ public class GamePresenter {
 
         view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
         view.getPlacePiece().setOnAction(event -> {
-            if (selectedTile != null) {
-                Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
-                if (tile.getPiece() != null) {
-                    System.out.println("You can't place a piece on a tile that already has a piece!");
-
-                } else {
-                    model.placePiece(tile, model.getPlayer());
-                    model.getGame().setSelectedPiece(null);
-                }
-                selectedTile.deselect();
-                selectedTile = null;
-
-                updateView();
-            }
+            placePiece();
 
         });
         view.getQuarto().setOnMouseClicked(event -> {
@@ -145,7 +140,22 @@ public class GamePresenter {
             new SettingsPresenter(this, view.getSettingsView(), this.model);
         });
     }
+    private void placePiece(){
+        if (selectedTile != null) {
+            Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
+            if (tile.getPiece() != null) {
+                System.out.println("You can't place a piece on a tile that already has a piece!");
 
+            } else {
+                model.placePiece(tile, model.getPlayer());
+                model.getGame().setSelectedPiece(null);
+            }
+            selectedTile.deselect();
+            selectedTile = null;
+
+            updateView();
+        }
+    }
     private void handleAiTurn() {
         // First delay before placing a piece
         PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
