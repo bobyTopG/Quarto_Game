@@ -8,7 +8,7 @@ public class Move {
     private int position = -1;
     private Piece piece;
     private Piece selectedPiece;
-    private int moveNumber;
+    private int moveNumber = 1;
     private Date startTime;
     private Date endTime;
 
