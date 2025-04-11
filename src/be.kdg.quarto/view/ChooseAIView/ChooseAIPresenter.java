@@ -54,7 +54,6 @@ public class ChooseAIPresenter {
         }
 
 
-
         for (Button notFoundButton : view.getNotFoundButtons()) {
             notFoundButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(-1);
@@ -64,7 +63,6 @@ public class ChooseAIPresenter {
         }
 
 
-
         view.getBackButton().setOnMouseClicked(event -> {
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
@@ -72,12 +70,11 @@ public class ChooseAIPresenter {
         });
 
 
-
         view.getSelectButton().setOnMouseClicked(event -> {
             if (aiSelected != null) {
                 GameView gameView = new GameView();
                 GameSession model = new GameSession(
-                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : new Human("Guest", null),
+                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
                         aiSelected
                 );
                 view.getScene().setRoot(gameView);

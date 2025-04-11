@@ -2,6 +2,7 @@ package be.kdg.quarto.helpers.Auth;
 
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Human;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,9 +32,21 @@ public class AuthHelper {
         return loggedInPlayer;
     }
 
+    public static Human getGuestPlayer() {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement("SELECT player_id, name FROM players WHERE upper(name) = 'GUEST'")) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Human(rs.getInt("player_id"), rs.getString("name"), null);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public static Human login(String username, String password) throws AuthException {
-        try(PreparedStatement stmt = DbConnection.connection.prepareStatement("SELECT player_id, name, password FROM players WHERE name = ?")) {
+        try (PreparedStatement stmt = DbConnection.connection.prepareStatement("SELECT player_id, name, password FROM players WHERE name = ?")) {
             stmt.setString(1, username);
 
             ResultSet rs = stmt.executeQuery();
@@ -72,7 +85,7 @@ public class AuthHelper {
             throw new AuthException("Password must be at least 4 characters");
         }
 
-        try(PreparedStatement checkStmt = DbConnection.connection.prepareStatement("SELECT COUNT(*) FROM players WHERE name = ?")) {
+        try (PreparedStatement checkStmt = DbConnection.connection.prepareStatement("SELECT COUNT(*) FROM players WHERE name = ?")) {
             checkStmt.setString(1, username);
             ResultSet checkRs = checkStmt.executeQuery();
 

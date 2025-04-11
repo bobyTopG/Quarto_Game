@@ -53,29 +53,34 @@ public class DbConnection {
 
     public static String getStatistics() {
         return "SELECT player_id,\n" +
-                "       (move_nr + 1) / 2                                                       as move_nr,\n" +
-                "       round(extract(epoch from age(end_time, start_time))::numeric / 60.0, 2) as duration\n" +
+                "       (move_nr + 1) / 2                                                as move_nr,\n" +
+                "       round(extract(epoch from age(end_time, start_time))::numeric, 2) as duration\n" +
                 "FROM moves\n" +
                 "WHERE game_session_id = ?;";
     }
 
     public static String getLeaderboard() {
         return "SELECT name,\n" +
-                "       count(distinct gs.game_session_id)                                                      as played,\n" +
-                "       count(distinct case when gs.winner_id = p.player_id then 1 end)                         as wins,\n" +
+                "       count(distinct gs.game_session_id)                                               as played,\n" +
+                "       count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) as wins,\n" +
                 "       count(distinct gs.game_session_id) -\n" +
-                "       count(distinct case when gs.winner_id = p.player_id or gs.winner_id IS NULL then 1 end) as losses,\n" +
-                "       count(distinct case when gs.winner_id = p.player_id then 1 end) * 100.0\n" +
-                "           / count(distinct gs.game_session_id)                                                as wins_p,\n" +
+                "       count(distinct case\n" +
+                "                          when gs.winner_id = p.player_id or\n" +
+                "                               gs.winner_id IS NULL then gs.game_session_id end)        as losses,\n" +
+                "       round(count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) * 100.0\n" +
+                "                 / count(distinct gs.game_session_id), 2)                               as wins_p,\n" +
                 "       round(count(m.move_id) * 1.0\n" +
-                "                 / count(distinct gs.game_session_id), 2)                                      as avg_moves,\n" +
+                "                 / count(distinct gs.game_session_id), 2)                               as avg_moves,\n" +
                 "       round(sum(extract(epoch from age(m.end_time, m.start_time))::numeric / 60)\n" +
-                "                 / count(m.move_id), 2)                                                        as avg_duration_per_move\n" +
+                "                 / count(m.move_id), 2)                                                 as avg_duration_per_move\n" +
                 "FROM players p\n" +
                 "         LEFT JOIN game_sessions gs on p.player_id in (gs.player_id1, gs.player_id2)\n" +
                 "         LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id\n" +
-                "GROUP BY name, is_completed\n" +
-                "HAVING count(distinct gs.game_session_id) > 0 and is_completed = true and is_ai = false;";
+                "GROUP BY name, is_completed, is_ai\n" +
+                "HAVING count(distinct gs.game_session_id) > 0\n" +
+                "   and is_completed = true\n" +
+                "   and is_ai = false\n" +
+                "   and upper(name) != 'GUEST';";
     }
 
     public static String setGameSession() {

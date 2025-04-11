@@ -1,6 +1,7 @@
 INSERT INTO players (name, is_ai)
 VALUES ('Bob', true),
-       ('Robert', true);
+       ('Robert', true),
+       ('Guest', false);
 
 INSERT INTO players (name, password)
 VALUES ('Alice', 'password'),

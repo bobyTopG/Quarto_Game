@@ -31,6 +31,10 @@ public class Game {
         piecesToSelect.generateAllPieces();
 
         gameRules = new GameRules(board, moves);
+
+        Move dummyStart = new Move();
+        dummyStart.setEndTime(new Date());
+        moves.add(dummyStart);
     }
 
 
