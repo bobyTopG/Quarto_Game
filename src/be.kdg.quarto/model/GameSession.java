@@ -27,7 +27,7 @@ public class GameSession {
         this.currentPlayer = getRandomPlayer();
         startTime = new Date();
 
-        insertGameSessionInDb();
+        saveGameSessionToDb();
 
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
@@ -37,6 +37,7 @@ public class GameSession {
             handleAiTurn();
         }
     }
+
     public Player getRandomPlayer() {
         int rand = new Random().nextInt(2);
 
@@ -49,7 +50,7 @@ public class GameSession {
 //            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
 
-            endGameSession(currentPlayer.getId());
+            updateGameSession(currentPlayer.getId());
             return currentPlayer;
         }
         return null;
@@ -137,8 +138,7 @@ public class GameSession {
 
         game.endMove(player);
 
-        insertMoveInDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
-
+        saveMoveToDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
 
 
         switchTurns();
@@ -148,10 +148,10 @@ public class GameSession {
         selectedTile.setPiece(game.getSelectedPiece());
 
 
-
         game.startMove(player, selectedTile);
     }
-    public void insertMoveInDb(Piece piece, int position){
+
+    public void saveMoveToDb(Piece piece, int position) {
         int moveIdTemp = -1;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
                 Statement.RETURN_GENERATED_KEYS)) {
@@ -173,14 +173,15 @@ public class GameSession {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(position != -1)
-            insertPieceInDb(moveIdTemp, piece, position);
+        if (position != -1) {
+            savePieceToDb(moveIdTemp, piece, position);
+        }
     }
 
-    private void insertPieceInDb(int moveID, Piece piece, int position){
+    private void savePieceToDb(int moveId, Piece piece, int position) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
             ps.setInt(1, piece.getPieceId());
-            ps.setInt(2, moveID);
+            ps.setInt(2, moveId);
             ps.setInt(3, position);
             ps.executeUpdate();
 
@@ -190,7 +191,8 @@ public class GameSession {
             e.printStackTrace();
         }
     }
-    public void insertGameSessionInDb(){
+
+    public void saveGameSessionToDb() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
             ps.setInt(2, this.opponent.getId());
@@ -208,7 +210,7 @@ public class GameSession {
     }
 
     // saves a finished game session to db
-    public void endGameSession(int winnerId) {
+    public void updateGameSession(int winnerId) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
             ps.setInt(1, winnerId);
             ps.setBoolean(2, true);

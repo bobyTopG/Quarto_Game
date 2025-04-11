@@ -21,30 +21,34 @@ GROUP BY p.player_id, name;
 
 -- 2.
 SELECT player_id,
-       (move_nr + 1) / 2                                                       as move_nr,
-       round(extract(epoch from age(end_time, start_time))::numeric / 60.0, 2) as duration
+       (move_nr + 1) / 2                                                as move_nr,
+       round(extract(epoch from age(end_time, start_time))::numeric, 2) as duration
 FROM moves
 WHERE player_id = 1
   and game_session_id = 1;
 
 -- 3.
 SELECT name,
-       count(distinct gs.game_session_id)                                                      as played,
-       count(distinct case when gs.winner_id = p.player_id then 1 end)                         as wins,
+       count(distinct gs.game_session_id)                                               as played,
+       count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) as wins,
        count(distinct gs.game_session_id) -
-       count(distinct case when gs.winner_id = p.player_id or gs.winner_id IS NULL then 1 end) as losses,
-       count(distinct case when gs.winner_id = p.player_id then 1 end) * 100.0
-           / count(distinct gs.game_session_id)                                                as wins_p,
+       count(distinct case
+                          when gs.winner_id = p.player_id or
+                               gs.winner_id IS NULL then gs.game_session_id end)        as losses,
+       round(count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) * 100.0
+                 / count(distinct gs.game_session_id), 2)                               as wins_p,
        round(count(m.move_id) * 1.0
-                 / count(distinct gs.game_session_id), 2)                                      as avg_moves,
+                 / count(distinct gs.game_session_id), 2)                               as avg_moves,
        round(sum(extract(epoch from age(m.end_time, m.start_time))::numeric / 60)
-                 / count(m.move_id), 2)                                                        as avg_duration_per_move
+                 / count(m.move_id), 2)                                                 as avg_duration_per_move
 FROM players p
          LEFT JOIN game_sessions gs on p.player_id in (gs.player_id1, gs.player_id2)
          LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id
-GROUP BY name, is_completed
+GROUP BY name, is_completed, is_ai
 HAVING count(distinct gs.game_session_id) > 0
-   and is_completed = true;
+   and is_completed = true
+   and is_ai = false
+   and upper(name) != 'GUEST';
 
 select end_time
 from moves;
@@ -80,9 +84,19 @@ VALUES (1, 1, current_timestamp, 2);
 INSERT INTO pieces (piece_type_id, move_id, pos)
 VALUES (1, 1, 2);
 
-SELECT * FROM players;
-SELECT * FROM game_sessions;
-SELECT * FROM moves WHERE game_session_id > 2;
-SELECT * FROM pieces WHERE move_id > 12;
+SELECT *
+FROM players;
 
-SELECT * FROM piece_types;
+SELECT *
+FROM game_sessions;
+
+SELECT *
+FROM moves
+WHERE game_session_id = 6;
+
+SELECT *
+FROM pieces
+WHERE move_id >= 34;
+
+SELECT *
+FROM piece_types;
