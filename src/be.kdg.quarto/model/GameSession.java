@@ -137,6 +137,7 @@ public class GameSession {
 
         game.endMove(player);
 
+        insertMoveInDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
 
 
 
@@ -147,11 +148,10 @@ public class GameSession {
         selectedTile.setPiece(game.getSelectedPiece());
 
 
-        insertMoveInDb(game.getSelectedPiece(), selectedTile);
 
         game.startMove(player, selectedTile);
     }
-    public void insertMoveInDb(Piece piece, Tile selectedTile){
+    public void insertMoveInDb(Piece piece, int position){
         int moveIdTemp = -1;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
                 Statement.RETURN_GENERATED_KEYS)) {
@@ -167,22 +167,24 @@ public class GameSession {
             if (rs.next()) {
                 moveIdTemp = rs.getInt(1);
             }
-            System.out.println("move id: " + moveIdTemp + " current player: " + currentPlayer.getId());
+            System.out.print("move id: " + moveIdTemp + " current player: " + currentPlayer.getName());
+            System.out.println(" start time: " + game.getCurrentMove().getStartTime() + " end time: " + game.getCurrentMove().getEndTime() + "");
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        insertPieceInDb(moveIdTemp, piece, selectedTile);
+        if(position != -1)
+            insertPieceInDb(moveIdTemp, piece, position);
     }
 
-    private void insertPieceInDb(int moveID, Piece piece, Tile selectedTile){
+    private void insertPieceInDb(int moveID, Piece piece, int position){
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
             ps.setInt(1, piece.getPieceId());
             ps.setInt(2, moveID);
-            ps.setInt(3, game.getBoard().findTileIndex(selectedTile));
+            ps.setInt(3, position);
             ps.executeUpdate();
 
-            System.out.println("move id: " + moveID + " position: " + game.getCurrentMove().getPosition());
+            System.out.println(" position: " + position);
 
         } catch (SQLException e) {
             e.printStackTrace();
