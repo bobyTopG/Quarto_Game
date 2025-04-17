@@ -1,4 +1,5 @@
 -- drop tables
+DROP TABLE IF EXISTS pause_periods;
 DROP TABLE IF EXISTS pieces;
 DROP TABLE IF EXISTS piece_types;
 DROP TABLE IF EXISTS moves;
@@ -25,7 +26,9 @@ CREATE TABLE game_sessions
         CONSTRAINT fk_player_id2 REFERENCES players (player_id),
     winner_id       INTEGER
         CONSTRAINT fk_winner_id REFERENCES players (player_id),
-    is_completed    BOOLEAN DEFAULT false
+    is_completed    BOOLEAN DEFAULT false,
+    start_time timestamp,
+    end_time timestamp
 );
 
 CREATE TABLE moves
@@ -40,7 +43,13 @@ CREATE TABLE moves
     end_time        timestamp,
     move_nr         INTEGER
 );
-
+CREATE TABLE  pause_periods (
+    pause_period_id INTEGER GENERATED ALWAYS AS IDENTITY,
+    move_id INTEGER NOT NULL
+        CONSTRAINT fk_move_id REFERENCES moves (move_id),
+    start_time timestamp,
+    end_time timestamp
+);
 CREATE TABLE piece_types
 (
     piece_type_id INTEGER GENERATED ALWAYS AS IDENTITY

@@ -3,6 +3,25 @@ VALUES ('Bob', true),
        ('Robert', true),
        ('Guest', false);
 
+INSERT INTO piece_types (fill, shape, color, size)
+VALUES ('Full', 'Circle', 'White', 'Small'),
+       ('Full', 'Circle', 'White', 'Big'),
+       ('Full', 'Circle', 'Black', 'Small'),
+       ('Full', 'Circle', 'Black', 'Big'),
+       ('Full', 'Square', 'White', 'Small'),
+       ('Full', 'Square', 'White', 'Big'),
+       ('Full', 'Square', 'Black', 'Small'),
+       ('Full', 'Square', 'Black', 'Big'),
+       ('Hollow', 'Circle', 'White', 'Small'),
+       ('Hollow', 'Circle', 'White', 'Big'),
+       ('Hollow', 'Circle', 'Black', 'Small'),
+       ('Hollow', 'Circle', 'Black', 'Big'),
+       ('Hollow', 'Square', 'White', 'Small'),
+       ('Hollow', 'Square', 'White', 'Big'),
+       ('Hollow', 'Square', 'Black', 'Small'),
+       ('Hollow', 'Square', 'Black', 'Big');
+
+
 INSERT INTO players (name, password)
 VALUES ('Alice', 'password'),
        ('Bob', 'password'),
@@ -36,24 +55,6 @@ VALUES (2, 3, '2025-04-01 14:05:00', '2025-04-01 14:08:10', 1),
        (2, 4, '2025-04-01 14:12:00', '2025-04-01 14:13:40', 4),
        (2, 3, '2025-04-01 14:15:00', '2025-04-01 14:17:50', 5),
        (2, 4, '2025-04-01 14:17:00', '2025-04-01 14:20:00', 6);
-
-INSERT INTO piece_types (fill, shape, color, size)
-VALUES ('Full', 'Circle', 'White', 'Small'),
-       ('Full', 'Circle', 'White', 'Big'),
-       ('Full', 'Circle', 'Black', 'Small'),
-       ('Full', 'Circle', 'Black', 'Big'),
-       ('Full', 'Square', 'White', 'Small'),
-       ('Full', 'Square', 'White', 'Big'),
-       ('Full', 'Square', 'Black', 'Small'),
-       ('Full', 'Square', 'Black', 'Big'),
-       ('Hollow', 'Circle', 'White', 'Small'),
-       ('Hollow', 'Circle', 'White', 'Big'),
-       ('Hollow', 'Circle', 'Black', 'Small'),
-       ('Hollow', 'Circle', 'Black', 'Big'),
-       ('Hollow', 'Square', 'White', 'Small'),
-       ('Hollow', 'Square', 'White', 'Big'),
-       ('Hollow', 'Square', 'Black', 'Small'),
-       ('Hollow', 'Square', 'Black', 'Big');
 
 -- Pieces for Game 1
 INSERT INTO pieces (piece_type_id, move_id, pos)

@@ -196,6 +196,8 @@ public class GameSession {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
             ps.setInt(2, this.opponent.getId());
+            java.sql.Timestamp sqlStartTime = new java.sql.Timestamp(startTime.getTime());
+            ps.setTimestamp(3, sqlStartTime);
             ps.executeUpdate();
 
             // save the new game session id
@@ -214,7 +216,9 @@ public class GameSession {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
             ps.setInt(1, winnerId);
             ps.setBoolean(2, true);
-            ps.setInt(3, gameSessionId);
+            java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
+            ps.setTimestamp(3, sqlEndTime);
+            ps.setInt(4, gameSessionId);
             ps.executeUpdate();
 
         } catch (SQLException e) {

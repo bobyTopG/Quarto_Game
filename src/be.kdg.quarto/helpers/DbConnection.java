@@ -42,8 +42,8 @@ public class DbConnection {
     public static String getPartialStatistics() {
         return "SELECT p.player_id,\n" +
                 "       count(*)                                                                                as total_moves,\n" +
-                "       sum(extract(epoch from age(end_time, start_time))::numeric)                             as total_duration,\n" +
-                "       round(sum(extract(epoch from age(end_time, start_time)))::numeric / 60.0 / count(*), 2) as avg\n" +
+                "       sum(extract(epoch from age(m.end_time, m.start_time))::numeric)                             as total_duration,\n" +
+                "       round(sum(extract(epoch from age(m.end_time, m.start_time)))::numeric / 60.0 / count(*), 2) as avg\n" +
                 "FROM moves m\n" +
                 "         INNER JOIN game_sessions gs on (gs.game_session_id = m.game_session_id)\n" +
                 "         INNER JOIN players p on (p.player_id = m.player_id)\n" +
@@ -84,14 +84,15 @@ public class DbConnection {
     }
 
     public static String setGameSession() {
-        return "INSERT INTO game_sessions (player_id1, player_id2)\n" +
-                "VALUES (?, ?);";
+        return "INSERT INTO game_sessions (player_id1, player_id2, start_time)\n" +
+                "VALUES (?, ?, ?);";
     }
 
     public static String updateGameSession() {
         return "UPDATE game_sessions\n" +
                 "SET winner_id    = ?,\n" +
-                "    is_completed = ?\n" +
+                "    is_completed = ?," +
+                "    end_time     = ?\n" +
                 "WHERE game_session_id = ?;";
     }
 

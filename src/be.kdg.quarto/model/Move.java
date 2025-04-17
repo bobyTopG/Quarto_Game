@@ -1,6 +1,8 @@
 package be.kdg.quarto.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Move {
 
@@ -12,10 +14,27 @@ public class Move {
     private Date startTime;
     private Date endTime;
 
+
+    private List<PausePeriod> pausePeriods = new ArrayList<>();
+    private Date currentPauseStart;
+
+
+    private static class PausePeriod {
+        private Date pauseStart;
+        private Date pauseEnd;
+
+        public PausePeriod(Date pauseStart, Date pauseEnd) {
+            this.pauseStart = pauseStart;
+            this.pauseEnd = pauseEnd;
+        }
+
+        public long getDurationInMillis() {
+            return pauseEnd.getTime() - pauseStart.getTime();
+        }
+    }
     public Move() {
 
     }
-
     public Move(Player player, int position, Piece piece, int moveNumber, Date startTime) {
         this.player = player;
         this.position = position;
@@ -31,6 +50,44 @@ public class Move {
         this.endTime = endTime;
 
     }
+
+
+
+    // Pause functionality
+    public void pause() {
+        if (currentPauseStart == null) {
+            // Only set pause start if we're not already paused
+            currentPauseStart = new Date();
+        }
+    }
+
+    public void resume() {
+        if (currentPauseStart != null) {
+            // Add the completed pause period to our list
+            pausePeriods.add(new PausePeriod(currentPauseStart, new Date()));
+            currentPauseStart = null;
+        }
+    }
+
+    // Calculate total paused time in milliseconds
+    private long getTotalPausedTimeInMillis() {
+        long totalPausedTime = 0;
+
+        // Add all completed pause periods
+        for (PausePeriod pause : pausePeriods) {
+            totalPausedTime += pause.getDurationInMillis();
+        }
+
+        // If we're currently paused, add the current pause time
+        if (currentPauseStart != null) {
+            totalPausedTime += (new Date().getTime() - currentPauseStart.getTime());
+        }
+
+        return totalPausedTime;
+    }
+
+
+
 
     public Player getPlayer() {
         return player;
@@ -89,8 +146,16 @@ public class Move {
     }
 
     public float getDuration() {
-        // todo: this is a placeholder return value
-        return 0f;
+        if (startTime == null) return 0f;
+
+        // Calculate end timestamp (current time if move isn't finished)
+        long endTimestamp = (endTime != null) ? endTime.getTime() : new Date().getTime();
+
+        // Calculate total duration excluding pauses (in milliseconds)
+        long durationInMillis = endTimestamp - startTime.getTime() - getTotalPausedTimeInMillis();
+
+        // Convert to seconds as float
+        return durationInMillis / 1000.0f;
     }
 
     public boolean isPositionSet() {
