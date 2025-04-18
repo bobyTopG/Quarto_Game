@@ -14,7 +14,7 @@ public class DbConnection {
 
             //close connection when app is shutdown
             Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
         }
     }

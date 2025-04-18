@@ -17,7 +17,7 @@ public class Statistics {
     private int winnerId, playerId1, playerId2, playerIdTemp;
     private String winner, player1, player2;
 
-    public Statistics(int gameSessionId) {
+    public Statistics(int gameSessionId) throws SQLException {
         this.gameSessionId = gameSessionId;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPlayers())) {
             ps.setInt(1, gameSessionId);
@@ -30,8 +30,8 @@ public class Statistics {
                 playerId2 = rs.getInt(5);
                 player2 = rs.getString(6);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | NullPointerException e) {
+            throw new SQLException(e);
         }
     }
 

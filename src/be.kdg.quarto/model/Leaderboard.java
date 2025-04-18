@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class Leaderboard {
 
-    public ObservableList<Player> loadLeaderboard() {
+    public ObservableList<Player> loadLeaderboard() throws SQLException {
         ObservableList<Player> playerList = FXCollections.observableArrayList();
 
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getLeaderboard())) {
@@ -27,9 +27,9 @@ public class Leaderboard {
                         rs.getFloat(7)
                 ));
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            throw new SQLException(e.getMessage());
         }
 
         return playerList;

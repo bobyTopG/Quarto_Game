@@ -20,6 +20,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class StartPresenter {
@@ -68,12 +69,22 @@ public class StartPresenter {
             }
         });
 
-
-        view.getStatistics().setOnAction(event -> {
-            StatisticsView statisticView = new StatisticsView();
-            StatisticsView configuredView = CreateHelper.createPopUp(statisticView, view, "Statistics", 425, 400);
+    view.getStatistics().setOnAction(event -> {
+        StatisticsView statisticView = new StatisticsView();
+        StatisticsView configuredView = CreateHelper.createPopUp(statisticView, view, "Statistics", 425, 400);
+        try {
             new StatisticsPresenter(configuredView, new Statistics(1));
-        });
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Connection Error");
+            alert.setHeaderText("You are currently offline");
+            alert.setContentText("Please connect again!");
+            alert.showAndWait();
+            StartView startView = new StartView();
+            view.getScene().setRoot(startView);
+            new StartPresenter(startView);
+        }
+    });
         view.getLeaderboard().setOnAction(event -> {
             LeaderboardView leaderboardView = new LeaderboardView();
             view.getScene().setRoot(leaderboardView);

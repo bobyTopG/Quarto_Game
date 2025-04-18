@@ -2,6 +2,7 @@ package be.kdg.quarto.view.ChooseAIView;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Ai;
+import be.kdg.quarto.model.Player;
 import be.kdg.quarto.model.enums.AiLevel;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +19,7 @@ public class ChooseAIView extends BorderPane {
     private Button backButton, selectButton;
     private Image notFoundImage;
     private List<Image> AIImages; //order is important
-    private List<Ai> AiCharacters;
+    private List<Player> AiCharacters;
     private Label chooseAILabel, nameLabel,
             descriptionLabel,difficultyHolderLabel, difficultyLabel;
 
@@ -86,10 +87,20 @@ public class ChooseAIView extends BorderPane {
         //set the character that is the nth on the list
         selectedCharacter.setImage(AIImages.get(n));
         nameLabel.setText(AiCharacters.get(n).getName());
-        AiLevel level = AiCharacters.get(n).getDifficultyLevel();
-        difficultyLabel.setText(getDifficultyName(level));
-        changeDifficultyColor(level);
-        descriptionLabel.setText(AiCharacters.get(n).getDescription());
+        if(AiCharacters.get(n) instanceof  Ai) {
+            Ai ai = (Ai) AiCharacters.get(n);
+            AiLevel level = ai.getDifficultyLevel();
+            difficultyLabel.setText(getDifficultyName(level));
+            changeDifficultyColor(level);
+            descriptionLabel.setText(ai.getDescription());
+        }
+        else {
+            difficultyLabel.setText("Unknown");
+            changeDifficultyColor(AiLevel.EASY);
+            descriptionLabel.setText("Have fun with your friends!");
+        }
+
+
 
     }
 
@@ -133,7 +144,7 @@ public class ChooseAIView extends BorderPane {
     }
 
 
-     void initialise(List<Image> images, List<Ai> characters, Image notFoundImage) {
+     void initialise(List<Image> images, List<Player> characters, Image notFoundImage) {
         this.AIImages = images;
         this.AiCharacters = characters;
         this.notFoundImage = notFoundImage;
@@ -148,7 +159,7 @@ public class ChooseAIView extends BorderPane {
         HBox AICharactersHBox = new HBox();
         AICharactersHBox.getStyleClass().add("ai-characters-hbox");
         int count = 0;
-        for (Ai character : AiCharacters) {
+        for (Player character : AiCharacters) {
             Button AICharacterButton = CreateHelper.createButton("","ai-button");
             Image image = AIImages.get(count);
             ImageView imageView = new ImageView(image);

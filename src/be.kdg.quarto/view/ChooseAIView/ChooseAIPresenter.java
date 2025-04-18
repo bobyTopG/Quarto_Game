@@ -4,6 +4,7 @@ import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Human;
+import be.kdg.quarto.model.Player;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -17,22 +18,23 @@ import java.util.List;
 
 public class ChooseAIPresenter {
     private final ChooseAIView view;
-    private Ai aiSelected;
+    private Player aiSelected;
+    private AICharacters aiCharacters = new AICharacters();
 
     public ChooseAIPresenter(ChooseAIView view) {
         this.view = view;
         List<Image> images = findAICharacterImagesForButtons();
         String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
-        view.initialise(images, AICharacters.getCharacters(), notFoundImage);
+        view.initialise(images, aiCharacters.getCharacters(), notFoundImage);
         updateView();
         addEventHandlers();
     }
 
     private List<Image> findAICharacterImagesForButtons() {
-        List<Ai> AiList = AICharacters.getCharacters();
+        List<Player> AiList = aiCharacters.getCharacters();
         List<Image> images = new ArrayList<>();
-        for (Ai ai : AiList) {
+        for (Player ai : AiList) {
             String imagePath = "/images/aiCharacters/Boxed" + ai.getName() + ".png";
             Image image = new Image(getClass().getResource(imagePath).toString());
             images.add(image);
@@ -48,7 +50,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                aiSelected = AICharacters.getCharacters().get(id);
+                aiSelected = aiCharacters.getCharacters().get(id);
             });
             count++;
         }

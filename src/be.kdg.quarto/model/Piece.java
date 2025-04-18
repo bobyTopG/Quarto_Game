@@ -40,20 +40,20 @@ public class Piece {
         this.shape = shape;
 
         // loads the id of a piece from the database
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPieceId())) {
-            ps.setString(1, fill.toString().toUpperCase());
-            ps.setString(2, shape.toString().toUpperCase());
-            ps.setString(3, color.toString().toUpperCase());
-            ps.setString(4, size.toString().toUpperCase());
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                this.pieceId = rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPieceId())) {
+//            ps.setString(1, fill.toString().toUpperCase());
+//            ps.setString(2, shape.toString().toUpperCase());
+//            ps.setString(3, color.toString().toUpperCase());
+//            ps.setString(4, size.toString().toUpperCase());
+//
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                this.pieceId = rs.getInt(1);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public int getPieceId() {

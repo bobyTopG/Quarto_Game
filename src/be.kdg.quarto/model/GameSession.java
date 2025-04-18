@@ -148,28 +148,28 @@ public class GameSession {
     }
 
     public void saveMoveToDb(Piece piece, int position) {
-        int moveIdTemp = -1;
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
-                Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, gameSessionId);
-            ps.setInt(2, currentPlayer.getId());
-            ps.setTimestamp(3,
-                    new java.sql.Timestamp(game.getCurrentMove().getStartTime().getTime()));
-            ps.setTimestamp(4,
-                    new java.sql.Timestamp(game.getCurrentMove().getEndTime().getTime()));
-            ps.setInt(5, game.getCurrentMove().getMoveNumber());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                moveIdTemp = rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (position != -1) {
-            savePieceToDb(moveIdTemp, piece, position);
-        }
+//        int moveIdTemp = -1;
+//        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
+//                Statement.RETURN_GENERATED_KEYS)) {
+//            ps.setInt(1, gameSessionId);
+//            ps.setInt(2, currentPlayer.getId());
+//            ps.setTimestamp(3,
+//                    new java.sql.Timestamp(game.getCurrentMove().getStartTime().getTime()));
+//            ps.setTimestamp(4,
+//                    new java.sql.Timestamp(game.getCurrentMove().getEndTime().getTime()));
+//            ps.setInt(5, game.getCurrentMove().getMoveNumber());
+//            ps.executeUpdate();
+//            ResultSet rs = ps.getGeneratedKeys();
+//            if (rs.next()) {
+//                moveIdTemp = rs.getInt(1);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        if (position != -1) {
+//            savePieceToDb(moveIdTemp, piece, position);
+//        }
     }
 
     private void savePieceToDb(int moveId, Piece piece, int position) {
@@ -186,37 +186,37 @@ public class GameSession {
     }
 
     public void saveGameSessionToDb() {
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, this.player.getId());
-            ps.setInt(2, this.opponent.getId());
-            java.sql.Timestamp sqlStartTime = new java.sql.Timestamp(startTime.getTime());
-            ps.setTimestamp(3, sqlStartTime);
-            ps.executeUpdate();
-
-            // save the new game session id
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                this.gameSessionId = rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
+//            ps.setInt(1, this.player.getId());
+//            ps.setInt(2, this.opponent.getId());
+//            java.sql.Timestamp sqlStartTime = new java.sql.Timestamp(startTime.getTime());
+//            ps.setTimestamp(3, sqlStartTime);
+//            ps.executeUpdate();
+//
+//            // save the new game session id
+//            ResultSet rs = ps.getGeneratedKeys();
+//            if (rs.next()) {
+//                this.gameSessionId = rs.getInt(1);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // saves a finished game session to db
     public void updateGameSession(int winnerId) {
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            ps.setInt(1, winnerId);
-            ps.setBoolean(2, true);
-            java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
-            ps.setTimestamp(3, sqlEndTime);
-            ps.setInt(4, gameSessionId);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
+//            ps.setInt(1, winnerId);
+//            ps.setBoolean(2, true);
+//            java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
+//            ps.setTimestamp(3, sqlEndTime);
+//            ps.setInt(4, gameSessionId);
+//            ps.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // to prevent error in case if AI won during the counting of timer

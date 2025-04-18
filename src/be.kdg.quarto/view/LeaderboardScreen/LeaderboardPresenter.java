@@ -4,8 +4,11 @@ import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+
+import java.sql.SQLException;
 
 public class LeaderboardPresenter {
     private final LeaderboardView view;
@@ -65,21 +68,35 @@ public class LeaderboardPresenter {
         avgMoveDuration.setPrefWidth(135);
         avgMoveDuration.setCellValueFactory(cellData -> cellData.getValue().avgMoveDurationProperty().asObject());
 
-        table.setItems(new Leaderboard().loadLeaderboard());
-        table.getColumns().addAll(order, name, totalGames, wins, losses, winsPercent, avgMoves, avgMoveDuration);
+        try {
+            table.setItems(new Leaderboard().loadLeaderboard());
+            table.getColumns().addAll(order, name, totalGames, wins, losses, winsPercent, avgMoves, avgMoveDuration);
 
-        // disables the columns to be reordered and resized
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setFixedCellSize(30);
-        for (TableColumn<Leaderboard.Player, ?> column : table.getColumns()) {
-            column.setReorderable(false);
-            column.setResizable(false);
+            // disables the columns to be reordered and resized
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+            table.setFixedCellSize(30);
+            for (TableColumn<Leaderboard.Player, ?> column : table.getColumns()) {
+                column.setReorderable(false);
+                column.setResizable(false);
+            }
+            // disables the order column to be sorted
+            order.setSortable(false);
+
+            table.setItems(leaderboard.loadLeaderboard());
+            view.setCenter(table);
         }
-        // disables the order column to be sorted
-        order.setSortable(false);
+        catch (SQLException e){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Connection Error");
+            alert.setHeaderText("You are currently offline");
+            alert.setContentText("Please connect again!");
+            alert.showAndWait();
 
-        table.setItems(leaderboard.loadLeaderboard());
-        view.setCenter(table);
+                StartView startView = new StartView();
+                view.getScene().setRoot(startView);
+                new StartPresenter(startView);
+           
+        }
     }
 
     private void addEventHandlers() {

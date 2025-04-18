@@ -1,10 +1,7 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.ImageHelper;
-import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.model.Statistics;
-import be.kdg.quarto.model.Tile;
+import be.kdg.quarto.model.*;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
@@ -14,9 +11,11 @@ import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class GamePresenter {
     Timeline uiUpdateTimer;
 
     List<BoardCell> board;
-    List<SelectCell> piecesToSelect ;
+    List<SelectCell> piecesToSelect;
 
 
     public GamePresenter(GameSession model, GameView view) {
@@ -64,15 +63,15 @@ public class GamePresenter {
                     //handle board Cell click
                     if (model.getGame().getBoard().findTile(index).getPiece() == null) {
                         if (selectedTile != null) {
-                            if(selectedTile.equals(boardCell)){
+                            if (selectedTile.equals(boardCell)) {
                                 placePiece();
-                            }else{
+                            } else {
                                 selectedTile.deselect();
                                 boardCell.select();
                                 selectedTile = boardCell;
 
                             }
-                        }else{
+                        } else {
                             boardCell.select();
                             selectedTile = boardCell;
 
@@ -93,15 +92,21 @@ public class GamePresenter {
                 selectedPiece.setPiece(null);
                 selectedPiece = null;
                 view.switchToMainSection();
+               if(model.getOpponent() instanceof Ai){
+                   handleAiTurn();
+               }
+               else {
+                   updateView();
+               }
 
-                handleAiTurn();
+
 
             } else {
                 System.out.println("Selected Piece is null!");
             }
         });
         //onclick for selectGrid
-        for(SelectCell selectCell : piecesToSelect){
+        for (SelectCell selectCell : piecesToSelect) {
             if (selectCell.getPiece() != null) {
                 selectCell.getCellVisual().setOnMouseClicked(mouseEvent -> {
                     if (selectedPiece != null) {
@@ -132,7 +137,11 @@ public class GamePresenter {
                     view.getScene().setRoot(startView);
                     new StartPresenter(startView);
                 });
-                new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
+                try {
+                    new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
+                }catch (SQLException e){
+
+                }
             }
         });
 
@@ -142,7 +151,7 @@ public class GamePresenter {
         });
     }
 
-    private void placePiece(){
+    private void placePiece() {
         if (selectedTile != null) {
             Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
             if (tile.getPiece() != null) {
@@ -158,6 +167,7 @@ public class GamePresenter {
             updateView();
         }
     }
+
     private void handleAiTurn() {
         // First delay before placing a piece
         PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
@@ -262,17 +272,17 @@ public class GamePresenter {
             view.getTurn().setStyle("-fx-background-color: #FF1D25");
             if (model.getGame().getSelectedPiece() != null) {
                 view.getChoosePiece().setDisable(true);
-                view.getPlacePiece().setDisable(true);
+                view.getPlacePiece().setDisable(false);
                 view.getTurn().setText("Opponent's turn to place a piece");
             } else {
-                view.getChoosePiece().setDisable(true);
+                view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
                 view.getTurn().setText("Opponent's turn to choose a piece");
             }
         }
     }
 
-    private void setUpTimer(){
+    private void setUpTimer() {
         uiUpdateTimer = new Timeline(
                 new KeyFrame(Duration.seconds(1), event -> {
                     updateTimerDisplay();
@@ -281,10 +291,12 @@ public class GamePresenter {
         uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
         uiUpdateTimer.play();
     }
+
     private void updateTimerDisplay() {
         int totalSeconds = model.getGame().getTimer().getGameDurationInSeconds();
         view.setTimer(totalSeconds);
     }
+
     public GameView getView() {
         return view;
     }
