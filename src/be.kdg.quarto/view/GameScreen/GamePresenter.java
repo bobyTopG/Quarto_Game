@@ -11,9 +11,14 @@ import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 30.0;
@@ -27,18 +32,22 @@ public class GamePresenter {
 
     //to make a delay between AI moves (in seconds)
     int AiThinkingDuration = 0;
+    Timeline uiUpdateTimer;
 
-
-    BoardCell[][] board;
-    SelectCell[][] piecesToSelect;
+    List<BoardCell> board;
+    List<SelectCell> piecesToSelect ;
 
 
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;
         this.view = view;
+
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
         createBoard();
         createSelectPieces();
+
+        setUpTimer();
+
         addEventHandlers();
         updateView();
     }
@@ -48,7 +57,7 @@ public class GamePresenter {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 int index = row * 4 + col;
-                BoardCell boardCell = board[row][col];
+                BoardCell boardCell = board.get(index);
                 boardCell.getCellVisual().setOnMouseEntered(mouseEvent -> boardCell.hover());
                 boardCell.getCellVisual().setOnMouseExited(mouseEvent -> boardCell.unhover());
                 boardCell.getCellVisual().setOnMouseClicked(event -> {
@@ -80,10 +89,6 @@ public class GamePresenter {
         view.getChoosePieceConfirmButton().setOnAction(event -> {
             if (selectedPiece != null) {
                 model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
-                model.getGame().getPiecesToSelect().getTiles().stream()
-                        .filter(tile -> selectedPiece.getPiece().equals(tile.getPiece()))
-                        .findFirst()
-                        .ifPresent(tile -> tile.setPiece(null));
                 selectedPiece.deselect();
                 selectedPiece.setPiece(null);
                 selectedPiece = null;
@@ -96,23 +101,19 @@ public class GamePresenter {
             }
         });
         //onclick for selectGrid
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                SelectCell selectCell = piecesToSelect[row][col];
-                if (selectCell.getPiece() != null) {
-                    selectCell.getCellVisual().setOnMouseClicked(mouseEvent -> {
-                        if (selectedPiece != null) {
-                            selectedPiece.deselect();
-                        }
-                        selectedPiece = selectCell;
-                        selectCell.select();
+        for(SelectCell selectCell : piecesToSelect){
+            if (selectCell.getPiece() != null) {
+                selectCell.getCellVisual().setOnMouseClicked(mouseEvent -> {
+                    if (selectedPiece != null) {
+                        selectedPiece.deselect();
+                    }
+                    selectedPiece = selectCell;
+                    selectCell.select();
 
-                    });
+                });
 
-                    selectCell.getCellVisual().setOnMouseEntered(mouseEvent -> selectCell.hover());
-                    selectCell.getCellVisual().setOnMouseExited(mouseEvent -> selectCell.unhover());
-                }
-
+                selectCell.getCellVisual().setOnMouseEntered(mouseEvent -> selectCell.hover());
+                selectCell.getCellVisual().setOnMouseExited(mouseEvent -> selectCell.unhover());
             }
         }
 
@@ -181,20 +182,18 @@ public class GamePresenter {
     }
 
     private void createBoard() {
-        board = new BoardCell[4][4];
+        board = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 BoardCell cell = new BoardCell(r, c, 21);
                 view.getBoardGrid().add(cell.getCellVisual(), r, c);
-                board[r][c] = cell;
+                board.add(cell);
             }
         }
     }
 
-
     private void createSelectPieces() {
-        piecesToSelect = new SelectCell[4][4];
-
+        piecesToSelect = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 int index = r * 4 + c;
@@ -207,7 +206,7 @@ public class GamePresenter {
 
                 cell.setPiece(model.getGame().getPiecesToSelect().getTiles().get(index).getPiece());
                 view.getSelectGrid().add(cell.getCellVisual(), c, r);
-                piecesToSelect[r][c] = cell;
+                piecesToSelect.add(cell);
             }
         }
     }
@@ -225,10 +224,8 @@ public class GamePresenter {
 
         // Update board grid
         for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
-            int row = i / 4;
-            int col = i % 4;
             Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
-            BoardCell cell = board[row][col];
+            BoardCell cell = board.get(i);
 
             cell.setPiece(null);
 
@@ -237,7 +234,15 @@ public class GamePresenter {
             }
         }
 
-//         Update turn label
+        //update select grid
+        for (int i = 0; i < model.getGame().getPiecesToSelect().getTiles().size(); i++) {
+            Piece piece = model.getGame().getPiecesToSelect().getTiles().get(i).getPiece();
+            SelectCell cell = piecesToSelect.get(i);
+            cell.setPiece(piece); // This will update the visual state to match the model
+        }
+        //update timer
+        view.setTimer(model.getGame().getTimer().getGameDurationInSeconds());
+        //Update turn label
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
         if (isHumanTurn) {
             view.getTurn().setStyle("-fx-background-color: #29ABE2");
@@ -266,7 +271,19 @@ public class GamePresenter {
         }
     }
 
-
+    private void setUpTimer(){
+        uiUpdateTimer = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    updateTimerDisplay();
+                })
+        );
+        uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
+        uiUpdateTimer.play();
+    }
+    private void updateTimerDisplay() {
+        int totalSeconds = model.getGame().getTimer().getGameDurationInSeconds();
+        view.setTimer(totalSeconds);
+    }
     public GameView getView() {
         return view;
     }

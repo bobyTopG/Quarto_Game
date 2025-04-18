@@ -11,15 +11,18 @@ import java.util.List;
 
 public class Game {
 
+    private final Board piecesToSelect;
+    private final Board board;
+    private final GameRules gameRules;
+
     private final List<Move> moves;
+
+    private Piece selectedPiece;
     private Move currentMove;
 
-    private Board piecesToSelect;
-    private Board board;
-    private Piece selectedPiece;
+    private final GameTimer timer;
 
 
-    private GameRules gameRules;
 
 
     public Game() {
@@ -32,9 +35,7 @@ public class Game {
 
         gameRules = new GameRules(board, moves);
 
-        Move dummyStart = new Move();
-        dummyStart.setEndTime(new Date());
-        moves.add(dummyStart);
+        timer = new GameTimer();
     }
 
 
@@ -127,5 +128,9 @@ public class Game {
 
     public void setCurrentMove(Move currentMove) {
         this.currentMove = currentMove;
+    }
+
+    public GameTimer getTimer() {
+        return timer;
     }
 }

@@ -56,13 +56,19 @@
     -fx-text-alignment: center;
 }
 
-.piece-label{
-    -fx-font-family: "Berlin Sans FB";
-    -fx-font-size: 16px;
+.timer{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-font-size: 48px;
     -fx-text-alignment: center;
-
 }
-
+.timer-label{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-font-size: 26px;
+    -fx-text-alignment: center;
+}
+.timer-container{
+    -fx-padding: 0 0 15px 0;
+}
 
 .game-button{
     -fx-font-family: "Berlin Sans FB Demi Bold";

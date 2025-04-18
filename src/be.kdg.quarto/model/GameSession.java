@@ -68,7 +68,6 @@ public class GameSession {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
         if (game.getSelectedPiece() != null) {
-            // Placing
             placePiece(ai.getStrategy().selectTile(), ai);
 
             if (ai.getStrategy().isCallingQuarto()) {
@@ -135,11 +134,9 @@ public class GameSession {
     public void pickPiece(Piece piece, Player player) {
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
-
         game.endMove(player);
 
         saveMoveToDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
-
 
         switchTurns();
     }

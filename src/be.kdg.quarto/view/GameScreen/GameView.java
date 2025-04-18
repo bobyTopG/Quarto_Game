@@ -23,21 +23,29 @@ public class GameView extends StackPane {
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
-    VBox buttonsBox;
+    VBox leftBox;
 
     Button choosePieceConfirmation;
     Button backButton;
 
-    private final BorderPane selectedPieceContainer = new BorderPane();
+    private final VBox selectedPieceContainer = new VBox();
     private final ImageView selectedPieceImage = new ImageView();
 
     private final Label turn = CreateHelper.createLabel("Your Turn","turn-label");
-    private final Label timer = new Label("00:00:00");
+    private final Label timer = CreateHelper.createLabel("00:00","timer");
+    private final Label timerLabel = CreateHelper.createLabel("Timer","timer-label");
+    private final VBox  timerContainer = CreateHelper.createVBox("timer-container");
     private final Button quarto = CreateHelper.createButton("Quarto", new String[]{"game-button", "green-button","quarto-button"});
+
+
     private Button settingsButton;
     private final Button helpButton = CreateHelper.createButton("?", new String[]{"default-button","blue-button","help-button"});
+
+
     private final Button choosePiece = CreateHelper.createButton("Choose Piece", new String[]{"orange-button","game-button"});
     private final Button placePiece = CreateHelper.createButton("Place Piece", new String[]{ "blue-button", "game-button"});
+
+
     private final StackPane overlayContainer = new StackPane();
     private final SettingsView settingsView = new SettingsView();
     private final StatisticsView statisticsView = new StatisticsView();
@@ -64,19 +72,26 @@ public class GameView extends StackPane {
     }
     private void layoutNodes() {
 
+        VBox buttonsBox = new VBox(placePiece, choosePiece);
+        buttonsBox.setSpacing(25);
 
-        HBox placeBox = new HBox(placePiece, selectedPieceContainer);
-        placeBox.setAlignment(Pos.CENTER);
-        placeBox.setSpacing(10);
+        HBox bottomBox = new HBox(buttonsBox, selectedPieceContainer);
+        bottomBox.setAlignment(Pos.CENTER);
+        bottomBox.setSpacing(25);
 
 
         Region vSpacer = new Region();
         // to make a separator from all the space left
         VBox.setVgrow(vSpacer, Priority.ALWAYS);
-        buttonsBox = new VBox(vSpacer,placeBox,choosePiece);
-        buttonsBox.setSpacing(15);
-        buttonsBox.setPadding(new Insets(10, 20, 10, 30));
-        buttonsBox.setAlignment(Pos.CENTER_LEFT);
+
+
+        timerContainer.getChildren().addAll(timer, timerLabel);
+        timerContainer.setAlignment(Pos.CENTER);
+
+        leftBox = new VBox(vSpacer, timerContainer, bottomBox);
+        leftBox.setSpacing(15);
+        leftBox.setPadding(new Insets(10, 0, 10, 20));
+        leftBox.setAlignment(Pos.CENTER);
 
 
         Region hSpacer = new Region();
@@ -90,7 +105,7 @@ public class GameView extends StackPane {
 
         root.setTop(topBar);
 
-        root.setLeft(buttonsBox);
+        root.setLeft(leftBox);
 
         //to move the board a bit up
         BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
@@ -129,10 +144,8 @@ public class GameView extends StackPane {
         overlayContainer.getChildren().add(statisticsView);
     }
     private void createSelectedPieceHolder() {
-        VBox vbox = new VBox();
-        vbox.setSpacing(5);
 
-        Label label = CreateHelper.createLabel("Selected Piece", "piece-label");
+        Label label = CreateHelper.createLabel("Selected \nPiece :", "choose-piece-label");
 
         selectedPieceImage.setFitHeight(50);
         selectedPieceImage.setFitWidth(50);
@@ -146,9 +159,8 @@ public class GameView extends StackPane {
         selectedPieceImage.setFitHeight(50);
         selectedPieceImage.setFitWidth(50);
 
-
-        selectedPieceContainer.setCenter(pieceHolder);
-        selectedPieceContainer.setBottom(label);
+        selectedPieceContainer.getChildren().addAll(pieceHolder,label);
+        selectedPieceContainer.setSpacing(10);
     };
     void createChoosePieceView(){
 
@@ -180,7 +192,7 @@ public class GameView extends StackPane {
     }
 
     void switchToMainSection(){
-        root.setLeft(buttonsBox);
+        root.setLeft(leftBox);
     }
 
     private void createSettingsButton(){
@@ -246,7 +258,7 @@ public class GameView extends StackPane {
         return statisticsView;
     }
 
-    BorderPane getSelectedPieceContainer() {
+    VBox getSelectedPieceContainer() {
         return selectedPieceContainer;
     }
 
@@ -260,6 +272,11 @@ public class GameView extends StackPane {
 
     Label getTimer() {
         return timer;
+    }
+    void setTimer(int time) {
+       int minutes = time / 60;
+       int seconds = time % 60;
+       timer.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
     Button getQuarto() {

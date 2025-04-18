@@ -39,7 +39,6 @@ public class Cell {
             this.pieceImageView = imageView;
         }
     }
-
     public StackPane getCellVisual() { return cell; }
     public Piece getPiece() { return piece; }
     public ImageView getPieceVisual(){
