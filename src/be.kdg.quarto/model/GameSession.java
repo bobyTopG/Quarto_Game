@@ -49,7 +49,6 @@ public class GameSession {
         if (game.getGameRules().checkWin()) {
 //            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
-
             updateGameSession(currentPlayer.getId());
             return currentPlayer;
         }
@@ -164,8 +163,6 @@ public class GameSession {
             if (rs.next()) {
                 moveIdTemp = rs.getInt(1);
             }
-            System.out.print("move id: " + moveIdTemp + " current player: " + currentPlayer.getName());
-            System.out.println(" start time: " + game.getCurrentMove().getStartTime() + " end time: " + game.getCurrentMove().getEndTime() + "");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,7 +179,6 @@ public class GameSession {
             ps.setInt(3, position);
             ps.executeUpdate();
 
-            System.out.println(" position: " + position);
 
         } catch (SQLException e) {
             e.printStackTrace();

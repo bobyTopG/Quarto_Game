@@ -19,7 +19,6 @@ public class RuleBlockEndMovePlayer extends Rule {
                 for (Tile pieceTile : board.getTiles()) {
                     Piece testPiece = pieceTile.getPiece();
                     if (testPiece == null) continue;
-
                     board.getTile(i).setPiece(testPiece);
                     GameRules rules = new GameRules(board, List.of());
                     if (rules.checkPureWin()) {

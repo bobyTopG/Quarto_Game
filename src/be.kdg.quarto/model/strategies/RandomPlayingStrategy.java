@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Random;
 
 public class RandomPlayingStrategy implements PlayingStrategy {
-    //selectPiece = pieces that are not on the board
-    // placePiece = the board
     private Board selectPiece, board;
 
 
@@ -22,7 +20,6 @@ public class RandomPlayingStrategy implements PlayingStrategy {
         this.selectPiece = gameSession.getGame().getPiecesToSelect();
         this.board = gameSession.getGame().getBoard();
 
-        // Safeguard: ensure board has tiles
         if (this.board.getTiles().isEmpty()) {
             this.board.createEmptyBoard();
         }
@@ -71,10 +68,6 @@ public class RandomPlayingStrategy implements PlayingStrategy {
             return null;
         }
         return emptyTiles.get(new Random().nextInt(emptyTiles.size()));
-    }
-
-    public void setSelectPiece(Board selectPiece) {
-        this.selectPiece = selectPiece;
     }
 
     public void setBoard(Board board) {

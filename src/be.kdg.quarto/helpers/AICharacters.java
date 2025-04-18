@@ -34,7 +34,7 @@ public class AICharacters {
         }
 
         Ai bobAi = new Ai(ids.getFirst(), names.getFirst(), AiLevel.EASY, new RandomPlayingStrategy(), "New to the game, understands \n the basic rules but has \n no other knowledge");
-        Ai robertAi = new Ai(ids.get(1), names.get(1), AiLevel.HARD, new RuleBasedStrategy(), "A robot specifically designed \n to beat you at the game.");
+        Ai robertAi = new Ai(ids.get(1), names.get(1), AiLevel.HARD, new MiniMaxStrategy(), "A robot specifically designed \n to beat you at the game.");
         characters.add(bobAi);
         characters.add(robertAi);
         // Add more AI characters here...

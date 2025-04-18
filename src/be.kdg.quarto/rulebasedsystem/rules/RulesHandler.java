@@ -16,8 +16,6 @@ public class RulesHandler {
         rules.add(new RuleBlockEndMovePlayer());
         rules.add(new RuleWinningPositionAi());
         rules.add(new RuleBlockWinningPositionPlayer());
-        rules.add(new RuleGoodMove());
-        rules.add(new RuleDefaultFallback());
     }
 
     public boolean checkConditionRule(int index, FactsHandler facts) {
@@ -25,7 +23,23 @@ public class RulesHandler {
     }
 
     public boolean fireActionRule(int index, FactsHandler facts, Board board, Move move) {
-        return rules.get(index).actionRule(facts, board, move);
+        String ruleName = getRuleName(index);
+
+        switch (ruleName) {
+            case "RuleEndMoveAi" -> {
+                board.determineEndMove(move); // TEMP: use random until determineEndMove exists
+                return true;
+            }
+
+            case "RuleWinningPositionPlayer" -> {
+                board.determineBlockWinningPositionMove(move); // you already have this
+                return true;
+            }
+
+            default -> {
+                return false; // no rule matched or nothing fired
+            }
+        }
     }
 
     public int numberOfRules() {

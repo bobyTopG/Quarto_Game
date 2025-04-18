@@ -141,6 +141,7 @@ public class GamePresenter {
             new SettingsPresenter(this, view.getSettingsView(), this.model);
         });
     }
+
     private void placePiece(){
         if (selectedTile != null) {
             Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());

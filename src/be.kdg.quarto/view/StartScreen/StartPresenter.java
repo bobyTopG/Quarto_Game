@@ -15,12 +15,9 @@ import be.kdg.quarto.view.auth.LoginView.LoginPresenter;
 import be.kdg.quarto.view.auth.LoginView.LoginView;
 import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
 import be.kdg.quarto.view.auth.RegisterView.RegisterView;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 
 import java.util.Optional;
@@ -28,7 +25,6 @@ import java.util.Optional;
 public class StartPresenter {
 
     private StartView view;
-    // private BoardView boardView = new BoardView();
     private final String pathToBoard = "/images/Example_Board.png";
 
 
@@ -46,7 +42,7 @@ public class StartPresenter {
     }
 
     private void addEventHandlers() {
-        view.getNewGame().setOnAction(event -> {
+        view.getRegister().setOnAction(event -> {
             // Check if user is already logged in
             if (AuthHelper.isLoggedIn()) {
                 // User is logged in, go directly to Choose AI screen
@@ -59,8 +55,7 @@ public class StartPresenter {
             }
         });
 
-        // "Continue" button handler
-        view.getContinueButton().setOnAction(event -> {
+        view.getLogin().setOnAction(event -> {
             // Check if user is already logged in
             if (AuthHelper.isLoggedIn()) {
                 // User is logged in, go directly to Choose AI screen
@@ -97,9 +92,6 @@ public class StartPresenter {
         });
     }
 
-    /**
-     * Helper method to navigate to the Choose AI screen
-     */
     private void goToChooseAIScreen() {
         ChooseAIView chooseAIView = new ChooseAIView();
         view.getScene().setRoot(chooseAIView);

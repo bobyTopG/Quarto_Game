@@ -19,13 +19,6 @@ public class FactsHandler {
         return facts.contains(fact);
     }
 
-    public void removeFact(FactValues fact) {
-        if (facts.contains(fact)) {
-            facts.remove(fact);
-            factsChanged = true;
-        }
-    }
-
     public void resetFacts() {
         facts.clear();
         factsChanged = false;
@@ -44,18 +37,4 @@ public class FactsHandler {
         this.factsEvolved = value;
     }
 
-    public boolean factsEvolved() {
-        return factsEvolved;
-    }
-
-    public void setFactsChanged(boolean value) {
-        this.factsChanged = value;
-    }
-
-    public void printFacts() {
-        System.out.println("Current facts:");
-        for (FactValues fact : facts) {
-            System.out.println(" - " + fact);
-        }
-    }
 }
