@@ -13,6 +13,8 @@ public class RulesHandler {
 
     public RulesHandler() {
         this.rules = new ArrayList<>();
+        rules.add(new RuleWinningPositionAi());
+        rules.add(new EndMovePlayer());
         rules.add(new RuleWinningPositionPlayer());
         rules.add(new RuleEndMoveAi());
         rules.add(new RuleGoodMove());

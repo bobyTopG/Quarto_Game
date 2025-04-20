@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -19,7 +20,7 @@ public class GameView extends StackPane {
     private final BorderPane root = new BorderPane();
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
-
+    private Label quartoText = new Label();
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
@@ -111,10 +112,13 @@ public class GameView extends StackPane {
         BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
 
         root.setCenter(rotatedBoardPane);
+        quartoText.setMaxHeight(50);
+        quartoText.setMaxWidth(200);
+        quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
 
-
-        VBox quartoBox = new VBox(quarto);
+        VBox quartoBox = new VBox( quartoText , quarto);
         quartoBox.setAlignment(Pos.BOTTOM_CENTER);
+        quartoBox.setSpacing(270);
         //creating margin not to change the pos of other elements
         BorderPane.setMargin(quartoBox, new Insets(-15, 15, 15, -15));
 
@@ -301,4 +305,7 @@ public class GameView extends StackPane {
     }
     GridPane getBoardGrid() { return boardGrid; }
 
+    public Label getQuartoText() {
+        return quartoText;
+    }
 }

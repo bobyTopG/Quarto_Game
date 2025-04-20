@@ -131,13 +131,16 @@ public class GameSession {
     }
 
     public void pickPiece(Piece piece, Player player) {
-        game.setSelectedPiece(piece);
-        game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
-        game.endMove(player);
+        try {
+            game.setSelectedPiece(piece);
+            game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
+            game.endMove(player);
+            saveMoveToDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
+            switchTurns();
+        }catch (NullPointerException e) {
+            throw new NullPointerException();
+        }
 
-        saveMoveToDb(game.getSelectedPiece(), game.getCurrentMove().getPosition());
-
-        switchTurns();
     }
 
     public void placePiece(Tile selectedTile, Player player) {

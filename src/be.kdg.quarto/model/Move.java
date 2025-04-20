@@ -13,10 +13,12 @@ public class Move {
     private int moveNumber = 1;
     private Date startTime;
     private Date endTime;
-
+    private String warningMessage;
 
     private List<PausePeriod> pausePeriods = new ArrayList<>();
     private Date currentPauseStart;
+
+
 
 
     private static class PausePeriod {
@@ -48,7 +50,6 @@ public class Move {
         this.selectedPiece = selectedPiece;
         this.startTime = startTime;
         this.endTime = endTime;
-
     }
 
 
@@ -88,7 +89,13 @@ public class Move {
 
 
 
+    public String getWarningMessage() {
+        return warningMessage;
+    }
 
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
+    }
     public Player getPlayer() {
         return player;
     }

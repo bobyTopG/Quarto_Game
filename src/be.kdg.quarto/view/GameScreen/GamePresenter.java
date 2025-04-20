@@ -3,10 +3,12 @@ package be.kdg.quarto.view.GameScreen;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
+import be.kdg.quarto.rulebasedsystem.InterfaceEngine;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -26,9 +28,10 @@ public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 30.0;
     private static final double SELECT_REGULAR_PIECE_SIZE = 45.0;
 
+    private Move move = new Move();
     private final GameSession model;
     private final GameView view;
-
+    private InterfaceEngine engine = new InterfaceEngine();
     private SelectCell selectedPiece;
     private BoardCell selectedTile;
     private Timeline uiUpdateTimer;
@@ -88,7 +91,9 @@ public class GamePresenter {
             int finalIndex = index;
             boardCell.getCellVisual().setOnMouseEntered(event -> boardCell.hover());
             boardCell.getCellVisual().setOnMouseExited(event -> boardCell.unhover());
-            boardCell.getCellVisual().setOnMouseClicked(event -> onBoardCellClicked(finalIndex, boardCell));
+            boardCell.getCellVisual().setOnMouseClicked(event -> {
+                onBoardCellClicked(finalIndex, boardCell);
+            });
         }
 
         for (SelectCell selectCell : piecesToSelect) {
@@ -98,9 +103,24 @@ public class GamePresenter {
         }
 
         view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
-        view.getPlacePiece().setOnAction(event -> placePiece());
+
+
+        view.getPlacePiece().setOnAction(event -> {
+            placePiece();
+            engine.determineFacts(model);
+            engine.applyRules(model.getGame(), move);
+            updateView();
+        });
+
         view.getBackButton().setOnAction(event -> view.switchToMainSection());
-        view.getChoosePieceConfirmButton().setOnAction(event -> confirmPieceSelection());
+
+        view.getChoosePieceConfirmButton().setOnAction(event -> {
+            confirmPieceSelection();
+            engine.determineFacts(model);
+            engine.applyRules(model.getGame(), move);
+            updateView();
+        });
+
         view.getQuarto().setOnMouseClicked(event -> handleQuarto());
         view.getSettings().setOnAction(event -> {
             view.showSettingsScreen();
@@ -152,8 +172,11 @@ public class GamePresenter {
             System.out.println("Selected Piece is null!");
             return;
         }
-
-        model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
+        try {
+            model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
+        } catch (NullPointerException e) {
+            view.getQuartoText().setText("No piece selected!");
+        }
         selectedPiece.deselect();
         selectedPiece.setPiece(null);
         selectedPiece = null;
@@ -161,6 +184,7 @@ public class GamePresenter {
 
         if (model.getOpponent() instanceof Ai) {
             handleAiTurn();
+
         } else {
             updateView();
         }
@@ -204,6 +228,13 @@ public class GamePresenter {
     }
 
     public void updateView() {
+        if (move.getWarningMessage() != null) {
+            view.getQuartoText().setText(move.getWarningMessage());
+            move = new Move();
+        } else {
+            view.getQuartoText().setText(""); // Clear warning if none
+        }
+
         updateSelectedPiece();
         updateBoard();
         updateSelectGrid();
