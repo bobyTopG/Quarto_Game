@@ -4,7 +4,8 @@ public enum FactValues {
     ENDMOVEAI,
     ENDMOVEPLAYER,
     WINNINGPOSITIONAI,
-    WINNINGPOSITIONPLAYER;
+    WINNINGPOSITIONPLAYER,
+    GOODMOVE;
 
     public static FactValues fromString(String name) {
         try {

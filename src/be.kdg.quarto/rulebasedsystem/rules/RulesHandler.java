@@ -15,6 +15,7 @@ public class RulesHandler {
         this.rules = new ArrayList<>();
         rules.add(new RuleWinningPositionPlayer());
         rules.add(new RuleEndMoveAi());
+        rules.add(new RuleGoodMove());
 
     }
 
@@ -30,7 +31,4 @@ public class RulesHandler {
         return rules.size();
     }
 
-    public String getRuleName(int i) {
-        return rules.get(i).getClass().getSimpleName();
-    }
 }

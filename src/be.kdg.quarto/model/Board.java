@@ -88,23 +88,6 @@ public class Board {
     }
 
 
-
-    public void determineRandomMove(Move move) {
-        List<Integer> emptyIndexes = new ArrayList<>();
-        for (int i = 0; i < tiles.size(); i++) {
-            if (tiles.get(i).isEmpty()) {
-                emptyIndexes.add(i);
-            }
-        }
-
-        if (!emptyIndexes.isEmpty()) {
-            int randomIndex = (int) (Math.random() * emptyIndexes.size());
-            move.setPosition(emptyIndexes.get(randomIndex));
-        } else {
-            move.setPosition(-1); // No move possible
-        }
-    }
-
     public boolean wouldCauseWin(int index) {
         int row = index / 4;
         int col = index % 4;

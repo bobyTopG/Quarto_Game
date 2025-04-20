@@ -22,12 +22,16 @@ public class InterfaceEngine {
         boolean isAITurn = gameSession.getCurrentPlayer() == gameSession.getOpponent();
         Piece selectedPiece = gameSession.getGame().getSelectedPiece();
 
-        if (selectedPiece == null && board.isWinningPositionPossible()) {
-            currentFacts.addFact(isAITurn ? FactValues.WINNINGPOSITIONPLAYER : FactValues.WINNINGPOSITIONAI);
-        }
 
         if (selectedPiece != null && board.isWinningMovePossible(selectedPiece)) {
             currentFacts.addFact(isAITurn ? FactValues.ENDMOVEAI : FactValues.ENDMOVEPLAYER);
+        }
+
+        else if (selectedPiece == null && board.isWinningPositionPossible()) {
+            currentFacts.addFact(isAITurn ? FactValues.WINNINGPOSITIONPLAYER : FactValues.WINNINGPOSITIONAI);
+        }
+        else {
+            currentFacts.addFact(FactValues.GOODMOVE);
         }
     }
 
@@ -40,7 +44,7 @@ public class InterfaceEngine {
 
                 for (int i = 0; i < currentRules.numberOfRules(); i++) {
                     if (!ruleFired && currentRules.checkConditionRule(i, currentFacts)) {
-                       // System.out.println("Firing rule: " + currentRules.getRuleName(i));
+                        // System.out.println("Firing rule: " + currentRules.getRuleName(i));
                         ruleFired = currentRules.fireActionRule(i, currentFacts, game, move);
                         if (ruleFired)
                             break;
@@ -50,11 +54,6 @@ public class InterfaceEngine {
                     break;
                 }
             }
-        }
-
-
-        if (!ruleFired) {
-            game.getBoard().determineRandomMove(move);
         }
     }
 }

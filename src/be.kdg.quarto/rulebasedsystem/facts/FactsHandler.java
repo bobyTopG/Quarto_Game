@@ -29,19 +29,8 @@ public class FactsHandler {
         return !facts.isEmpty();
     }
 
-    public boolean factsChanged() {
-        return factsChanged;
-    }
-
     public void setFactsEvolved(boolean value) {
         this.factsEvolved = value;
     }
 
-    public boolean factsEvolved() {
-        return factsEvolved;
-    }
-
-    public Set<FactValues> getFacts() {
-        return Set.copyOf(facts);
-    }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 public class RuleBasedStrategy implements PlayingStrategy {
     private final InterfaceEngine engine;
-    private Move lastMove;
     private GameSession game;
 
     public RuleBasedStrategy() {
