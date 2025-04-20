@@ -11,10 +11,10 @@ import java.util.function.Predicate;
 
 public class Board {
     private static final int BOARD_SIZE = 16;
-    private List<Tile> tiles;
+    private final List<Tile> tiles = new ArrayList<>(BOARD_SIZE);
 
     public Board() {
-        this.tiles = new ArrayList<>(BOARD_SIZE);
+        createEmptyBoard();
     }
 
     public void createEmptyBoard() {
@@ -23,7 +23,9 @@ public class Board {
             tiles.add(new Tile());
         }
     }
+
     public void generateAllPieces() {
+        tiles.clear();
         for (Color color : Color.values()) {
             for (Size size : Size.values()) {
                 for (Fill fill : Fill.values()) {
@@ -34,7 +36,6 @@ public class Board {
             }
         }
     }
-
 
     public boolean isEmpty() {
         return tiles.stream().allMatch(Tile::isEmpty);
@@ -52,30 +53,18 @@ public class Board {
         return tiles.indexOf(tile);
     }
 
-    public Tile findTile(int pos) {
-        return tiles.get(pos);
-    }
+    ////////////////////////////////////////////////
+    // Game Logic
+    ////////////////////////////////////////////////
 
-
-
-    // ✅ WINNING MOVE: is there any tile where placing ANY piece causes a win now
-    public boolean isWinningMovePossible() {
+    public boolean isWinningMovePossible(Piece selectedPiece) {
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
             if (tile.isEmpty()) {
-                for (Color color : Color.values()) {
-                    for (Size size : Size.values()) {
-                        for (Fill fill : Fill.values()) {
-                            for (Shape shape : Shape.values()) {
-                                Piece testPiece = new Piece(color, size, fill, shape);
-                                tile.setPiece(testPiece);
-                                boolean causesWin = wouldCauseWin(i);
-                                tile.setPiece(null); // undo
-                                if (causesWin) return true;
-                            }
-                        }
-                    }
-                }
+                tile.setPiece(selectedPiece);
+                boolean wouldWin = wouldCauseWin(i);
+                tile.setPiece(null); // Undo
+                if (wouldWin) return true;
             }
         }
         return false;
@@ -83,80 +72,65 @@ public class Board {
 
     public boolean isWinningPositionPossible() {
         List<List<Tile>> lines = getAllLines();
-
         for (List<Tile> line : lines) {
             long empty = line.stream().filter(Tile::isEmpty).count();
-            if (empty != 1) continue;
+            if (empty == 1) {
+                List<Piece> placed = line.stream()
+                        .filter(tile -> !tile.isEmpty())
+                        .map(Tile::getPiece)
+                        .toList();
+                boolean sameColor = placed.stream().map(Piece::getColor).distinct().count() == 1;
+                boolean sameSize = placed.stream().map(Piece::getSize).distinct().count() == 1;
+                boolean sameFill = placed.stream().map(Piece::getFill).distinct().count() == 1;
+                boolean sameShape = placed.stream().map(Piece::getShape).distinct().count() == 1;
 
-            List<Piece> placed = line.stream()
-                    .filter(tile -> !tile.isEmpty())
-                    .map(Tile::getPiece)
-                    .toList();
-
-            boolean sameColor = placed.stream().map(Piece::getColor).distinct().count() == 1;
-            boolean sameSize = placed.stream().map(Piece::getSize).distinct().count() == 1;
-            boolean sameFill = placed.stream().map(Piece::getFill).distinct().count() == 1;
-            boolean sameShape = placed.stream().map(Piece::getShape).distinct().count() == 1;
-
-            if (sameColor || sameSize || sameFill || sameShape) {
-                return true;
+                if (sameColor || sameSize || sameFill || sameShape) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 
-    // 🛡️ Used to BLOCK the player from winning next turn
-    public void determineBlockWinningPositionMove(Move move) {
-        List<List<Tile>> allLines = getAllLines();
+    public void determineBlockWinningPositionMove(Move move, List<Piece> availablePieces) {
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile tile = tiles.get(i);
+            if (tile.isEmpty() && wouldCauseWin(i)) {
+                move.setPosition(i);
+                Piece safePiece = findSafePiece(availablePieces);
+                move.setPiece(safePiece);
+                return;
+            }
+        }
 
-        for (List<Tile> line : allLines) {
-            long filled = line.stream().filter(tile -> tile.getPiece() != null).count();
-            long empty = line.stream().filter(Tile::isEmpty).count();
+        // No immediate winning tile, fallback random move
+        determineRandomMove(move);
+        Piece randomPiece = selectRandomPiece(availablePieces);
+        move.setPiece(randomPiece);
+    }
 
-            if (filled == 3 && empty == 1) {
-                Tile emptyTile = line.stream().filter(Tile::isEmpty).findFirst().orElse(null);
-                if (emptyTile != null) {
-                    move.setPosition(findTileIndex(emptyTile));
+    public void determineEndMove(Move move, Piece selectedPiece) {
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile tile = tiles.get(i);
+            if (tile.isEmpty()) {
+                // Simulate placing the piece
+                tile.setPiece(selectedPiece);
+                boolean causesWin = wouldCauseWin(i);
+                tile.setPiece(null); // Undo
+
+                if (causesWin) {
+                    move.setPosition(i);
                     return;
                 }
             }
         }
 
+        // No winning move found, fallback
         determineRandomMove(move);
     }
-    public void determineEndMove(Move move) {
-        for (int i = 0; i < tiles.size(); i++) {
-            Tile tile = tiles.get(i);
-            if (tile.isEmpty()) {
-                // Try placing a dummy piece to see if it causes a win
-                for (Color color : Color.values()) {
-                    for (Size size : Size.values()) {
-                        for (Fill fill : Fill.values()) {
-                            for (Shape shape : Shape.values()) {
-                                Piece testPiece = new Piece(color, size, fill, shape);
-                                tile.setPiece(testPiece);
-                                if (wouldCauseWin(i)) {
-                                    tile.setPiece(null); // undo
-                                    move.setPosition(i); // 🔥 set the winning move
-                                    return;
-                                }
-                                tile.setPiece(null); // undo
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // If no winning move found, fallback
-        determineRandomMove(move);
-    }
-
 
     public void determineRandomMove(Move move) {
         List<Integer> emptyIndexes = new ArrayList<>();
-
         for (int i = 0; i < tiles.size(); i++) {
             if (tiles.get(i).isEmpty()) {
                 emptyIndexes.add(i);
@@ -167,8 +141,40 @@ public class Board {
             int randomIndex = (int) (Math.random() * emptyIndexes.size());
             move.setPosition(emptyIndexes.get(randomIndex));
         } else {
-            move.setPosition(-1); // No available move
+            move.setPosition(-1); // No move possible
         }
+    }
+
+    private Piece findSafePiece(List<Piece> availablePieces) {
+        for (Piece piece : availablePieces) {
+            if (!wouldPieceCauseImmediateWin(piece)) {
+                return piece;
+            }
+        }
+        return selectRandomPiece(availablePieces); // No safe piece, random fallback
+    }
+
+    private boolean wouldPieceCauseImmediateWin(Piece piece) {
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile tile = tiles.get(i);
+            if (tile.isEmpty()) {
+                tile.setPiece(piece);
+                boolean causesWin = wouldCauseWin(i);
+                tile.setPiece(null); // Undo
+                if (causesWin) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Piece selectRandomPiece(List<Piece> availablePieces) {
+        if (!availablePieces.isEmpty()) {
+            int randomIndex = (int) (Math.random() * availablePieces.size());
+            return availablePieces.get(randomIndex);
+        }
+        return null;
     }
 
     public boolean wouldCauseWin(int index) {
@@ -186,21 +192,21 @@ public class Board {
             return sameColor || sameSize || sameFill || sameShape;
         };
 
-        // Row
+        // Check row
         List<Tile> rowTiles = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             rowTiles.add(tiles.get(row * 4 + i));
         }
         if (sharesAttribute.test(rowTiles)) return true;
 
-        // Column
+        // Check column
         List<Tile> colTiles = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             colTiles.add(tiles.get(i * 4 + col));
         }
         if (sharesAttribute.test(colTiles)) return true;
 
-        // Main diagonal
+        // Check diagonals
         if (row == col) {
             List<Tile> mainDiag = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
@@ -209,7 +215,6 @@ public class Board {
             if (sharesAttribute.test(mainDiag)) return true;
         }
 
-        // Anti-diagonal
         if (row + col == 3) {
             List<Tile> antiDiag = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
@@ -253,5 +258,9 @@ public class Board {
         lines.add(antiDiag);
 
         return lines;
+    }
+
+    public Tile findTile(int index) {
+        return tiles.get(index);
     }
 }

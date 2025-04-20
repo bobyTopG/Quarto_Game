@@ -1,6 +1,10 @@
 package be.kdg.quarto.model.strategies;
 
-import be.kdg.quarto.model.*;
+import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Move;
+import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.PlayingStrategy;
+import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.rulebasedsystem.InterfaceEngine;
 
 import java.util.List;
@@ -18,9 +22,8 @@ public class RuleBasedStrategy implements PlayingStrategy {
     public Tile selectTile() {
         Move move = new Move();
         try {
-
             engine.determineFacts(game);
-            engine.applyRules(game.getGame().getBoard(), move);
+            engine.applyRules(game.getGame(), move);
 
             move.setPlayer(game.getCurrentPlayer());
             move.setPiece(game.getGame().getSelectedPiece());
@@ -48,7 +51,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
         try {
             move = new Move();
             engine.determineFacts(game);
-            engine.applyRules(game.getGame().getBoard(), move);
+            engine.applyRules(game.getGame(), move);
         } catch (Exception e) {
             move = new Move();
         }
@@ -60,7 +63,6 @@ public class RuleBasedStrategy implements PlayingStrategy {
         List<Tile> piecesLeft = game.getGame().getPiecesToSelect().getTiles().stream()
                 .filter(t -> t.getPiece() != null)
                 .toList();
-
 
         // Random fallback
         return piecesLeft.stream().findAny().map(Tile::getPiece).orElse(null);

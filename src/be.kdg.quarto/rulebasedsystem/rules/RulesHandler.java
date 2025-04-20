@@ -1,6 +1,7 @@
 package be.kdg.quarto.rulebasedsystem.rules;
 
 import be.kdg.quarto.model.Board;
+import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Move;
 import be.kdg.quarto.rulebasedsystem.facts.FactsHandler;
 
@@ -11,35 +12,18 @@ public class RulesHandler {
     private final List<Rule> rules;
 
     public RulesHandler() {
-        rules = new ArrayList<>();
+        this.rules = new ArrayList<>();
+        rules.add(new RuleWinningPositionPlayer());
         rules.add(new RuleEndMoveAi());
-        rules.add(new RuleBlockEndMovePlayer());
-        rules.add(new RuleWinningPositionAi());
-        rules.add(new RuleBlockWinningPositionPlayer());
+
+    }
+
+    public boolean fireActionRule(int index, FactsHandler facts, Game game, Move move) {
+        return rules.get(index).actionRule(facts, game, move);
     }
 
     public boolean checkConditionRule(int index, FactsHandler facts) {
         return rules.get(index).conditionRule(facts);
-    }
-
-    public boolean fireActionRule(int index, FactsHandler facts, Board board, Move move) {
-        String ruleName = getRuleName(index);
-
-        switch (ruleName) {
-            case "RuleEndMoveAi" -> {
-                board.determineEndMove(move); // TEMP: use random until determineEndMove exists
-                return true;
-            }
-
-            case "RuleWinningPositionPlayer" -> {
-                board.determineBlockWinningPositionMove(move); // you already have this
-                return true;
-            }
-
-            default -> {
-                return false; // no rule matched or nothing fired
-            }
-        }
     }
 
     public int numberOfRules() {
@@ -49,6 +33,4 @@ public class RulesHandler {
     public String getRuleName(int i) {
         return rules.get(i).getClass().getSimpleName();
     }
-
-
 }

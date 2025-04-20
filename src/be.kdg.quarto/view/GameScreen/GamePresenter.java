@@ -1,7 +1,11 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.ImageHelper;
-import be.kdg.quarto.model.*;
+import be.kdg.quarto.model.Ai;
+import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Statistics;
+import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
@@ -11,7 +15,6 @@ import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 

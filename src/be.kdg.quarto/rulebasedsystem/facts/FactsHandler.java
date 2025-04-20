@@ -37,4 +37,11 @@ public class FactsHandler {
         this.factsEvolved = value;
     }
 
+    public boolean factsEvolved() {
+        return factsEvolved;
+    }
+
+    public Set<FactValues> getFacts() {
+        return Set.copyOf(facts);
+    }
 }

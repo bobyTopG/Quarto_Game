@@ -4,19 +4,14 @@ public enum FactValues {
     ENDMOVEAI,
     ENDMOVEPLAYER,
     WINNINGPOSITIONAI,
-    WINNINGPOSITIONPLAYER,
-    GOODMOVE,
-    OTHERFACT;
+    WINNINGPOSITIONPLAYER;
 
     public static FactValues fromString(String name) {
         try {
             return FactValues.valueOf(name);
         } catch (IllegalArgumentException | NullPointerException e) {
+            System.err.println("Invalid FactValue name: " + name);
             return null;
         }
-    }
-
-    public static FactValues[] all() {
-        return values();
     }
 }
