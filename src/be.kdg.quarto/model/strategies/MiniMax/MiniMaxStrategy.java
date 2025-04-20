@@ -1,6 +1,12 @@
 package be.kdg.quarto.model.strategies.MiniMax;
 
-import be.kdg.quarto.model.*;
+import be.kdg.quarto.model.Board;
+import be.kdg.quarto.model.GameRules;
+import be.kdg.quarto.model.GameSession;
+import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Player;
+import be.kdg.quarto.model.PlayingStrategy;
+import be.kdg.quarto.model.Tile;
 
 import java.util.ArrayList;
 import java.util.List;

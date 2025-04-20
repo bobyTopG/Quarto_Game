@@ -28,17 +28,13 @@ public class GamePresenter {
 
     private final GameSession model;
     private final GameView view;
-    SelectCell selectedPiece;
-    BoardCell selectedTile;
 
-
-    //to make a delay between AI moves (in seconds)
-    int AiThinkingDuration = 0;
-    Timeline uiUpdateTimer;
-
-    List<BoardCell> board;
-    List<SelectCell> piecesToSelect;
-
+    private SelectCell selectedPiece;
+    private BoardCell selectedTile;
+    private Timeline uiUpdateTimer;
+    private List<BoardCell> board;
+    private List<SelectCell> piecesToSelect;
+    private int AiThinkingDuration = 0;
 
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;
@@ -47,152 +43,9 @@ public class GamePresenter {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
         createBoard();
         createSelectPieces();
-
         setUpTimer();
-
         addEventHandlers();
         updateView();
-    }
-
-    private void addEventHandlers() {
-        // on click for Board
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                int index = row * 4 + col;
-                BoardCell boardCell = board.get(index);
-                boardCell.getCellVisual().setOnMouseEntered(mouseEvent -> boardCell.hover());
-                boardCell.getCellVisual().setOnMouseExited(mouseEvent -> boardCell.unhover());
-                boardCell.getCellVisual().setOnMouseClicked(event -> {
-                    //handle board Cell click
-                    if (model.getGame().getBoard().findTile(index).getPiece() == null) {
-                        if (selectedTile != null) {
-                            if (selectedTile.equals(boardCell)) {
-                                placePiece();
-                            } else {
-                                selectedTile.deselect();
-                                boardCell.select();
-                                selectedTile = boardCell;
-
-                            }
-                        } else {
-                            boardCell.select();
-                            selectedTile = boardCell;
-
-                        }
-                    }
-                });
-            }
-        }
-
-        //ChoosePiece View
-        view.getBackButton().setOnAction(event -> view.switchToMainSection());
-
-
-        view.getChoosePieceConfirmButton().setOnAction(event -> {
-            if (selectedPiece != null) {
-                model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
-                selectedPiece.deselect();
-                selectedPiece.setPiece(null);
-                selectedPiece = null;
-                view.switchToMainSection();
-               if(model.getOpponent() instanceof Ai){
-                   handleAiTurn();
-               }
-               else {
-                   updateView();
-               }
-
-
-
-            } else {
-                System.out.println("Selected Piece is null!");
-            }
-        });
-        //onclick for selectGrid
-        for (SelectCell selectCell : piecesToSelect) {
-            if (selectCell.getPiece() != null) {
-                selectCell.getCellVisual().setOnMouseClicked(mouseEvent -> {
-                    if (selectedPiece != null) {
-                        selectedPiece.deselect();
-                    }
-                    selectedPiece = selectCell;
-                    selectCell.select();
-
-                });
-
-                selectCell.getCellVisual().setOnMouseEntered(mouseEvent -> selectCell.hover());
-                selectCell.getCellVisual().setOnMouseExited(mouseEvent -> selectCell.unhover());
-            }
-        }
-
-
-        view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
-        view.getPlacePiece().setOnAction(event -> {
-            placePiece();
-
-        });
-        view.getQuarto().setOnMouseClicked(event -> {
-            model.callQuarto();
-            if (model.getGame().getGameRules().checkWin()) {
-                view.showStatisticsScreen();
-                view.getStatisticsView().getCloseBtn().setOnMouseClicked(statisticsEvent -> {
-                    StartView startView = new StartView();
-                    view.getScene().setRoot(startView);
-                    new StartPresenter(startView);
-                });
-                try {
-                    new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
-                }catch (SQLException e){
-
-                }
-            }
-        });
-
-        view.getSettings().setOnAction(event -> {
-            view.showSettingsScreen();
-            new SettingsPresenter(this, view.getSettingsView(), this.model);
-        });
-    }
-
-    private void placePiece() {
-        if (selectedTile != null) {
-            Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
-            if (tile.getPiece() != null) {
-                System.out.println("You can't place a piece on a tile that already has a piece!");
-
-            } else {
-                model.placePiece(tile, model.getPlayer());
-                model.getGame().setSelectedPiece(null);
-            }
-            selectedTile.deselect();
-            selectedTile = null;
-
-            updateView();
-        }
-    }
-
-    private void handleAiTurn() {
-        // First delay before placing a piece
-        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
-        updateView();
-
-        placePieceDelay.setOnFinished(event -> {
-            model.placePieceAi();
-            updateView();
-
-
-            model.handlePendingWin();
-
-            // Second delay before picking a piece
-            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
-            pickPieceDelay.setOnFinished(e -> {
-                model.pickPieceAi();
-                updateView();
-            });
-            pickPieceDelay.play();
-        });
-
-        placePieceDelay.play();
     }
 
     private void createBoard() {
@@ -211,13 +64,7 @@ public class GamePresenter {
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 int index = r * 4 + c;
-                SelectCell cell;
-                if ((r + c) % 2 == 0) {
-                    cell = new SelectCell(r, c, "#ffffff");
-                } else {
-                    cell = new SelectCell(r, c, "#DBD6B2");
-                }
-
+                SelectCell cell = new SelectCell(r, c, (r + c) % 2 == 0 ? "#ffffff" : "#DBD6B2");
                 cell.setPiece(model.getGame().getPiecesToSelect().getTiles().get(index).getPiece());
                 view.getSelectGrid().add(cell.getCellVisual(), c, r);
                 piecesToSelect.add(cell);
@@ -225,42 +72,177 @@ public class GamePresenter {
         }
     }
 
+    private void setUpTimer() {
+        uiUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimerDisplay()));
+        uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
+        uiUpdateTimer.play();
+    }
+
+    private void updateTimerDisplay() {
+        view.setTimer(model.getGame().getTimer().getGameDurationInSeconds());
+    }
+
+    private void addEventHandlers() {
+        for (int index = 0; index < board.size(); index++) {
+            BoardCell boardCell = board.get(index);
+            int finalIndex = index;
+            boardCell.getCellVisual().setOnMouseEntered(event -> boardCell.hover());
+            boardCell.getCellVisual().setOnMouseExited(event -> boardCell.unhover());
+            boardCell.getCellVisual().setOnMouseClicked(event -> onBoardCellClicked(finalIndex, boardCell));
+        }
+
+        for (SelectCell selectCell : piecesToSelect) {
+            selectCell.getCellVisual().setOnMouseClicked(event -> onSelectCellClicked(selectCell));
+            selectCell.getCellVisual().setOnMouseEntered(event -> selectCell.hover());
+            selectCell.getCellVisual().setOnMouseExited(event -> selectCell.unhover());
+        }
+
+        view.getChoosePiece().setOnMouseClicked(event -> view.switchToChoosePiece());
+        view.getPlacePiece().setOnAction(event -> placePiece());
+        view.getBackButton().setOnAction(event -> view.switchToMainSection());
+        view.getChoosePieceConfirmButton().setOnAction(event -> confirmPieceSelection());
+        view.getQuarto().setOnMouseClicked(event -> handleQuarto());
+        view.getSettings().setOnAction(event -> {
+            view.showSettingsScreen();
+            new SettingsPresenter(this, view.getSettingsView(), model);
+        });
+    }
+
+    private void onBoardCellClicked(int index, BoardCell boardCell) {
+        if (model.getGame().getBoard().findTile(index).getPiece() == null) {
+            if (selectedTile != null) {
+                if (selectedTile.equals(boardCell)) {
+                    placePiece();
+                } else {
+                    selectedTile.deselect();
+                    boardCell.select();
+                    selectedTile = boardCell;
+                }
+            } else {
+                boardCell.select();
+                selectedTile = boardCell;
+            }
+        }
+    }
+
+    private void onSelectCellClicked(SelectCell selectCell) {
+        if (selectedPiece != null) selectedPiece.deselect();
+        selectedPiece = selectCell;
+        selectCell.select();
+    }
+
+    private void placePiece() {
+        if (selectedTile == null) return;
+        Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
+
+        if (tile.getPiece() == null) {
+            model.placePiece(tile, model.getPlayer());
+            model.getGame().setSelectedPiece(null);
+        } else {
+            System.out.println("You can't place a piece on a tile that already has a piece!");
+        }
+
+        selectedTile.deselect();
+        selectedTile = null;
+        updateView();
+    }
+
+    private void confirmPieceSelection() {
+        if (selectedPiece == null) {
+            System.out.println("Selected Piece is null!");
+            return;
+        }
+
+        model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
+        selectedPiece.deselect();
+        selectedPiece.setPiece(null);
+        selectedPiece = null;
+        view.switchToMainSection();
+
+        if (model.getOpponent() instanceof Ai) {
+            handleAiTurn();
+        } else {
+            updateView();
+        }
+    }
+
+    private void handleAiTurn() {
+        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+        updateView();
+
+        placePieceDelay.setOnFinished(event -> {
+            model.placePieceAi();
+            updateView();
+            model.handlePendingWin();
+
+            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+            pickPieceDelay.setOnFinished(e -> {
+                model.pickPieceAi();
+                updateView();
+            });
+            pickPieceDelay.play();
+        });
+
+        placePieceDelay.play();
+    }
+
+    private void handleQuarto() {
+        model.callQuarto();
+        if (model.getGame().getGameRules().checkWin()) {
+            view.showStatisticsScreen();
+            view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
+                StartView startView = new StartView();
+                view.getScene().setRoot(startView);
+                new StartPresenter(startView);
+            });
+            try {
+                new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
+            } catch (SQLException e) {
+                System.out.println("Error loading statistics: " + e.getMessage());
+            }
+        }
+    }
+
     public void updateView() {
-        // Update selected piece
-        if (model.getGame().getSelectedPiece() != null) {
-            Image pieceImage = new Image(ImageHelper.getPieceImage(model.getGame().getSelectedPiece()));
-            view.getSelectedPieceImage().setImage(pieceImage);
-            boolean isSmall = model.getGame().getSelectedPiece().getSize() == Size.SMALL;
-            view.getSelectedPieceImage().setFitHeight(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
-            view.getSelectedPieceImage().setFitWidth(isSmall ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE);
-        } else view.getSelectedPieceImage().setImage(null);
+        updateSelectedPiece();
+        updateBoard();
+        updateSelectGrid();
+        updateTurnInfo();
+    }
 
+    private void updateSelectedPiece() {
+        Piece selected = model.getGame().getSelectedPiece();
+        if (selected != null) {
+            Image img = new Image(ImageHelper.getPieceImage(selected));
+            view.getSelectedPieceImage().setImage(img);
+            double size = selected.getSize() == Size.SMALL ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE;
+            view.getSelectedPieceImage().setFitHeight(size);
+            view.getSelectedPieceImage().setFitWidth(size);
+        } else {
+            view.getSelectedPieceImage().setImage(null);
+        }
+    }
 
-        // Update board grid
+    private void updateBoard() {
         for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
             Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
             BoardCell cell = board.get(i);
-
-            cell.setPiece(null);
-
-            if (piece != null) {
-                cell.setPiece(piece);
-            }
+            cell.setPiece(piece);
         }
+    }
 
-        //update select grid
+    private void updateSelectGrid() {
         for (int i = 0; i < model.getGame().getPiecesToSelect().getTiles().size(); i++) {
             Piece piece = model.getGame().getPiecesToSelect().getTiles().get(i).getPiece();
-            SelectCell cell = piecesToSelect.get(i);
-            cell.setPiece(piece); // This will update the visual state to match the model
+            piecesToSelect.get(i).setPiece(piece);
         }
-        //update timer
-        view.setTimer(model.getGame().getTimer().getGameDurationInSeconds());
-        //Update turn label
-        boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
-        if (isHumanTurn) {
-            view.getTurn().setStyle("-fx-background-color: #29ABE2");
+    }
 
+    private void updateTurnInfo() {
+        boolean isHuman = model.getCurrentPlayer().equals(model.getPlayer());
+        view.getTurn().setStyle(isHuman ? "-fx-background-color: #29ABE2" : "-fx-background-color: #FF1D25");
+
+        if (isHuman) {
             if (model.getGame().getSelectedPiece() != null) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
@@ -269,10 +251,8 @@ public class GamePresenter {
                 view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
                 view.getTurn().setText("Your turn to choose a piece");
-
             }
         } else {
-            view.getTurn().setStyle("-fx-background-color: #FF1D25");
             if (model.getGame().getSelectedPiece() != null) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
@@ -283,21 +263,6 @@ public class GamePresenter {
                 view.getTurn().setText("Opponent's turn to choose a piece");
             }
         }
-    }
-
-    private void setUpTimer() {
-        uiUpdateTimer = new Timeline(
-                new KeyFrame(Duration.seconds(1), event -> {
-                    updateTimerDisplay();
-                })
-        );
-        uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
-        uiUpdateTimer.play();
-    }
-
-    private void updateTimerDisplay() {
-        int totalSeconds = model.getGame().getTimer().getGameDurationInSeconds();
-        view.setTimer(totalSeconds);
     }
 
     public GameView getView() {

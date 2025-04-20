@@ -49,13 +49,8 @@ public class Board {
         return tiles.get(pos);
     }
 
-    public int findTileIndex(Tile tile) {
-        return tiles.indexOf(tile);
-    }
 
-    ////////////////////////////////////////////////
-    // Game Logic
-    ////////////////////////////////////////////////
+    // Game Logic //
 
     public boolean isWinningMovePossible(Piece selectedPiece) {
         for (int i = 0; i < tiles.size(); i++) {
@@ -92,42 +87,7 @@ public class Board {
         return false;
     }
 
-    public void determineBlockWinningPositionMove(Move move, List<Piece> availablePieces) {
-        for (int i = 0; i < tiles.size(); i++) {
-            Tile tile = tiles.get(i);
-            if (tile.isEmpty() && wouldCauseWin(i)) {
-                move.setPosition(i);
-                Piece safePiece = findSafePiece(availablePieces);
-                move.setPiece(safePiece);
-                return;
-            }
-        }
 
-        // No immediate winning tile, fallback random move
-        determineRandomMove(move);
-        Piece randomPiece = selectRandomPiece(availablePieces);
-        move.setPiece(randomPiece);
-    }
-
-    public void determineEndMove(Move move, Piece selectedPiece) {
-        for (int i = 0; i < tiles.size(); i++) {
-            Tile tile = tiles.get(i);
-            if (tile.isEmpty()) {
-                // Simulate placing the piece
-                tile.setPiece(selectedPiece);
-                boolean causesWin = wouldCauseWin(i);
-                tile.setPiece(null); // Undo
-
-                if (causesWin) {
-                    move.setPosition(i);
-                    return;
-                }
-            }
-        }
-
-        // No winning move found, fallback
-        determineRandomMove(move);
-    }
 
     public void determineRandomMove(Move move) {
         List<Integer> emptyIndexes = new ArrayList<>();
@@ -143,38 +103,6 @@ public class Board {
         } else {
             move.setPosition(-1); // No move possible
         }
-    }
-
-    private Piece findSafePiece(List<Piece> availablePieces) {
-        for (Piece piece : availablePieces) {
-            if (!wouldPieceCauseImmediateWin(piece)) {
-                return piece;
-            }
-        }
-        return selectRandomPiece(availablePieces); // No safe piece, random fallback
-    }
-
-    private boolean wouldPieceCauseImmediateWin(Piece piece) {
-        for (int i = 0; i < tiles.size(); i++) {
-            Tile tile = tiles.get(i);
-            if (tile.isEmpty()) {
-                tile.setPiece(piece);
-                boolean causesWin = wouldCauseWin(i);
-                tile.setPiece(null); // Undo
-                if (causesWin) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Piece selectRandomPiece(List<Piece> availablePieces) {
-        if (!availablePieces.isEmpty()) {
-            int randomIndex = (int) (Math.random() * availablePieces.size());
-            return availablePieces.get(randomIndex);
-        }
-        return null;
     }
 
     public boolean wouldCauseWin(int index) {
@@ -263,4 +191,6 @@ public class Board {
     public Tile findTile(int index) {
         return tiles.get(index);
     }
+
+
 }

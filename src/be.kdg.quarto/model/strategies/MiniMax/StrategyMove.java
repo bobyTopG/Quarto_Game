@@ -22,14 +22,6 @@ public class StrategyMove {
         return startY;
     }
 
-    public int getEndX() {
-        return endX;
-    }
-
-    public int getEndY() {
-        return endY;
-    }
-
     @Override
     public String toString() {
         return "Move from (" + startX + ", " + startY + ") to (" + endX + ", " + endY + ")";
