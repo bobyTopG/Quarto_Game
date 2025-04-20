@@ -4,10 +4,7 @@ import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -21,6 +18,7 @@ public class GameView extends StackPane {
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
     private Label quartoText = new Label();
+    private ToggleButton isMassageOn = new ToggleButton();
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
@@ -99,7 +97,7 @@ public class GameView extends StackPane {
         // to make a separator from all the space left
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
 
-        HBox topBar = new HBox(turn, hSpacer, helpButton, settingsButton);
+        HBox topBar = new HBox(turn, isMassageOn ,  hSpacer, helpButton, settingsButton);
 
         topBar.setSpacing(10);
         topBar.setPadding(new Insets(10));
@@ -110,6 +108,7 @@ public class GameView extends StackPane {
 
         //to move the board a bit up
         BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
+
 
         root.setCenter(rotatedBoardPane);
         quartoText.setMaxHeight(50);
@@ -307,5 +306,9 @@ public class GameView extends StackPane {
 
     public Label getQuartoText() {
         return quartoText;
+    }
+
+    public ToggleButton getIsMassageOn() {
+        return isMassageOn;
     }
 }

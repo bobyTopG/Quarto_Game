@@ -86,6 +86,18 @@ public class GamePresenter {
     }
 
     private void addEventHandlers() {
+
+            view.getIsMassageOn().selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected) {
+                    view.getIsMassageOn().setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+                    updateView();
+                } else {
+                    view.getIsMassageOn().setStyle("");
+                    updateView();
+                }
+            });
+            updateMassage();
+
         for (int index = 0; index < board.size(); index++) {
             BoardCell boardCell = board.get(index);
             int finalIndex = index;
@@ -228,17 +240,26 @@ public class GamePresenter {
     }
 
     public void updateView() {
+if(view.getIsMassageOn().isSelected()){
+    view.getQuartoText().setText(move.getWarningMessage());
+}
+else {
+    view.getQuartoText().setText("");
+}
+
+        updateSelectedPiece();
+        updateBoard();
+        updateSelectGrid();
+        updateTurnInfo();
+    }
+
+    private void updateMassage() {
         if (move.getWarningMessage() != null) {
             view.getQuartoText().setText(move.getWarningMessage());
             move = new Move();
         } else {
             view.getQuartoText().setText(""); // Clear warning if none
         }
-
-        updateSelectedPiece();
-        updateBoard();
-        updateSelectGrid();
-        updateTurnInfo();
     }
 
     private void updateSelectedPiece() {
