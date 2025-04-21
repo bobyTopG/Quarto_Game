@@ -18,6 +18,7 @@ public class GameSession {
     private boolean isCallingQuarto = false;
 
 
+
     private final GameTimer gameTimer;
 
 
@@ -81,7 +82,6 @@ public class GameSession {
             placePiece(ai.getStrategy().selectTile());
 
             if (ai.getStrategy().isCallingQuarto()) {
-                // check for win later if calling quarto
                 isCallingQuarto = true;
             }
 
@@ -230,6 +230,10 @@ public class GameSession {
                 isCallingQuarto = false;
             });
         }
+    }
+
+    public boolean isCallingQuarto() {
+        return isCallingQuarto;
     }
 
     public int getGameSessionId() {

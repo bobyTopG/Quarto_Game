@@ -125,6 +125,7 @@ public class GamePresenter {
             updateView();
         });
 
+
         view.getQuarto().setOnMouseClicked(event -> handleQuarto());
         view.getSettings().setOnAction(event -> {
             view.showSettingsScreen();
@@ -203,18 +204,19 @@ public class GamePresenter {
 
         placePieceDelay.setOnFinished(event -> {
             model.placePieceAi();
-
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
+            if(model.isCallingQuarto()){
+                handleQuarto();
+            }
             updateView();
 
             model.handlePendingWin();
 
-            AiThinkingDuration = rand.nextInt(3) + 1;
+            AiThinkingDuration = rand.nextInt(2);
             PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
             pickPieceDelay.setOnFinished(e -> {
                 model.pickPieceAi();
-
                 engine.determineFacts(model);
                 engine.applyRules(model.getGame(), move);
                 updateView();
@@ -251,12 +253,16 @@ public class GamePresenter {
     }
 
     private void updateMassage() {
-        if (view.getHelpButton().isSelected() && move.getWarningMessage() != null) {
+        if(model.getGame().getGameRules().checkWin()){
+            view.getQuartoText().setText("Press the button \uD83D\uDD3D to win\uD83C\uDFC6");
+        }
+        else {
+            if (view.getHelpButton().isSelected() && move.getWarningMessage() != null) {
                 view.getQuartoText().setText(move.getWarningMessage());
-            }
-             else {
+            } else {
                 view.getQuartoText().setText(""); // Clear warning if none
             }
+        }
     }
 
     private void updateSelectedPiece() {
@@ -288,11 +294,14 @@ public class GamePresenter {
     }
 
     private void updateTurnInfo() {
-        boolean isHuman = model.getCurrentPlayer().equals(model.getPlayer());
-        view.getTurn().setStyle(isHuman ? "-fx-background-color: #29ABE2" : "-fx-background-color: #FF1D25");
+        boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
+        boolean pieceSelected = model.getGame().getSelectedPiece() != null;
+        boolean isVsAi = model.getOpponent() instanceof Ai;
 
-        if (isHuman) {
-            if (model.getGame().getSelectedPiece() != null) {
+        view.getTurn().setStyle(isHumanTurn ? "-fx-background-color: #29ABE2" : "-fx-background-color: #FF1D25");
+
+        if (isHumanTurn) {
+            if (pieceSelected) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
                 view.getTurn().setText("Your turn to place your piece");
@@ -302,14 +311,20 @@ public class GamePresenter {
                 view.getTurn().setText("Your turn to choose a piece");
             }
         } else {
-            if (model.getGame().getSelectedPiece() != null) {
+            if (isVsAi) {
                 view.getChoosePiece().setDisable(true);
-                view.getPlacePiece().setDisable(false);
-                view.getTurn().setText("Opponent's turn to place a piece");
-            } else {
-                view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
-                view.getTurn().setText("Opponent's turn to choose a piece");
+                view.getTurn().setText("AI is thinking...");
+            } else {
+                if (pieceSelected) {
+                    view.getChoosePiece().setDisable(true);
+                    view.getPlacePiece().setDisable(false);
+                    view.getTurn().setText("Opponent's turn to place a piece");
+                } else {
+                    view.getChoosePiece().setDisable(false);
+                    view.getPlacePiece().setDisable(true);
+                    view.getTurn().setText("Opponent's turn to choose a piece");
+                }
             }
         }
     }

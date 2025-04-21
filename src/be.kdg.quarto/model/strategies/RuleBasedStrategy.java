@@ -40,7 +40,6 @@ public class RuleBasedStrategy implements PlayingStrategy {
             Tile tile = game.getGame().getBoard().getTile(pos);
             if (tile.isEmpty()) return tile;
         }
-
         return null;
     }
 
@@ -79,6 +78,6 @@ public class RuleBasedStrategy implements PlayingStrategy {
 
     @Override
     public boolean isCallingQuarto() {
-        return false;
+        return game.getGame().getGameRules().checkPureWin();
     }
 }
