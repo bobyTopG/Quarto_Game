@@ -42,7 +42,6 @@
     -fx-alignment: center-right;
 }
 
-
 .choose-piece-button-box{
     -fx-spacing: 10px;
     -fx-padding: 10px;
@@ -107,5 +106,37 @@
 
 
 
-.piece-button{
+/* Custom styles for the progress bar */
+.custom-progress-bar {
+    -fx-border-color: #2e2e2e;
+    -fx-pref-height: 60px;
+    -fx-pref-width: 300px;
+    -fx-border-radius: 2px;
+
+}
+
+/* Style for track - the unfilled part */
+.custom-progress-bar > .track {
+    -fx-background-color: #ddc1a5;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2px;
+}
+
+/* Style for bar - the filled part */
+.custom-progress-bar > .bar {
+    -fx-background-color:  #c6252a;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2px;
+
+}
+
+/* Style for the overlay label */
+.overlay-label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+/* When the loading is in progress, we can change the style if needed */
+.loading-in-progress {
+    -fx-opacity: 1.0;
 }

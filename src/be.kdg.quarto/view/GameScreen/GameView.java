@@ -30,6 +30,12 @@ public class GameView extends StackPane {
     private final ImageView selectedPieceImage = new ImageView();
 
     private final Label turn = CreateHelper.createLabel("Your Turn","turn-label");
+
+
+    private final StackPane turnStack = new StackPane();
+    private final ProgressBar loadingBar = new ProgressBar();
+
+
     private final Label timer = CreateHelper.createLabel("00:00","timer");
     private final Label timerLabel = CreateHelper.createLabel("Timer","timer-label");
     private final VBox  timerContainer = CreateHelper.createVBox("timer-container");
@@ -64,9 +70,19 @@ public class GameView extends StackPane {
         createChoosePieceView();
 
         createSettingsButton();
+
+        createLoadingButton();
         // === Overlay (settings screen) ===
         createSettingsScreen();
     }
+
+    private void createLoadingButton() {
+
+        loadingBar.getStyleClass().add("custom-progress-bar");
+
+        turnStack.getChildren().addAll(loadingBar, turn);
+    }
+
     private void layoutNodes() {
 
         VBox buttonsBox = new VBox(placePiece, choosePiece);
@@ -87,7 +103,7 @@ public class GameView extends StackPane {
 
         leftBox = new VBox(vSpacer, timerContainer, bottomBox);
         leftBox.setSpacing(15);
-        leftBox.setPadding(new Insets(10, 0, 10, 20));
+        leftBox.setPadding(new Insets(10, 0, 20, 20));
         leftBox.setAlignment(Pos.CENTER);
 
 
@@ -95,7 +111,7 @@ public class GameView extends StackPane {
         // to make a separator from all the space left
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
 
-        HBox topBar = new HBox(turn,  hSpacer, helpButton, settingsButton);
+        HBox topBar = new HBox(turnStack,  hSpacer, helpButton, settingsButton);
 
         topBar.setSpacing(10);
         topBar.setPadding(new Insets(10));
@@ -109,9 +125,10 @@ public class GameView extends StackPane {
 
 
         root.setCenter(rotatedBoardPane);
-        quartoText.setMaxHeight(50);
-        quartoText.setMaxWidth(200);
+        quartoText.setManaged(false);
         quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
+        BorderPane.setMargin(quartoText, new Insets(0, 50, 0, -200));
+
 
         VBox quartoBox = new VBox( quartoText , quarto);
         quartoBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -307,6 +324,10 @@ public class GameView extends StackPane {
     }
     public ToggleButton getHelpButton() {
         return helpButton;
+    }
+
+    public ProgressBar getLoadingBar() {
+        return loadingBar;
     }
 
 }

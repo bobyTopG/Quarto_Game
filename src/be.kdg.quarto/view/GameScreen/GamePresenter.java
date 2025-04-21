@@ -197,9 +197,12 @@ public class GamePresenter {
 
     private void handleAiTurn() {
         Random rand = new Random();
-        AiThinkingDuration = rand.nextInt(3) + 1;
+        float placeDuration = rand.nextFloat(1.5f) + 1;
+        float pickDuration = rand.nextFloat(1.5f) + 1;
 
-        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+        animateLoadingBar(placeDuration + pickDuration);
+
+        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
         updateView();
 
         placePieceDelay.setOnFinished(event -> {
@@ -213,8 +216,7 @@ public class GamePresenter {
 
             model.handlePendingWin();
 
-            AiThinkingDuration = rand.nextInt(2);
-            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
+            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
             pickPieceDelay.setOnFinished(e -> {
                 model.pickPieceAi();
                 engine.determineFacts(model);
@@ -298,7 +300,8 @@ public class GamePresenter {
         boolean pieceSelected = model.getGame().getSelectedPiece() != null;
         boolean isVsAi = model.getOpponent() instanceof Ai;
 
-        view.getTurn().setStyle(isHumanTurn ? "-fx-background-color: #29ABE2" : "-fx-background-color: #FF1D25");
+        view.getTurn().setStyle(isHumanTurn ? "-fx-background-color: #29ABE2" : "-fx-background-color: transparent");
+        view.getLoadingBar().setOpacity(isHumanTurn ? 0 : 1);
 
         if (isHumanTurn) {
             if (pieceSelected) {
@@ -328,7 +331,30 @@ public class GamePresenter {
             }
         }
     }
+    private void animateLoadingBar(double durationInSeconds) {
+        // Reset the loading bar to 0
+        view.getLoadingBar().setProgress(0);
 
+        // Create a timeline that will update the progress bar over the duration
+        Timeline timeline = new Timeline();
+
+        // We'll update the progress bar 60 times per second for smooth animation
+        int totalFrames = (int)(durationInSeconds * 60);
+        double incrementPerFrame = 1.0 / totalFrames;
+
+        // Create the keyframes for the animation
+        for (int i = 0; i <= totalFrames; i++) {
+            final int frameNumber = i;
+            KeyFrame keyFrame = new KeyFrame(
+                    Duration.seconds(durationInSeconds * i / totalFrames),
+                    event -> view.getLoadingBar().setProgress((double)frameNumber / totalFrames)
+            );
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        // Start the animation
+        timeline.play();
+    }
     public GameView getView() {
         return view;
     }
