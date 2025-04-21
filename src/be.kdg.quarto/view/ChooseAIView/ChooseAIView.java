@@ -90,14 +90,19 @@ public class ChooseAIView extends BorderPane {
         if(AiCharacters.get(n) instanceof  Ai) {
             Ai ai = (Ai) AiCharacters.get(n);
             AiLevel level = ai.getDifficultyLevel();
+            difficultyHolderLabel.setText("Difficulty:");
+
             difficultyLabel.setText(getDifficultyName(level));
             changeDifficultyColor(level);
             descriptionLabel.setText(ai.getDescription());
+            descriptionLabel.setStyle("-fx-font-size: 20px;");
+
         }
         else {
-            difficultyLabel.setText("Unknown");
-            changeDifficultyColor(AiLevel.EASY);
+            difficultyHolderLabel.setText("");
+            difficultyLabel.setText("");
             descriptionLabel.setText("Have fun with your friends!");
+            descriptionLabel.setStyle("-fx-font-size: 28px;");
         }
 
 
@@ -105,10 +110,15 @@ public class ChooseAIView extends BorderPane {
     }
 
     private String getDifficultyName(AiLevel level){
+        String difficulty = "";
+        if(level != AiLevel.MEDIUM)
+             difficulty = level.toString();
+        else
+            difficulty = "MID";
         //EASY -> Easy
-        String firstLetter = level.toString().substring(0, 1).toUpperCase();
+        String firstLetter = difficulty.substring(0, 1).toUpperCase();
 
-        String restOfString = level.toString().substring(1).toLowerCase();
+        String restOfString = difficulty.substring(1).toLowerCase();
 
         return firstLetter + restOfString;
     }

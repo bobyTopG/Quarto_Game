@@ -1,6 +1,8 @@
 INSERT INTO players (name, is_ai)
 VALUES ('Bob', true),
        ('Robert', true),
+       ('Cat', true),
+       ('Friend', false),
        ('Guest', false);
 
 INSERT INTO piece_types (fill, shape, color, size)

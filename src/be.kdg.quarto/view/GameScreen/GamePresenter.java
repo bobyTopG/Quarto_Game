@@ -82,7 +82,7 @@ public class GamePresenter {
     }
 
     private void updateTimerDisplay() {
-        view.setTimer(model.getGame().getTimer().getGameDurationInSeconds());
+        view.setTimer(model.getGameTimer().getGameDurationInSeconds());
     }
 
     private void addEventHandlers() {
@@ -103,9 +103,7 @@ public class GamePresenter {
             int finalIndex = index;
             boardCell.getCellVisual().setOnMouseEntered(event -> boardCell.hover());
             boardCell.getCellVisual().setOnMouseExited(event -> boardCell.unhover());
-            boardCell.getCellVisual().setOnMouseClicked(event -> {
-                onBoardCellClicked(finalIndex, boardCell);
-            });
+            boardCell.getCellVisual().setOnMouseClicked(event -> onBoardCellClicked(finalIndex, boardCell));
         }
 
         for (SelectCell selectCell : piecesToSelect) {
@@ -136,6 +134,7 @@ public class GamePresenter {
         view.getQuarto().setOnMouseClicked(event -> handleQuarto());
         view.getSettings().setOnAction(event -> {
             view.showSettingsScreen();
+            model.getGameTimer().pauseGame();
             new SettingsPresenter(this, view.getSettingsView(), model);
         });
     }
@@ -168,7 +167,7 @@ public class GamePresenter {
         Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
 
         if (tile.getPiece() == null) {
-            model.placePiece(tile, model.getPlayer());
+            model.placePiece(tile);
             model.getGame().setSelectedPiece(null);
         } else {
             System.out.println("You can't place a piece on a tile that already has a piece!");
@@ -184,8 +183,9 @@ public class GamePresenter {
             System.out.println("Selected Piece is null!");
             return;
         }
+
         try {
-            model.pickPiece(selectedPiece.getPiece(), model.getOpponent());
+            model.pickPiece(selectedPiece.getPiece());
         } catch (NullPointerException e) {
             view.getQuartoText().setText("No piece selected!");
         }
@@ -240,12 +240,14 @@ public class GamePresenter {
     }
 
     public void updateView() {
-if(view.getIsMassageOn().isSelected()){
-    view.getQuartoText().setText(move.getWarningMessage());
-}
-else {
-    view.getQuartoText().setText("");
-}
+
+
+    if(view.getIsMassageOn().isSelected()){
+        view.getQuartoText().setText(move.getWarningMessage());
+    }
+    else {
+        view.getQuartoText().setText("");
+    }
 
         updateSelectedPiece();
         updateBoard();

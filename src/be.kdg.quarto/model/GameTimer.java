@@ -5,30 +5,17 @@ import java.util.Date;
 import java.util.List;
 
 public class GameTimer {
+    private final Game game;
     private Date gameStartTime;
     private Date gameEndTime;
     private boolean isPaused = false;
     private Date currentPauseStart;
-    private List<PausePeriod> pausePeriods = new ArrayList<>();
-    private Move activeMove;  // Only track a single active move
+    private final List<PausePeriod> pausePeriods = new ArrayList<>();
 
-    private static class PausePeriod {
-        private Date pauseStart;
-        private Date pauseEnd;
-
-        public PausePeriod(Date pauseStart, Date pauseEnd) {
-            this.pauseStart = pauseStart;
-            this.pauseEnd = pauseEnd;
-        }
-
-        public long getDurationInMillis() {
-            return pauseEnd.getTime() - pauseStart.getTime();
-        }
-    }
-
-    public GameTimer() {
+    public GameTimer(Game game) {
         // Initialize with current time
         gameStartTime = new Date();
+        this.game = game;
     }
 
     public void startGame() {
@@ -39,27 +26,14 @@ public class GameTimer {
         gameEndTime = new Date();
     }
 
-    public void setActiveMove(Move move) {
-        this.activeMove = move;
-    }
 
-    public void clearActiveMove() {
-        this.activeMove = null;
-    }
-
-    public Move getActiveMove() {
-        return this.activeMove;
-    }
 
     public void pauseGame() {
         if (!isPaused) {
             isPaused = true;
             currentPauseStart = new Date();
+            game.getCurrentMove().pause();
 
-            // Pause the active move if it exists
-            if (activeMove != null) {
-                activeMove.pause();
-            }
         }
     }
 
@@ -69,11 +43,8 @@ public class GameTimer {
             pausePeriods.add(new PausePeriod(currentPauseStart, pauseEnd));
             isPaused = false;
             currentPauseStart = null;
+            game.getCurrentMove().resume();
 
-            // Resume the active move if it exists
-            if (activeMove != null) {
-                activeMove.resume();
-            }
         }
     }
 
@@ -92,6 +63,7 @@ public class GameTimer {
 
         return totalPausedTime;
     }
+
     public int getGameDurationInSeconds() {
         // Calculate end timestamp (current time if game isn't finished)
         long endTimestamp = (gameEndTime != null) ? gameEndTime.getTime() : new Date().getTime();

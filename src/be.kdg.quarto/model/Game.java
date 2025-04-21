@@ -20,8 +20,6 @@ public class Game {
     private Piece selectedPiece;
     private Move currentMove;
 
-    private final GameTimer timer;
-
 
 
 
@@ -35,51 +33,37 @@ public class Game {
 
         gameRules = new GameRules(board, moves);
 
-        timer = new GameTimer();
+
+
     }
-
-
-    public Piece createPieceFromImageName(String path) {
-        String filename = path.substring(path.indexOf("/pieces/") + 8, path.lastIndexOf("."));
-        String[] parts = filename.split("_");
-
-        if (parts.length != 4) throw new IllegalArgumentException("Invalid image name format: " + path);
-
-        try {
-            return new Piece(
-                    Color.valueOf(parts[2].toUpperCase()),
-                    Size.valueOf(parts[3].toUpperCase()),
-                    Fill.valueOf(parts[0].toUpperCase()),
-                    Shape.valueOf(parts[1].toUpperCase())
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid enum value in image name.");
-            return null;
-        }
+    public void startNewMove(Player player){
+        currentMove = new Move();
+        currentMove.setPlayer(player);
+        currentMove.setMoveNumber(moves.size() + 1);
     }
-
-
-    public void startMove(Player player, Tile selectedTile) {
-
-        currentMove = new Move(player, board.getTiles().indexOf(selectedTile), selectedPiece, currentMove.getMoveNumber(), getStartTimeForMove());
+    public void endMove(){
         addCurrentMove();
-        currentMove.setMoveNumber(currentMove.getMoveNumber() + 1);
+        currentMove = null;
+    }
+    public void placePieceIntoMove(Tile selectedTile) {
+        currentMove.setPiece(selectedPiece);
+        currentMove.setPosition(board.getTiles().indexOf(selectedTile));
+        currentMove.setStartTime(getStartTimeForMove());
         //if last move
         if (piecesToSelect.isEmpty()) {
             currentMove.setEndTime(new Date());
+            endMove();
         }
 
     }
+    public void pickPieceIntoMove() {
+        currentMove.setSelectedPiece(getSelectedPiece());
+        currentMove.setEndTime(new Date());
 
-    public void endMove(Player player) {
-        if (!board.isEmpty()) {
-            currentMove.setSelectedPiece(getSelectedPiece());
-            currentMove.setEndTime(new Date());
-        } else {
-            //first move made will be only choosing the piece without placing any
-            currentMove = new Move(player, getSelectedPiece(), getStartTimeForMove(), new Date());
-            addCurrentMove();
+        if(board.isEmpty()){
+            currentMove.setStartTime(getStartTimeForMove());
         }
+
     }
 
 
@@ -130,7 +114,4 @@ public class Game {
         this.currentMove = currentMove;
     }
 
-    public GameTimer getTimer() {
-        return timer;
-    }
 }

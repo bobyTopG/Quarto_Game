@@ -15,45 +15,12 @@ public class Move {
     private Date endTime;
     private String warningMessage;
 
-    private List<PausePeriod> pausePeriods = new ArrayList<>();
+    private final List<PausePeriod> pausePeriods = new ArrayList<>();
     private Date currentPauseStart;
 
-
-
-
-    private static class PausePeriod {
-        private Date pauseStart;
-        private Date pauseEnd;
-
-        public PausePeriod(Date pauseStart, Date pauseEnd) {
-            this.pauseStart = pauseStart;
-            this.pauseEnd = pauseEnd;
-        }
-
-        public long getDurationInMillis() {
-            return pauseEnd.getTime() - pauseStart.getTime();
-        }
-    }
     public Move() {
 
     }
-    public Move(Player player, int position, Piece piece, int moveNumber, Date startTime) {
-        this.player = player;
-        this.position = position;
-        this.piece = piece;
-        this.moveNumber = moveNumber;
-        this.startTime = startTime;
-    }
-
-    public Move(Player player, Piece selectedPiece, Date startTime, Date endTime) {
-        this.player = player;
-        this.selectedPiece = selectedPiece;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-
-
     // Pause functionality
     public void pause() {
         if (currentPauseStart == null) {
@@ -87,10 +54,30 @@ public class Move {
         return totalPausedTime;
     }
 
+    //placing the piece
+    public void placedPiece(Piece piece, int position,Date startTime) {
+        this.piece = piece;
+        this.position = position;
+        this.startTime = startTime;
+    }
+    public void placedPiece(Piece piece, int position, Date startTime, Date endTime) {
+        this.placedPiece(piece, position,startTime);
+        this.endTime = endTime;
+    }
 
 
     public String getWarningMessage() {
         return warningMessage;
+    }
+    //picking the piece
+    public void pickedPiece(Piece piece) {
+        this.selectedPiece = piece;
+        this.endTime = new Date();
+    }
+    //if first move we also set the startTime
+    public void pickedPiece(Piece piece, Date startTime) {
+        this.startTime = startTime;
+        this.pickedPiece(piece);
     }
 
     public void setWarningMessage(String warningMessage) {
@@ -172,6 +159,11 @@ public class Move {
     public boolean isPieceSet() {
         return piece != null || selectedPiece != null;
     }
+
+    public List<PausePeriod> getPausePeriods() {
+        return pausePeriods;
+    }
+
 
     @Override
     public String toString() {

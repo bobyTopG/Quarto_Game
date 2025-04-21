@@ -101,6 +101,11 @@ public class DbConnection {
                 "VALUES (?, ?, ?, ?, ?);";
     }
 
+    public static String setPausePeriod(){
+        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n"+
+                "VALUES (?, ?, ?);";
+    }
+
     public static String setPiece() {
         return "INSERT INTO pieces (piece_type_id, move_id, pos)\n" +
                 "VALUES (?, ?, ?);";

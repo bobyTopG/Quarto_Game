@@ -35,6 +35,8 @@ public class SettingsPresenter {
         });
 
         view.getResumeButton().setOnAction(event -> {
+            model.getGameTimer().resumeGame();
+
             closeSettings();
         });
 
