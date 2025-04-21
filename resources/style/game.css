@@ -10,19 +10,33 @@
     -fx-border-radius: 25px;
     -fx-background-radius: 25px;
     -fx-padding: 15px;
-/*  -fx-background-color: #FF1D25; */
 }
 .settings-button{
     -fx-pref-width: 300px;
     -fx-background-color: #9B9B9B;
     -fx-border-color: #000000;
 }
-.button.help-button{
+.toggle-button.help-button{
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: #CCCCCC;
+
     -fx-pref-width: 75px;
     -fx-pref-height: 75px;
     -fx-font-size: 56px;
 }
+.toggle-button.help-button:hover{
+    -fx-background-color: #9f9f9f;
 
+}
+.toggle-button.help-button:selected{
+    -fx-background-color: #38C63B;
+
+}
+.toggle-button.help-button:selected:hover{
+    -fx-background-color: #2d952f;
+
+}
 .help-box{
     -fx-padding: 10px;
     -fx-alignment: center-right;

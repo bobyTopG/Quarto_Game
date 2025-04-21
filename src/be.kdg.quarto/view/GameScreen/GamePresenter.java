@@ -31,13 +31,12 @@ public class GamePresenter {
     private Move move = new Move();
     private final GameSession model;
     private final GameView view;
-    private InterfaceEngine engine = new InterfaceEngine();
+    private final InterfaceEngine engine = new InterfaceEngine();
     private SelectCell selectedPiece;
     private BoardCell selectedTile;
-    private Timeline uiUpdateTimer;
     private List<BoardCell> board;
     private List<SelectCell> piecesToSelect;
-    private int AiThinkingDuration = 0;
+    private final float AiThinkingDuration = 0;
 
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;
@@ -76,7 +75,7 @@ public class GamePresenter {
     }
 
     private void setUpTimer() {
-        uiUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimerDisplay()));
+        Timeline uiUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimerDisplay()));
         uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
         uiUpdateTimer.play();
     }
@@ -86,17 +85,7 @@ public class GamePresenter {
     }
 
     private void addEventHandlers() {
-
-            view.getIsMassageOn().selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-                if (isSelected) {
-                    view.getIsMassageOn().setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
-                    updateView();
-                } else {
-                    view.getIsMassageOn().setStyle("");
-                    updateView();
-                }
-            });
-            updateMassage();
+        updateMassage();
 
         for (int index = 0; index < board.size(); index++) {
             BoardCell boardCell = board.get(index);
@@ -193,12 +182,10 @@ public class GamePresenter {
         selectedPiece.setPiece(null);
         selectedPiece = null;
         view.switchToMainSection();
+        updateView();
 
         if (model.getOpponent() instanceof Ai) {
             handleAiTurn();
-
-        } else {
-            updateView();
         }
     }
 
@@ -242,7 +229,7 @@ public class GamePresenter {
     public void updateView() {
 
 
-    if(view.getIsMassageOn().isSelected()){
+    if(view.getHelpButton().isSelected()){
         view.getQuartoText().setText(move.getWarningMessage());
     }
     else {

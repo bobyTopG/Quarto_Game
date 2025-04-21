@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -19,6 +20,12 @@ public class CreateHelper {
 
     public static Button createButton(String text, String[] styleClasses) {
         Button button = new Button(text);
+        button.getStyleClass().addAll(styleClasses);
+        return button;
+    }
+
+    public static ToggleButton createToggleButton(String text, String[] styleClasses) {
+        ToggleButton button = new ToggleButton(text);
         button.getStyleClass().addAll(styleClasses);
         return button;
     }

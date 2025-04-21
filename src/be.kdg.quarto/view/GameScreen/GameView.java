@@ -18,7 +18,6 @@ public class GameView extends StackPane {
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
     private Label quartoText = new Label();
-    private ToggleButton isMassageOn = new ToggleButton();
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
@@ -38,8 +37,7 @@ public class GameView extends StackPane {
 
 
     private Button settingsButton;
-    private final Button helpButton = CreateHelper.createButton("?", new String[]{"default-button","blue-button","help-button"});
-
+    private final ToggleButton helpButton = CreateHelper.createToggleButton("?", new String[]{"default-button","help-button"});
 
     private final Button choosePiece = CreateHelper.createButton("Choose Piece", new String[]{"orange-button","game-button"});
     private final Button placePiece = CreateHelper.createButton("Place Piece", new String[]{ "blue-button", "game-button"});
@@ -97,7 +95,7 @@ public class GameView extends StackPane {
         // to make a separator from all the space left
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
 
-        HBox topBar = new HBox(turn, isMassageOn ,  hSpacer, helpButton, settingsButton);
+        HBox topBar = new HBox(turn,  hSpacer, helpButton, settingsButton);
 
         topBar.setSpacing(10);
         topBar.setPadding(new Insets(10));
@@ -307,8 +305,8 @@ public class GameView extends StackPane {
     public Label getQuartoText() {
         return quartoText;
     }
-
-    public ToggleButton getIsMassageOn() {
-        return isMassageOn;
+    public ToggleButton getHelpButton() {
+        return helpButton;
     }
+
 }

@@ -1,10 +1,6 @@
 package be.kdg.quarto.view.GameScreen.Cells;
 
-import be.kdg.quarto.helpers.ImageHelper;
-import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.model.enums.Size;
 import javafx.geometry.Pos;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;

@@ -38,11 +38,11 @@ public class Game {
     }
     public void startNewMove(Player player){
         currentMove = new Move();
+        addCurrentMove();
         currentMove.setPlayer(player);
-        currentMove.setMoveNumber(moves.size() + 1);
+        currentMove.setMoveNumber(moves.size());
     }
     public void endMove(){
-        addCurrentMove();
         currentMove = null;
     }
     public void placePieceIntoMove(Tile selectedTile) {
@@ -66,14 +66,12 @@ public class Game {
 
     }
 
-
     public Date getStartTimeForMove() {
         List<Move> moves = getMoves();
-        if (moves == null || moves.isEmpty()) { // Check for null and empty
+        if (moves == null || moves.isEmpty() || moves.size()-1 == 0) { // Check for null and empty
             return new Date();
         } else {
-            //noinspection SequencedCollectionMethodCanBeUsed
-            return moves.get(moves.size() - 1).getEndTime();
+            return moves.get(moves.size() - 2).getEndTime();
         }
     }
 
