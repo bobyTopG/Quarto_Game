@@ -204,7 +204,7 @@ public class GamePresenter {
         placePieceDelay.setOnFinished(event -> {
             model.placePieceAi();
 
-            engine.determineFacts(model);            // ✅ Rerun engine after AI move
+            engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
             updateView();
 
@@ -215,7 +215,7 @@ public class GamePresenter {
             pickPieceDelay.setOnFinished(e -> {
                 model.pickPieceAi();
 
-                engine.determineFacts(model);        // ✅ Rerun engine after AI picks
+                engine.determineFacts(model);
                 engine.applyRules(model.getGame(), move);
                 updateView();
             });
