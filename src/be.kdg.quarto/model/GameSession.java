@@ -202,7 +202,7 @@ public class GameSession {
                 this.gameSessionId = rs.getInt(1);
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
     }

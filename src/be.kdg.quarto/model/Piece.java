@@ -54,7 +54,7 @@ public class Piece {
                 this.pieceId = rs.getInt(1);
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e ) {
             e.printStackTrace();
         }
     }

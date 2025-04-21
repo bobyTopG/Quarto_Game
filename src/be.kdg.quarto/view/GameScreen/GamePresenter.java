@@ -23,6 +23,7 @@ import javafx.util.Duration;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 30.0;
@@ -36,7 +37,7 @@ public class GamePresenter {
     private BoardCell selectedTile;
     private List<BoardCell> board;
     private List<SelectCell> piecesToSelect;
-    private final float AiThinkingDuration = 0;
+    private float AiThinkingDuration = 0;
 
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;
@@ -85,7 +86,10 @@ public class GamePresenter {
     }
 
     private void addEventHandlers() {
-        updateMassage();
+
+        view.getHelpButton().selectedProperty().addListener((obs, oldVal, newVal) -> {
+                updateMassage();
+        });
 
         for (int index = 0; index < board.size(); index++) {
             BoardCell boardCell = board.get(index);
@@ -106,6 +110,7 @@ public class GamePresenter {
 
         view.getPlacePiece().setOnAction(event -> {
             placePiece();
+
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
             updateView();
@@ -190,17 +195,28 @@ public class GamePresenter {
     }
 
     private void handleAiTurn() {
+        Random rand = new Random();
+        AiThinkingDuration = rand.nextInt(3) + 1;
+
         PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
         updateView();
 
         placePieceDelay.setOnFinished(event -> {
             model.placePieceAi();
+
+            engine.determineFacts(model);            // ✅ Rerun engine after AI move
+            engine.applyRules(model.getGame(), move);
             updateView();
+
             model.handlePendingWin();
 
+            AiThinkingDuration = rand.nextInt(3) + 1;
             PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(AiThinkingDuration));
             pickPieceDelay.setOnFinished(e -> {
                 model.pickPieceAi();
+
+                engine.determineFacts(model);        // ✅ Rerun engine after AI picks
+                engine.applyRules(model.getGame(), move);
                 updateView();
             });
             pickPieceDelay.play();
@@ -227,15 +243,7 @@ public class GamePresenter {
     }
 
     public void updateView() {
-
-
-    if(view.getHelpButton().isSelected()){
-        view.getQuartoText().setText(move.getWarningMessage());
-    }
-    else {
-        view.getQuartoText().setText("");
-    }
-
+        updateMassage();
         updateSelectedPiece();
         updateBoard();
         updateSelectGrid();
@@ -243,12 +251,12 @@ public class GamePresenter {
     }
 
     private void updateMassage() {
-        if (move.getWarningMessage() != null) {
-            view.getQuartoText().setText(move.getWarningMessage());
-            move = new Move();
-        } else {
-            view.getQuartoText().setText(""); // Clear warning if none
-        }
+        if (view.getHelpButton().isSelected() && move.getWarningMessage() != null) {
+                view.getQuartoText().setText(move.getWarningMessage());
+            }
+             else {
+                view.getQuartoText().setText(""); // Clear warning if none
+            }
     }
 
     private void updateSelectedPiece() {

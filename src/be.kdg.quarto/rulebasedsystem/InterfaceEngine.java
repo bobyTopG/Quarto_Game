@@ -44,7 +44,6 @@ public class InterfaceEngine {
 
                 for (int i = 0; i < currentRules.numberOfRules(); i++) {
                     if (!ruleFired && currentRules.checkConditionRule(i, currentFacts)) {
-                        // System.out.println("Firing rule: " + currentRules.getRuleName(i));
                         ruleFired = currentRules.fireActionRule(i, currentFacts, game, move);
                         if (ruleFired)
                             break;

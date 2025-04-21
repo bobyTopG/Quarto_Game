@@ -63,7 +63,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
                 .filter(t -> t.getPiece() != null)
                 .toList();
 
-        // Random fallback
+
         return piecesLeft.stream().findAny().map(Tile::getPiece).orElse(null);
     }
 
