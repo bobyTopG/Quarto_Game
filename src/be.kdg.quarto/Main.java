@@ -11,17 +11,13 @@ import java.net.MalformedURLException;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-
         StartView view = new StartView();
 
         Scene scene = new Scene(view);
         loadStyleSheets(scene);
 
-
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-
-
 
         primaryStage.setScene(scene);
         new StartPresenter(view);

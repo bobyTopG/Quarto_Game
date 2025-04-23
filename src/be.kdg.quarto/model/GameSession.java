@@ -19,15 +19,13 @@ public class GameSession {
     private int gameSessionId;
 
 
-    public GameSession(Player player, Player opponent) {
+    public GameSession(Player player, Player opponent , Player currentPlayer) {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
-        this.currentPlayer = getRandomPlayer();
         startTime = new Date();
-
+        this.currentPlayer = currentPlayer == null ? player : opponent;
         gameTimer = new GameTimer(this.game);
-
         game.startNewMove(this.currentPlayer);
 
         saveGameSessionToDb();
@@ -35,19 +33,13 @@ public class GameSession {
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
-
-        if (isAiTurn()) {
-            //if first move is AI let him pick (handling the AI turn is done in the Presenter)
+        if(currentPlayer == this.opponent) {
             pickPieceAi();
-
         }
+
+
     }
 
-    public Player getRandomPlayer() {
-        int rand = new Random().nextInt(2);
-
-        return rand == 1 ? opponent : player;
-    }
 
     public void callQuarto() {
 
@@ -101,10 +93,6 @@ public class GameSession {
                 CreateHelper.createAlert("Game Over", "Game Over", "It is a tie!");
             }
         }
-    }
-
-    private boolean isAiTurn() {
-        return currentPlayer instanceof Ai;
     }
 
     public void pickPiece(Piece piece) {
@@ -257,5 +245,9 @@ public class GameSession {
 
     public GameTimer getGameTimer() {
         return gameTimer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

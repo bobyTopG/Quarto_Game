@@ -1,13 +1,13 @@
-package be.kdg.quarto.rulebasedsystem;
+package be.kdg.quarto.model.strategies.rulebasedsystem;
 
 import be.kdg.quarto.model.Board;
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Piece;
-import be.kdg.quarto.rulebasedsystem.facts.FactsHandler;
-import be.kdg.quarto.rulebasedsystem.facts.FactValues;
-import be.kdg.quarto.rulebasedsystem.rules.RulesHandler;
+import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactsHandler;
+import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactValues;
+import be.kdg.quarto.model.strategies.rulebasedsystem.rules.RulesHandler;
 
 public class InterfaceEngine {
     private boolean ruleFired;

@@ -1,4 +1,4 @@
-package be.kdg.quarto.rulebasedsystem.facts;
+package be.kdg.quarto.model.strategies.rulebasedsystem.facts;
 
 public enum FactValues {
     ENDMOVEAI,

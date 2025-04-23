@@ -8,7 +8,7 @@ import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.rulebasedsystem.InterfaceEngine;
+import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
@@ -37,7 +37,6 @@ public class GamePresenter {
     private BoardCell selectedTile;
     private List<BoardCell> board;
     private List<SelectCell> piecesToSelect;
-    private float AiThinkingDuration = 0;
 
     public GamePresenter(GameSession model, GameView view) {
         this.model = model;

@@ -5,7 +5,7 @@ import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.PlayingStrategy;
 import be.kdg.quarto.model.Tile;
-import be.kdg.quarto.rulebasedsystem.InterfaceEngine;
+import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
 
 import java.util.List;
 

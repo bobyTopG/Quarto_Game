@@ -25,6 +25,32 @@
     -fx-pref-height: 75px;
     -fx-font-size: 56px;
 }
+
+
+.toggle-button.turn-button{
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: #CCCCCC;
+
+    -fx-pref-width: 255px;
+    -fx-pref-height: 55px;
+    -fx-font-size: 26px;
+}
+.toggle-button.turn-button:hover{
+    -fx-background-color: #9f9f9f;
+
+}
+.toggle-button.turn-button:selected{
+    -fx-background-color: #34d1ba;
+
+}
+.toggle-button.turn-button:selected:hover{
+    -fx-background-color: #2d958c;
+
+}
+
+
+
 .toggle-button.help-button:hover{
     -fx-background-color: #9f9f9f;
 

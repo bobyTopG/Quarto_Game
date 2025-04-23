@@ -23,7 +23,7 @@ public class SettingsPresenter {
             // Close the settings overlay
             closeSettings();
             // Create a new Game instance with the same players from the current game
-            GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent());
+            GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent() , model.getOpponent());
             // Create a new view (this will properly initialize all UI components)
             GameView newView = new GameView();
 

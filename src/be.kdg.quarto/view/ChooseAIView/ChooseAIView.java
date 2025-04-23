@@ -4,8 +4,10 @@ import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.model.enums.AiLevel;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +19,7 @@ import java.util.List;
 
 public class ChooseAIView extends BorderPane {
     private Button backButton, selectButton;
+    private final ToggleButton turnButton = CreateHelper.createToggleButton("I want to start first", new String[]{"default-button","turn-button"});
     private Image notFoundImage;
     private List<Image> AIImages; //order is important
     private List<Player> AiCharacters;
@@ -54,11 +57,16 @@ public class ChooseAIView extends BorderPane {
         styleMainVBox();
 
         HBox buttonsHBox = new HBox();
+        VBox buttonsVBox = new VBox();
         buttonsHBox.getStyleClass().add("buttons-hbox");
         buttonsHBox.getChildren().addAll(backButton, selectButton);
+        buttonsVBox.getChildren().addAll(buttonsHBox,turnButton);
+        buttonsVBox.setAlignment(Pos.CENTER);
+        buttonsVBox.setSpacing(20);
+        CreateHelper.createToggleButton("?", new String[]{"default-button","help-button"});
 
 
-        mainVBox.getChildren().addAll(chooseAILabel, buttonsHBox);
+        mainVBox.getChildren().addAll(chooseAILabel, buttonsVBox);
 
         this.setLeft(mainVBox);
 
@@ -196,9 +204,11 @@ public class ChooseAIView extends BorderPane {
         return AICharactersHBox;
     }
 
+    public ToggleButton getTurnButton() {
+        return turnButton;
+    }
 
-
-     Button getBackButton() {
+    Button getBackButton() {
         return backButton;
     }
 

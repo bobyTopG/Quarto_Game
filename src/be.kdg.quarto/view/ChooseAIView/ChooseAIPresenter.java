@@ -43,6 +43,7 @@ public class ChooseAIPresenter {
     }
 
     private void addEventHandlers() {
+
         int count = 0;
 
         for (Button characterButton : view.getCharacterButtons()) {
@@ -77,8 +78,11 @@ public class ChooseAIPresenter {
                 GameView gameView = new GameView();
                 GameSession model = new GameSession(
                         AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
-                        aiSelected
+                        aiSelected , view.getTurnButton().isSelected()? null : aiSelected
                 );
+
+
+
                 view.getScene().setRoot(gameView);
                 new GamePresenter(model, gameView);
             }

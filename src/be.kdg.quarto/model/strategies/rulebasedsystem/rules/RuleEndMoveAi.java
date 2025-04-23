@@ -1,10 +1,10 @@
-package be.kdg.quarto.rulebasedsystem.rules;
+package be.kdg.quarto.model.strategies.rulebasedsystem.rules;
 
 import be.kdg.quarto.model.Game;
 import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Tile;
-import be.kdg.quarto.rulebasedsystem.facts.FactValues;
-import be.kdg.quarto.rulebasedsystem.facts.FactsHandler;
+import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactValues;
+import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactsHandler;
 
 public class RuleEndMoveAi extends Rule {
     @Override
