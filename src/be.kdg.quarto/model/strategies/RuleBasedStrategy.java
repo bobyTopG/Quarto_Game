@@ -33,7 +33,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
 
 
         } catch (Exception e) {
-            System.out.println("Rule engine error during tile selection: " + e.getMessage());
+            //System.out.println("Rule engine error during tile selection: " + e.getMessage());
         }
         int pos = move.getPosition();
         if (pos >= 0 && pos < game.getGame().getBoard().getTiles().size()) {

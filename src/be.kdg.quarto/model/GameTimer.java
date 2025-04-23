@@ -18,15 +18,6 @@ public class GameTimer {
         this.game = game;
     }
 
-    public void startGame() {
-        gameStartTime = new Date();
-    }
-
-    public void endGame() {
-        gameEndTime = new Date();
-    }
-
-
 
     public void pauseGame() {
         if (!isPaused) {

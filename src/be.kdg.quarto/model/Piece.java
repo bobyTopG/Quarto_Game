@@ -39,8 +39,13 @@ public class Piece {
         this.fill = fill;
         this.shape = shape;
 
-        loadIdFromDb();
+        try {
+            loadIdFromDb();
+        } catch (Exception e) {
+
+        }
     }
+
     public void loadIdFromDb() {
         // loads the id of a piece from the database
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPieceId())) {
@@ -54,10 +59,11 @@ public class Piece {
                 this.pieceId = rs.getInt(1);
             }
 
-        } catch (SQLException | NullPointerException e ) {
-            e.printStackTrace();
+        } catch (SQLException | NullPointerException e) {
+            //e.printStackTrace();
         }
     }
+
     public int getPieceId() {
         return pieceId;
     }

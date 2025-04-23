@@ -10,7 +10,7 @@ public class DbConnection {
     static {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://10.134.178.22:5432/game", "game", "7sur7");
-            System.out.println("Connection established");
+            //System.out.println("Connection established");
 
             //close connection when app is shutdown
             Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
@@ -23,9 +23,9 @@ public class DbConnection {
         if (connection != null) {
             try {
                 connection.close();
-                System.out.println("Database connection closed");
+               // System.out.println("Database connection closed");
             } catch (SQLException e) {
-                System.out.println("Error closing connection: " + e.getMessage());
+                //System.out.println("Error closing connection: " + e.getMessage());
             }
         }
     }

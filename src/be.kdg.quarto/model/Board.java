@@ -40,18 +40,18 @@ public class Board {
     public boolean isEmpty() {
         return tiles.stream().allMatch(Tile::isEmpty);
     }
-
     public List<Tile> getTiles() {
         return tiles;
     }
-
     public Tile getTile(int pos) {
         return tiles.get(pos);
+    }
+    public Tile findTile(int index) {
+        return tiles.get(index);
     }
 
 
     // Game Logic //
-
     public boolean isWinningMovePossible(Piece selectedPiece) {
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
@@ -87,7 +87,6 @@ public class Board {
         return false;
     }
 
-
     public boolean wouldCauseWin(int index) {
         int row = index / 4;
         int col = index % 4;
@@ -116,7 +115,6 @@ public class Board {
             colTiles.add(tiles.get(i * 4 + col));
         }
         if (sharesAttribute.test(colTiles)) return true;
-
         // Check diagonals
         if (row == col) {
             List<Tile> mainDiag = new ArrayList<>();
@@ -125,13 +123,12 @@ public class Board {
             }
             if (sharesAttribute.test(mainDiag)) return true;
         }
-
         if (row + col == 3) {
             List<Tile> antiDiag = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
                 antiDiag.add(tiles.get((i + 1) * 3));
             }
-            if (sharesAttribute.test(antiDiag)) return true;
+            return sharesAttribute.test(antiDiag);
         }
 
         return false;
@@ -170,10 +167,5 @@ public class Board {
 
         return lines;
     }
-
-    public Tile findTile(int index) {
-        return tiles.get(index);
-    }
-
 
 }

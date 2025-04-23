@@ -39,8 +39,8 @@ public class AuthHelper {
             if (rs.next()) {
                 return new Human(rs.getInt("player_id"), rs.getString("name"), null);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException |NullPointerException e) {
+            //e.printStackTrace();
         }
         return null;
 
@@ -68,9 +68,10 @@ public class AuthHelper {
             } else {
                 throw new AuthException("User not found");
             }
-        } catch (SQLException e) {
-            throw new AuthException("Database error during login: " + e.getMessage());
+        } catch (SQLException | NullPointerException e) {
+            //throw new AuthException("Database error during login: " + e.getMessage());
         }
+        return null;
     }
 
     public static void logout() {
@@ -112,8 +113,8 @@ public class AuthHelper {
             } else {
                 throw new AuthException("Failed to retrieve player ID after registration");
             }
-        } catch (SQLException e) {
-            throw new AuthException("Database error during registration: " + e.getMessage());
+        } catch (SQLException | NullPointerException e) {
+            throw new AuthException("Something went wrong");
         }
     }
 
@@ -138,8 +139,8 @@ public class AuthHelper {
             } else {
                 throw new AuthException("User not found");
             }
-        } catch (SQLException e) {
-            throw new AuthException("Database error: " + e.getMessage());
+        } catch (SQLException | NullPointerException e) {
+            throw new AuthException("Something went wrong");
         }
 
         if (newPassword == null || newPassword.length() < 4) {
@@ -161,8 +162,8 @@ public class AuthHelper {
             } else {
                 throw new AuthException("Failed to update password");
             }
-        } catch (SQLException e) {
-            throw new AuthException("Database error during password change: " + e.getMessage());
+        } catch (SQLException | NullPointerException e) {
+            throw new AuthException("Something went wrong");
         }
     }
 }

@@ -88,7 +88,7 @@ public class GamePresenter {
     private void addEventHandlers() {
 
         view.getHelpButton().selectedProperty().addListener((obs, oldVal, newVal) -> {
-                updateMassage();
+            updateMassage();
         });
 
         for (int index = 0; index < board.size(); index++) {
@@ -209,7 +209,7 @@ public class GamePresenter {
             model.placePieceAi();
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
-            if(model.isCallingQuarto()){
+            if (model.isCallingQuarto()) {
                 handleQuarto();
             }
             updateView();
@@ -255,14 +255,13 @@ public class GamePresenter {
     }
 
     private void updateMassage() {
-        if(model.getGame().getGameRules().checkWin()){
+        if (model.getGame().getGameRules().checkWin() && view.getHelpButton().isSelected() && model.getCurrentPlayer() == model.getPlayer()) {
             view.getQuartoText().setText("Press the button \uD83D\uDD3D to win\uD83C\uDFC6");
-        }
-        else {
-            if (view.getHelpButton().isSelected() && move.getWarningMessage() != null) {
+        } else {
+            if (view.getHelpButton().isSelected() && move.getWarningMessage() != null && model.getCurrentPlayer() == model.getPlayer()) {
                 view.getQuartoText().setText(move.getWarningMessage());
             } else {
-                view.getQuartoText().setText(""); // Clear warning if none
+                view.getQuartoText().setText("");
             }
         }
     }
@@ -322,15 +321,16 @@ public class GamePresenter {
                 if (pieceSelected) {
                     view.getChoosePiece().setDisable(true);
                     view.getPlacePiece().setDisable(false);
-                    view.getTurn().setText("Opponent's turn to place a piece");
+                    view.getTurn().setText("Opponent's turn");
                 } else {
                     view.getChoosePiece().setDisable(false);
                     view.getPlacePiece().setDisable(true);
-                    view.getTurn().setText("Opponent's turn to choose a piece");
+                    view.getTurn().setText("Opponent's turn");
                 }
             }
         }
     }
+
     private void animateLoadingBar(double durationInSeconds) {
         // Reset the loading bar to 0
         view.getLoadingBar().setProgress(0);
@@ -339,7 +339,7 @@ public class GamePresenter {
         Timeline timeline = new Timeline();
 
         // We'll update the progress bar 60 times per second for smooth animation
-        int totalFrames = (int)(durationInSeconds * 60);
+        int totalFrames = (int) (durationInSeconds * 60);
         double incrementPerFrame = 1.0 / totalFrames;
 
         // Create the keyframes for the animation
@@ -347,7 +347,7 @@ public class GamePresenter {
             final int frameNumber = i;
             KeyFrame keyFrame = new KeyFrame(
                     Duration.seconds(durationInSeconds * i / totalFrames),
-                    event -> view.getLoadingBar().setProgress((double)frameNumber / totalFrames)
+                    event -> view.getLoadingBar().setProgress((double) frameNumber / totalFrames)
             );
             timeline.getKeyFrames().add(keyFrame);
         }
@@ -355,6 +355,7 @@ public class GamePresenter {
         // Start the animation
         timeline.play();
     }
+
     public GameView getView() {
         return view;
     }

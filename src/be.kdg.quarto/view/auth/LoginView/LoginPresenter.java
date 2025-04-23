@@ -62,8 +62,8 @@ public class LoginPresenter {
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
 
-        } catch (AuthException e) {
-            showAlert("Login Error", e.getMessage());
+        } catch (AuthException | NullPointerException e) {
+            showAlert("Something went wrong", "Please try again later.");
         }
     }
 
@@ -72,8 +72,8 @@ public class LoginPresenter {
      */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
+        alert.setTitle("Error");
+        alert.setHeaderText(title);
         alert.setContentText(message);
         alert.showAndWait();
     }

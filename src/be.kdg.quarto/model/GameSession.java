@@ -12,15 +12,10 @@ public class GameSession {
     private Player opponent;
     private Game game;
     private Player currentPlayer;
-    private Player winner;
     private Date startTime;
     private Date endTime;
     private boolean isCallingQuarto = false;
-
-
     private final GameTimer gameTimer;
-
-
     private int gameSessionId;
 
 
@@ -108,11 +103,6 @@ public class GameSession {
         }
     }
 
-
-    private void setWinner(Player player) {
-        this.winner = player;
-    }
-
     private boolean isAiTurn() {
         return currentPlayer instanceof Ai;
     }
@@ -152,7 +142,7 @@ public class GameSession {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         savePausePeriodsFromMoveToDb(move, moveIdTemp);
@@ -187,7 +177,7 @@ public class GameSession {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -206,7 +196,7 @@ public class GameSession {
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -247,10 +237,6 @@ public class GameSession {
         return player;
     }
 
-    public void setOpponent(Player opponent) {
-        this.opponent = opponent;
-    }
-
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -265,16 +251,8 @@ public class GameSession {
         return opponent;
     }
 
-    private Ai getAiPlayer(Player player) {
-        return player instanceof Ai ai ? ai : null;
-    }
-
     public Game getGame() {
         return game;
-    }
-
-    public Player getWinner() {
-        return winner;
     }
 
     public GameTimer getGameTimer() {
