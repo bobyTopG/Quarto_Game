@@ -33,18 +33,23 @@ public class Game {
 
         gameRules = new GameRules(board, moves);
 
-
-
+        // this will record the start time of the game as the start time of the first move
+        Move dummyStart = new Move();
+        dummyStart.setEndTime(new Date());
+        moves.add(dummyStart);
     }
+
     public void startNewMove(Player player){
         currentMove = new Move();
         addCurrentMove();
         currentMove.setPlayer(player);
-        currentMove.setMoveNumber(moves.size());
+        currentMove.setMoveNumber(moves.size()-1);
     }
+
     public void endMove(){
         currentMove = null;
     }
+
     public void placePieceIntoMove(Tile selectedTile) {
         currentMove.setPiece(selectedPiece);
         currentMove.setPosition(board.getTiles().indexOf(selectedTile));

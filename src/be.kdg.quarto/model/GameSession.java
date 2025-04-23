@@ -18,7 +18,6 @@ public class GameSession {
     private boolean isCallingQuarto = false;
 
 
-
     private final GameTimer gameTimer;
 
 
@@ -55,15 +54,18 @@ public class GameSession {
         return rand == 1 ? opponent : player;
     }
 
-    public Player callQuarto() {
+    public void callQuarto() {
 
         if (game.getGameRules().checkWin()) {
 //            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
+            if (game.getCurrentMove().getEndTime() == null) {
+                game.getCurrentMove().setEndTime(endTime);
+                game.getCurrentMove().setPosition(-1);
+                saveMoveToDb(game.getCurrentMove());
+            }
             updateGameSession(currentPlayer.getId());
-            return currentPlayer;
         }
-        return null;
     }
 
     public void switchTurns() {
@@ -152,6 +154,7 @@ public class GameSession {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         savePausePeriodsFromMoveToDb(move, moveIdTemp);
         if (move.getPosition() != -1) {
             savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPosition());
@@ -160,7 +163,7 @@ public class GameSession {
     }
 
     public void savePausePeriodsFromMoveToDb(Move move, int moveId) {
-        for(PausePeriod pausePeriod : move.getPausePeriods()) {
+        for (PausePeriod pausePeriod : move.getPausePeriods()) {
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPausePeriod())) {
                 ps.setInt(1, moveId);
                 ps.setTimestamp(2, new java.sql.Timestamp(pausePeriod.getPauseStart().getTime()));
