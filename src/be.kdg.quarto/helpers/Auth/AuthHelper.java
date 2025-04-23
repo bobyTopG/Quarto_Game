@@ -34,10 +34,18 @@ public class AuthHelper {
 
     public static Human getGuestPlayer() {
 
-        return new Human((1), ("name"), null);
-
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement("SELECT player_id, name FROM players WHERE upper(name) = 'GUEST'")) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Human(rs.getInt("player_id"), rs.getString("name"), null);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
 
     }
+
     public static Human login(String username, String password) throws AuthException {
         try (PreparedStatement stmt = DbConnection.connection.prepareStatement("SELECT player_id, name, password FROM players WHERE name = ?")) {
             stmt.setString(1, username);
