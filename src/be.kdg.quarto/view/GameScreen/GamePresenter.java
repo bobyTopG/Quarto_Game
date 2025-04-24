@@ -297,34 +297,36 @@ public class GamePresenter {
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
         boolean pieceSelected = model.getGame().getSelectedPiece() != null;
         boolean isVsAi = model.getOpponent() instanceof Ai;
-
+        view.getLoadingBar().setOpacity(0);
         view.getTurn().setStyle(isHumanTurn ? "-fx-background-color: #29ABE2" : "-fx-background-color: transparent");
-        view.getLoadingBar().setOpacity(isHumanTurn ? 0 : 1);
 
         if (isHumanTurn) {
             if (pieceSelected) {
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(false);
-                view.getTurn().setText("Your turn to place your piece");
+                view.getTurn().setText("Your turn to place piece");
             } else {
                 view.getChoosePiece().setDisable(false);
                 view.getPlacePiece().setDisable(true);
-                view.getTurn().setText("Your turn to choose a piece");
+                view.getTurn().setText("Your turn to choose piece");
             }
         } else {
             if (isVsAi) {
+                view.getLoadingBar().setOpacity(1);
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(true);
-                view.getTurn().setText("AI is thinking...");
+                view.getTurn().setText(view.getOpponentName() + " is thinking...");
             } else {
+                view.getTurn().setStyle("-fx-background-color: rgb(218,66,66)");
+
                 if (pieceSelected) {
                     view.getChoosePiece().setDisable(true);
                     view.getPlacePiece().setDisable(false);
-                    view.getTurn().setText("Opponent's turn");
+                    view.getTurn().setText("Opponent's turn to place piece");
                 } else {
                     view.getChoosePiece().setDisable(false);
                     view.getPlacePiece().setDisable(true);
-                    view.getTurn().setText("Opponent's turn");
+                    view.getTurn().setText("Opponent's turn to choose piece");
                 }
             }
         }

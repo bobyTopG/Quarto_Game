@@ -11,7 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class SettingsView extends StackPane {
-    private Button saveButton;
     private Button exitButton;
     private Button restartButton;
     private Button resumeButton;
@@ -27,7 +26,6 @@ public class SettingsView extends StackPane {
     }
 
     private void initialiseNodes() {
-        saveButton = new Button("Save");
         exitButton = new Button("Exit");
         restartButton = new Button("Restart");
         resumeButton = new Button("Resume");
@@ -35,10 +33,9 @@ public class SettingsView extends StackPane {
 
 
 
-        saveButton = CreateHelper.createButton("Save Game",  new String[]{"green-button", "default-button"});
         exitButton = CreateHelper.createButton("Menu", new String[]{"red-button", "default-button"});
-        restartButton = CreateHelper.createButton("Restart", new String[]{"red-button", "default-button"});
-        resumeButton = CreateHelper.createButton("Resume", new String[]{"blue-button", "default-button"});
+        restartButton = CreateHelper.createButton("Restart", new String[]{"blue-button", "default-button"});
+        resumeButton = CreateHelper.createButton("Resume", new String[]{"green-button", "default-button"});
         this.getStyleClass().add("settings-screen");
 
 
@@ -53,7 +50,7 @@ public class SettingsView extends StackPane {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
         hbox.setPadding(new Insets(10, 10, 10, 10));
-        hbox.getChildren().addAll( exitButton, saveButton ,resumeButton, restartButton);
+        hbox.getChildren().addAll( exitButton ,resumeButton, restartButton);
         hbox.setAlignment(Pos.BOTTOM_CENTER);
 
         pausedLabel.setFont(FontHelper.getExtraLargeFont());
@@ -74,10 +71,6 @@ public class SettingsView extends StackPane {
 
      Button getResumeButton() {
         return resumeButton;
-    }
-
-     Button getSaveButton() {
-        return saveButton;
     }
 
 }

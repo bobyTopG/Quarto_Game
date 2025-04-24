@@ -106,7 +106,6 @@
     -fx-text-alignment: center;
 }
 .timer-container{
-    -fx-padding: 0 0 15px 0;
 }
 
 .game-button{
