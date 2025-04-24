@@ -1,9 +1,7 @@
 package be.kdg.quarto.view.ChooseAIView;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.model.Human;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
@@ -24,7 +22,7 @@ public class ChooseAIPresenter {
     public ChooseAIPresenter(ChooseAIView view) {
         this.view = view;
         List<Image> images = findAICharacterImagesForButtons();
-        String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
+        String pathToNotFound = "/images/aiCharacters/100px/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
         view.initialise(images, aiCharacters.getCharacters(), notFoundImage);
         updateView();
@@ -35,7 +33,7 @@ public class ChooseAIPresenter {
         List<Player> AiList = aiCharacters.getCharacters();
         List<Image> images = new ArrayList<>();
         for (Player ai : AiList) {
-            String imagePath = "/images/aiCharacters/Boxed" + ai.getName() + ".png";
+            String imagePath = "/images/aiCharacters/100px/Boxed" + ai.getName() + ".png";
             Image image = new Image(getClass().getResource(imagePath).toString());
             images.add(image);
         }
@@ -75,7 +73,7 @@ public class ChooseAIPresenter {
 
         view.getSelectButton().setOnMouseClicked(event -> {
             if (aiSelected != null) {
-                GameView gameView = new GameView();
+                GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), aiSelected.getName());
                 GameSession model = new GameSession(
                         AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
                         aiSelected , view.getTurnButton().isSelected()? null : aiSelected
@@ -91,5 +89,17 @@ public class ChooseAIPresenter {
 
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
+    }
+    private Image getOpponentImage(){
+        String imagePath = "/images/aiCharacters/60px/Boxed" + aiSelected.getName() + ".png";
+        Image image = new Image(getClass().getResource(imagePath).toString());
+        return image;
+    }
+
+    private Image getPlayerImage(){
+        String imagePath = "/images/aiCharacters/60px/BoxedPlayer.png";
+        Image image = new Image(getClass().getResource(imagePath).toString());
+        return image;
+
     }
 }

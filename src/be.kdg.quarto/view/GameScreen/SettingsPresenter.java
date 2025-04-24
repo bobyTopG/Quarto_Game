@@ -25,7 +25,7 @@ public class SettingsPresenter {
             // Create a new Game instance with the same players from the current game
             GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent() , model.getOpponent());
             // Create a new view (this will properly initialize all UI components)
-            GameView newView = new GameView();
+            GameView newView = new GameView(gamePresenter.getView().getPlayerImage(), gamePresenter.getView().getOpponentImage(), gamePresenter.getView().getOpponentName());
 
             // Replace the entire scene root with the new view
             view.getScene().setRoot(newView);

@@ -26,6 +26,15 @@ public class GameView extends StackPane {
     Button choosePieceConfirmation;
     Button backButton;
 
+
+    private final HBox VSHBox = new HBox();
+    private VBox player1 = new VBox();
+    private final Image playerImage;
+    private final VBox player2 = new VBox();
+    private final Image opponentImage;
+    private Label VSLabel = CreateHelper.createLabel("VS", "title");
+
+
     private final VBox selectedPieceContainer = new VBox();
     private final ImageView selectedPieceImage = new ImageView();
 
@@ -53,7 +62,12 @@ public class GameView extends StackPane {
     private final SettingsView settingsView = new SettingsView();
     private final StatisticsView statisticsView = new StatisticsView();
 
-    public GameView() {
+    private final String opponentName;
+
+    public GameView(Image player, Image opponent, String opponentName) {
+        playerImage = player;
+        opponentImage = opponent;
+        this.opponentName = opponentName;
         initialiseNodes();
         layoutNodes();
     }
@@ -72,8 +86,48 @@ public class GameView extends StackPane {
         createSettingsButton();
 
         createLoadingButton();
+        
+        createVSHBox();
         // === Overlay (settings screen) ===
         createSettingsScreen();
+    }
+
+    private void createVSHBox() {
+        ImageView player1Image = new ImageView(playerImage);
+        player1Image.setFitHeight(70);
+        player1Image.setFitWidth(70);
+        Label playerLabel =  CreateHelper.createLabel("You","timer-label");
+
+        player1.setAlignment(Pos.CENTER);
+        player1.getChildren().addAll(player1Image,playerLabel);
+
+
+
+
+
+        ImageView player2Image = new ImageView(opponentImage);
+        player2Image.setFitHeight(70);
+        player2Image.setFitWidth(70);
+        Label opponentLabel =  CreateHelper.createLabel(opponentName,"timer-label");
+
+
+        player2.getChildren().addAll(player2Image,opponentLabel);
+        player2.setAlignment(Pos.CENTER);
+
+
+        VBox VSBox = new VBox();
+        VSBox.getChildren().addAll(VSLabel);
+        VSBox.setAlignment(Pos.CENTER);
+
+        VSHBox.setAlignment(Pos.CENTER);
+        VSHBox.setSpacing(15);
+        VSHBox.getChildren().addAll(player1,VSBox, player2);
+
+
+        VSHBox.setPadding(new Insets(20,0,0,0));
+        VSHBox.setMaxHeight(200);
+        VSHBox.setMinHeight(0);
+        VSHBox.setPrefHeight(200);
     }
 
     private void createLoadingButton() {
@@ -91,6 +145,8 @@ public class GameView extends StackPane {
         HBox bottomBox = new HBox(buttonsBox, selectedPieceContainer);
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setSpacing(25);
+        bottomBox.setPadding(new Insets(0,0,20,0));
+        bottomBox.setMinHeight(150);
 
 
         Region vSpacer = new Region();
@@ -101,7 +157,7 @@ public class GameView extends StackPane {
         timerContainer.getChildren().addAll(timer, timerLabel);
         timerContainer.setAlignment(Pos.CENTER);
 
-        leftBox = new VBox(vSpacer, timerContainer, bottomBox);
+        leftBox = new VBox(VSHBox, timerContainer, bottomBox);
         leftBox.setSpacing(15);
         leftBox.setPadding(new Insets(10, 0, 20, 20));
         leftBox.setAlignment(Pos.CENTER);
@@ -114,7 +170,7 @@ public class GameView extends StackPane {
         HBox topBar = new HBox(turnStack,  hSpacer, helpButton, settingsButton);
 
         topBar.setSpacing(10);
-        topBar.setPadding(new Insets(10));
+        topBar.setPadding(new Insets(15,10,-10,10));
 
         root.setTop(topBar);
 
@@ -319,15 +375,25 @@ public class GameView extends StackPane {
     }
     GridPane getBoardGrid() { return boardGrid; }
 
-    public Label getQuartoText() {
+    Label getQuartoText() {
         return quartoText;
     }
-    public ToggleButton getHelpButton() {
+    ToggleButton getHelpButton() {
         return helpButton;
     }
 
-    public ProgressBar getLoadingBar() {
+    ProgressBar getLoadingBar() {
         return loadingBar;
+    }
+    public Image getOpponentImage(){
+        return opponentImage;
+    }
+    public Image getPlayerImage(){
+        return playerImage;
+    }
+
+    public String getOpponentName(){
+        return opponentName;
     }
 
 }
