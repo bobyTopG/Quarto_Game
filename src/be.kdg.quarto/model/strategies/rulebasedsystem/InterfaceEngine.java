@@ -40,7 +40,6 @@ public class InterfaceEngine {
 
         if (currentFacts.factsObserved()) {
             for (int attempt = 0; attempt < currentRules.numberOfRules(); attempt++) {
-                currentFacts.setFactsEvolved(false);
 
                 for (int i = 0; i < currentRules.numberOfRules(); i++) {
                     if (!ruleFired && currentRules.checkConditionRule(i, currentFacts)) {
