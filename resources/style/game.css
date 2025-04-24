@@ -70,8 +70,8 @@
 
 .choose-piece-button-box{
     -fx-spacing: 10px;
-    -fx-padding: 10px;
-    -fx-alignment: center;
+    -fx-padding: 10px 10px 0 10px;
+    -fx-alignment: bottom-left;
 }
 
 .select-grid{

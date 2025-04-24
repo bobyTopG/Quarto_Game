@@ -17,7 +17,7 @@ public class GameView extends StackPane {
     private final BorderPane root = new BorderPane();
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
-    private Label quartoText = new Label();
+    private Label quartoText;
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
@@ -56,7 +56,6 @@ public class GameView extends StackPane {
 
     private final Button choosePiece = CreateHelper.createButton("Choose Piece", new String[]{"orange-button","game-button"});
     private final Button placePiece = CreateHelper.createButton("Place Piece", new String[]{ "blue-button", "game-button"});
-
 
     private final StackPane overlayContainer = new StackPane();
     private final SettingsView settingsView = new SettingsView();
@@ -133,7 +132,7 @@ public class GameView extends StackPane {
     private void createLoadingButton() {
 
         loadingBar.getStyleClass().add("custom-progress-bar");
-
+        turnStack.setMaxHeight(65);
         turnStack.getChildren().addAll(loadingBar, turn);
     }
 
@@ -145,7 +144,6 @@ public class GameView extends StackPane {
         HBox bottomBox = new HBox(buttonsBox, selectedPieceContainer);
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setSpacing(25);
-        bottomBox.setPadding(new Insets(0,0,20,0));
         bottomBox.setMinHeight(150);
 
 
@@ -155,48 +153,63 @@ public class GameView extends StackPane {
 
 
         timerContainer.getChildren().addAll(timer, timerLabel);
+        timerContainer.setMaxHeight(200);
         timerContainer.setAlignment(Pos.CENTER);
+        Region topSpacer = new Region();
+        topSpacer.setPrefHeight(70);
+        topSpacer.setMinHeight(70);
 
-        leftBox = new VBox(VSHBox, timerContainer, bottomBox);
+        leftBox = new VBox(topSpacer,VSHBox, timerContainer, bottomBox);
+        BorderPane.setAlignment(leftBox, Pos.CENTER_LEFT);
+
+        leftBox.setMaxWidth(400);
         leftBox.setSpacing(15);
-        leftBox.setPadding(new Insets(10, 0, 20, 20));
+        leftBox.setPadding(new Insets(10, 0, 10, 20));
         leftBox.setAlignment(Pos.CENTER);
+
+
+
+
+
+
+        BorderPane.setMargin(rotatedBoardPane, new Insets(25, 0, 0, 20));
+
+        root.setLeft(leftBox);
+
+        root.setCenter(rotatedBoardPane);
+
+        quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
+
+
 
 
         Region hSpacer = new Region();
         // to make a separator from all the space left
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
+        VBox vBox = new VBox();
+        HBox buttonBox = new HBox(helpButton, settingsButton);
+        buttonBox.setSpacing(10);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-        HBox topBar = new HBox(turnStack,  hSpacer, helpButton, settingsButton);
+        vBox.setSpacing(10);
+
+        vBox.getChildren().addAll(buttonBox,quartoText);
+        vBox.setAlignment(Pos.CENTER_RIGHT);
+        HBox topBar = new HBox(turnStack,  hSpacer, vBox);
 
         topBar.setSpacing(10);
+        topBar.setMaxHeight(100);
         topBar.setPadding(new Insets(15,10,-10,10));
 
-        root.setTop(topBar);
-
-        root.setLeft(leftBox);
-
-        //to move the board a bit up
-        BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
-
-
-        root.setCenter(rotatedBoardPane);
-        quartoText.setManaged(false);
-        quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
-        BorderPane.setMargin(quartoText, new Insets(0, 50, 0, -200));
-
-
-        VBox quartoBox = new VBox( quartoText , quarto);
+        VBox quartoBox = new VBox(quarto);
         quartoBox.setAlignment(Pos.BOTTOM_CENTER);
-        quartoBox.setSpacing(270);
-        //creating margin not to change the pos of other elements
         BorderPane.setMargin(quartoBox, new Insets(-15, 15, 15, -15));
 
         root.setRight(quartoBox);
         choosePiece.toFront();
 
-
-        this.getChildren().addAll(root,overlayContainer);
+        this.setAlignment(Pos.TOP_CENTER);
+        this.getChildren().addAll(root,topBar,overlayContainer);
     }
 
     private void createSettingsScreen() {
@@ -247,15 +260,17 @@ public class GameView extends StackPane {
         HBox buttonBox = new HBox(backButton, choosePieceConfirmation);
         buttonBox.getStyleClass().add("choose-piece-button-box");
 
-
         selectGrid.getStyleClass().add("select-grid");
 
 
         choosePieceBox = new VBox();
         choosePieceBox.setSpacing(10);
         choosePieceBox.setAlignment(Pos.CENTER);
-
-        choosePieceBox.getChildren().addAll(choosePieceLabel,selectGrid, buttonBox);
+        choosePieceBox.setPrefWidth(289);
+        Region vSpacer = new Region();
+        vSpacer.setMinHeight(60);
+        vSpacer.setMaxHeight(60);
+        choosePieceBox.getChildren().addAll(vSpacer,choosePieceLabel,selectGrid, buttonBox);
 
     }
 

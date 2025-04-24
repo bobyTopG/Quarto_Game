@@ -90,6 +90,8 @@ public class GamePresenter {
             updateMassage();
         });
 
+
+        //board
         for (int index = 0; index < board.size(); index++) {
             BoardCell boardCell = board.get(index);
             int finalIndex = index;
@@ -97,7 +99,7 @@ public class GamePresenter {
             boardCell.getCellVisual().setOnMouseExited(event -> boardCell.unhover());
             boardCell.getCellVisual().setOnMouseClicked(event -> onBoardCellClicked(finalIndex, boardCell));
         }
-
+        //select
         for (SelectCell selectCell : piecesToSelect) {
             selectCell.getCellVisual().setOnMouseClicked(event -> onSelectCellClicked(selectCell));
             selectCell.getCellVisual().setOnMouseEntered(event -> selectCell.hover());
@@ -129,12 +131,14 @@ public class GamePresenter {
         view.getSettings().setOnAction(event -> {
             view.showSettingsScreen();
             model.getGameTimer().pauseGame();
+            pauseAnimations();
+
             new SettingsPresenter(this, view.getSettingsView(), model);
         });
     }
 
     private void onBoardCellClicked(int index, BoardCell boardCell) {
-        if (model.getGame().getBoard().findTile(index).getPiece() == null) {
+        if (model.getGame().getBoard().findTile(index).getPiece() == null && (model.getPlayer() == model.getCurrentPlayer() || model.getOpponent().getName().equals("Friend"))) {
             if (selectedTile != null) {
                 if (selectedTile.equals(boardCell)) {
                     placePiece();
@@ -151,9 +155,21 @@ public class GamePresenter {
     }
 
     private void onSelectCellClicked(SelectCell selectCell) {
-        if (selectedPiece != null) selectedPiece.deselect();
-        selectedPiece = selectCell;
-        selectCell.select();
+        if(selectCell.getPiece() != null){
+
+            //double click
+            if(selectCell == selectedPiece){
+                confirmPieceSelection();
+                engine.determineFacts(model);
+                engine.applyRules(model.getGame(), move);
+                updateView();
+
+                return;
+            }
+            if (selectedPiece != null) selectedPiece.deselect();
+            selectedPiece = selectCell;
+            selectCell.select();
+        }
     }
 
     private void placePiece() {
@@ -193,41 +209,8 @@ public class GamePresenter {
             handleAiTurn();
         }
     }
-
-    private void handleAiTurn() {
-        Random rand = new Random();
-        float placeDuration = rand.nextFloat(1.5f) + 1;
-        float pickDuration = rand.nextFloat(1.5f) + 1;
-
-        animateLoadingBar(placeDuration + pickDuration);
-
-        PauseTransition placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
-        updateView();
-
-        placePieceDelay.setOnFinished(event -> {
-            model.placePieceAi();
-            engine.determineFacts(model);
-            engine.applyRules(model.getGame(), move);
-            if (model.isCallingQuarto()) {
-                handleQuarto();
-            }
-            updateView();
-
-            model.handlePendingWin();
-
-            PauseTransition pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
-            pickPieceDelay.setOnFinished(e -> {
-                model.pickPieceAi();
-                engine.determineFacts(model);
-                engine.applyRules(model.getGame(), move);
-                updateView();
-            });
-            pickPieceDelay.play();
-        });
-
-        placePieceDelay.play();
-    }
-
+    PauseTransition placePieceDelay;
+    PauseTransition pickPieceDelay;
     private void handleQuarto() {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
@@ -332,32 +315,111 @@ public class GamePresenter {
         }
     }
 
+
+
+    //Loading Bar Logic
+    Timeline loadingBarTimer;
+    private double remainingLoadingDuration = 0;
+    private double loadingProgressBeforePause = 0;
+
+
+    private void handleAiTurn() {
+
+        Random rand = new Random();
+        float placeDuration = rand.nextFloat(1.5f) + 1;
+        float pickDuration = rand.nextFloat(1.5f) + 1;
+
+        animateLoadingBar(placeDuration + pickDuration);
+
+        placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
+        pickPieceDelay = null;
+        updateView();
+
+        placePieceDelay.setOnFinished(event -> {
+            model.placePieceAi();
+            engine.determineFacts(model);
+            engine.applyRules(model.getGame(), move);
+            if (model.isCallingQuarto()) {
+                handleQuarto();
+            }
+            updateView();
+
+            model.handlePendingWin();
+
+            pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
+            pickPieceDelay.setOnFinished(e -> {
+                model.pickPieceAi();
+                engine.determineFacts(model);
+                engine.applyRules(model.getGame(), move);
+                updateView();
+            });
+            pickPieceDelay.play();
+        });
+
+        placePieceDelay.play();
+    }
+
+
     private void animateLoadingBar(double durationInSeconds) {
-        // Reset the loading bar to 0
+        remainingLoadingDuration = durationInSeconds;
+        loadingProgressBeforePause = 0;
         view.getLoadingBar().setProgress(0);
 
-        // Create a timeline that will update the progress bar over the duration
-        Timeline timeline = new Timeline();
+        createAndStartLoadingAnimation(durationInSeconds);
+    }
 
-        // We'll update the progress bar 60 times per second for smooth animation
-        int totalFrames = (int) (durationInSeconds * 60);
-        double incrementPerFrame = 1.0 / totalFrames;
+    private void createAndStartLoadingAnimation(double duration) {
 
-        // Create the keyframes for the animation
+        loadingBarTimer = new Timeline();
+        int totalFrames = (int) (duration * 60);
+
         for (int i = 0; i <= totalFrames; i++) {
             final int frameNumber = i;
+
+            //sets a keyframe to when the loading bar should change its progress
             KeyFrame keyFrame = new KeyFrame(
-                    Duration.seconds(durationInSeconds * i / totalFrames),
-                    event -> view.getLoadingBar().setProgress((double) frameNumber / totalFrames)
+                    Duration.seconds(duration * i / totalFrames),
+                    event -> view.getLoadingBar().setProgress(
+                            loadingProgressBeforePause + ((double) frameNumber / totalFrames) * (1 - loadingProgressBeforePause))
             );
-            timeline.getKeyFrames().add(keyFrame);
+            loadingBarTimer.getKeyFrames().add(keyFrame);
         }
 
-        // Start the animation
-        timeline.play();
+        loadingBarTimer.play();
     }
 
     public GameView getView() {
         return view;
+    }
+    public void resumeTimer() {
+        if (remainingLoadingDuration > 0) {
+            createAndStartLoadingAnimation(remainingLoadingDuration);
+        }
+
+        if (placePieceDelay != null) {
+            placePieceDelay.play();
+        }
+        if(pickPieceDelay != null){
+            pickPieceDelay.play();
+        }
+    }
+    public void pauseAnimations() {
+        if (loadingBarTimer != null) {
+            // Save the current progress before pausing
+            loadingProgressBeforePause = view.getLoadingBar().getProgress();
+
+            // Calculate remaining duration based on current progress
+            remainingLoadingDuration = remainingLoadingDuration * (1 - loadingProgressBeforePause);
+
+            // Now pause the timeline
+            loadingBarTimer.pause();
+        }
+
+        if (placePieceDelay != null) {
+            placePieceDelay.pause();
+        }
+        if(pickPieceDelay != null){
+            pickPieceDelay.pause();
+        }
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ChooseAIPresenter {
     private final ChooseAIView view;
-    private Player aiSelected;
+    private Player opponentSelected;
     private AICharacters aiCharacters = new AICharacters();
 
     public ChooseAIPresenter(ChooseAIView view) {
@@ -49,7 +49,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                aiSelected = aiCharacters.getCharacters().get(id);
+                opponentSelected = aiCharacters.getCharacters().get(id);
             });
             count++;
         }
@@ -59,7 +59,7 @@ public class ChooseAIPresenter {
             notFoundButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(-1);
                 view.getSelectButton().setDisable(true);
-                aiSelected = null;
+                opponentSelected = null;
             });
         }
 
@@ -72,11 +72,11 @@ public class ChooseAIPresenter {
 
 
         view.getSelectButton().setOnMouseClicked(event -> {
-            if (aiSelected != null) {
-                GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), aiSelected.getName());
+            if (opponentSelected != null) {
+                GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), opponentSelected.getName());
                 GameSession model = new GameSession(
                         AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
-                        aiSelected , view.getTurnButton().isSelected()? null : aiSelected
+                        opponentSelected, view.getTurnButton().isSelected()? null : opponentSelected
                 );
 
 
@@ -91,7 +91,7 @@ public class ChooseAIPresenter {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
     }
     private Image getOpponentImage(){
-        String imagePath = "/images/aiCharacters/60px/Boxed" + aiSelected.getName() + ".png";
+        String imagePath = "/images/aiCharacters/60px/Boxed" + opponentSelected.getName() + ".png";
         Image image = new Image(getClass().getResource(imagePath).toString());
         return image;
     }

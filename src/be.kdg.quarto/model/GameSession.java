@@ -234,7 +234,6 @@ public class GameSession {
         if (opponent instanceof Ai aiOpponent) return aiOpponent;
         return null;
     }
-
     public Player getOpponent() {
         return opponent;
     }
@@ -245,9 +244,5 @@ public class GameSession {
 
     public GameTimer getGameTimer() {
         return gameTimer;
-    }
-
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 }
