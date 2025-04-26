@@ -19,6 +19,8 @@ public class DbConnection {
         isConnecting = true;
 
         Thread connectionThread = new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+
             try {
                 connection = DriverManager.getConnection("jdbc:postgresql://10.134.178.22:5432/game", "game", "7sur7");
                 Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
@@ -27,10 +29,21 @@ public class DbConnection {
             }
 
             final boolean connectionResult = connectedToDb();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            long remainingDelay = 1950 - elapsedTime;
 
+            // If connection was faster than 1950ms, wait for the remaining time
+            if (remainingDelay > 0) {
+                try {
+                    Thread.sleep(remainingDelay);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             Platform.runLater(() -> {
                 isConnecting = false;
                 if (callback != null) {
+
                     callback.onConnectionComplete(connectionResult);
                 }
             });

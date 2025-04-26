@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.ChooseAIView;
+package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Ai;
@@ -31,14 +31,12 @@ public class ChooseAIView extends BorderPane {
     private List<Button> notFoundButtons = new ArrayList<>();
     private VBox mainVBox, characterVBox;
 
-    private boolean isOnline;
 
     private ImageView selectedCharacter;
 
-    public ChooseAIView(boolean online) {
+    public ChooseAIView() {
         initialiseNodes();
         layoutNodes();
-        this.isOnline = online;
 
     }
     private void initialiseNodes() {
@@ -46,7 +44,7 @@ public class ChooseAIView extends BorderPane {
         selectButton = CreateHelper.createButton("Select", new String[]{"select-button","action-button"});
         chooseAILabel = new Label("Choose opponent :");
         nameLabel = new Label("");
-        descriptionLabel = new Label("");
+        descriptionLabel = CreateHelper.createLabel("","character-label");
         difficultyHolderLabel = new Label("");
         difficultyLabel = new Label("");
         difficultyHBox = new HBox();
@@ -170,7 +168,7 @@ public class ChooseAIView extends BorderPane {
         this.AiCharacters = characters;
         this.notFoundImage = notFoundImage;
 
-
+        selectButton.disableProperty().set(true);
         // create a Hbox of buttons with the "amount" amount
         HBox AICharactersHBox = generateButtonsForAI(4);
         mainVBox.getChildren().add(1, AICharactersHBox);

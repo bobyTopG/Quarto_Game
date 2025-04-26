@@ -11,6 +11,7 @@ import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
+import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
@@ -129,12 +130,13 @@ public class GamePresenter {
 
         view.getQuarto().setOnMouseClicked(event -> handleQuarto());
         view.getSettings().setOnAction(event -> {
-            view.showSettingsScreen();
             model.getGameTimer().pauseGame();
             pauseAnimations();
-
-            new SettingsPresenter(this, view.getSettingsView(), model);
+            view.showSettingsScreen();
         });
+
+        addEventHandlersForWin();
+        addEventHandlersForSettings();
     }
 
     private void onBoardCellClicked(int index, BoardCell boardCell) {
@@ -171,6 +173,29 @@ public class GamePresenter {
             selectCell.select();
         }
     }
+
+    private void addEventHandlersForWin(){
+        view.getWinView().getRestartButton().setOnAction(event -> {
+            restartGame();
+            closeSettings();
+
+        });
+    }
+
+    private void addEventHandlersForSettings() {
+        view.getSettingsView().getRestartButton().setOnAction(event -> {
+            restartGame();
+            closeSettings();
+
+        });
+
+        view.getSettingsView().getResumeButton().setOnAction(event -> {
+            resumeTimer();
+            model.getGameTimer().resumeGame();
+            closeSettings();
+        });
+    }
+
 
     private void placePiece() {
         if (selectedTile == null) return;
@@ -214,19 +239,15 @@ public class GamePresenter {
     private void handleQuarto() {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
-            view.showStatisticsScreen();
-            view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
-                StartView startView = new StartView();
-                view.getScene().setRoot(startView);
-                new StartPresenter(startView);
-            });
-            try {
-                new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
-            } catch (SQLException e) {
-                System.out.println("Error loading statistics: " + e.getMessage());
+            if(model.isOnline){
+                loadStatisticsView();
+            }else{
+                view.showWinScreen();
+
             }
         }
     }
+
 
     public void updateView() {
         updateMassage();
@@ -260,7 +281,19 @@ public class GamePresenter {
             view.getSelectedPieceImage().setImage(null);
         }
     }
-
+    private void loadStatisticsView(){
+        view.showStatisticsScreen();
+        view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
+            StartView startView = new StartView();
+            view.getScene().setRoot(startView);
+            new StartPresenter(startView);
+        });
+        try {
+            new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
+        } catch (SQLException e) {
+            System.out.println("Error loading statistics: " + e.getMessage());
+        }
+    }
     private void updateBoard() {
         for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
             Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
@@ -298,7 +331,7 @@ public class GamePresenter {
                 view.getLoadingBar().setOpacity(1);
                 view.getChoosePiece().setDisable(true);
                 view.getPlacePiece().setDisable(true);
-                view.getTurn().setText(view.getOpponentName() + " is thinking...");
+                view.getTurn().setText(model.getOpponent().getName() + " is thinking...");
             } else {
                 view.getTurn().setStyle("-fx-background-color: rgb(218,66,66)");
 
@@ -421,5 +454,21 @@ public class GamePresenter {
         if(pickPieceDelay != null){
             pickPieceDelay.pause();
         }
+    }
+    private void closeSettings() {
+        view.getOverlayContainer().setVisible(false);
+    }
+
+    private void restartGame(){
+        // Create a new Game instance with the same players from the current game
+        GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent() , model.getOpponent(), model.isOnline);
+        // Create a new view (this will properly initialize all UI components)
+        GameView newView = new GameView(view.getPlayerImage(), view.getOpponentImage(), model.getOpponent().getName());
+
+        // Replace the entire scene root with the new view
+        view.getScene().setRoot(newView);
+
+        // Create a new presenter with the new model and new view
+        new GamePresenter(newGameSession, newView);
     }
 }

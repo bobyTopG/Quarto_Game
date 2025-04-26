@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.ChooseAIView;
+package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.model.GameSession;
@@ -18,13 +18,16 @@ public class ChooseAIPresenter {
     private final ChooseAIView view;
     private Player opponentSelected;
     private AICharacters aiCharacters = new AICharacters();
+    private boolean isOnline;
 
-    public ChooseAIPresenter(ChooseAIView view) {
+    public ChooseAIPresenter(ChooseAIView view, boolean online) {
         this.view = view;
         List<Image> images = findAICharacterImagesForButtons();
         String pathToNotFound = "/images/aiCharacters/100px/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
         view.initialise(images, aiCharacters.getCharacters(), notFoundImage);
+        this.isOnline = online;
+
         updateView();
         addEventHandlers();
     }
@@ -74,12 +77,12 @@ public class ChooseAIPresenter {
         view.getSelectButton().setOnMouseClicked(event -> {
             if (opponentSelected != null) {
                 GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), opponentSelected.getName());
-                GameSession model = new GameSession(
-                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
-                        opponentSelected, view.getTurnButton().isSelected()? null : opponentSelected
-                );
-
-
+                GameSession model;
+                //if offline play as guest
+                    model = new GameSession(
+                            (AuthHelper.isLoggedIn() && isOnline) ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
+                            opponentSelected, view.getTurnButton().isSelected()? null : opponentSelected, isOnline
+                    );
 
                 view.getScene().setRoot(gameView);
                 new GamePresenter(model, gameView);

@@ -6,8 +6,8 @@ import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseAIPresenter;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseAIView;
 import be.kdg.quarto.view.auth.LoginView.LoginPresenter;
 import be.kdg.quarto.view.auth.LoginView.LoginView;
 import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
@@ -29,8 +29,7 @@ public class StartPresenter {
     private Timer animationTimer;
     private boolean isLoading = true;
 
-
-
+    //simple-constructor
     public StartPresenter(StartView view) {
 
         this.view = view;
@@ -42,13 +41,29 @@ public class StartPresenter {
         Image boardImage = new Image(pathToBoard);
         view.loadBoardImage(boardImage);
 
-
-        DbConnection.startConnection(this::checkConnectionInBackground);
-        startConnectingAnimation();
-
+        checkConnectionInBackground(connectedToDb());
 
         updateView();
+    }
+    //first time-load constructor
+    public StartPresenter(StartView view, boolean firstTime) {
 
+        this.view = view;
+
+        addEventHandlers();
+
+
+        String pathToBoard = "/images/Example_Board.png";
+        Image boardImage = new Image(pathToBoard);
+        view.loadBoardImage(boardImage);
+
+        if(firstTime) {
+            DbConnection.startConnection(this::checkConnectionInBackground);
+            startConnectingAnimation();
+        }else{
+            checkConnectionInBackground(connectedToDb());
+        }
+        updateView();
 
     }
 
@@ -138,11 +153,12 @@ public class StartPresenter {
 
     }
     private void goToChooseAIScreen(boolean online) {
-        ChooseAIView chooseAIView = new ChooseAIView(online);
+        ChooseAIView chooseAIView = new ChooseAIView();
         view.getScene().setRoot(chooseAIView);
-        new ChooseAIPresenter(chooseAIView);
+        new ChooseAIPresenter(chooseAIView, online);
     }
     private void checkConnectionInBackground(boolean isConnected) {
+
         if (animationTimer != null) {
             animationTimer.cancel();
             animationTimer = null;

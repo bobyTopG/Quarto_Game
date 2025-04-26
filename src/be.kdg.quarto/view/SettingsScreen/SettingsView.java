@@ -1,4 +1,4 @@
-package be.kdg.quarto.view.GameScreen;
+package be.kdg.quarto.view.SettingsScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;
@@ -26,18 +26,11 @@ public class SettingsView extends StackPane {
     }
 
     private void initialiseNodes() {
-        exitButton = new Button("Exit");
-        restartButton = new Button("Restart");
-        resumeButton = new Button("Resume");
         pausedLabel =  CreateHelper.createLabel("PAUSE","paused-label");
-
-
-
         exitButton = CreateHelper.createButton("Menu", new String[]{"red-button", "default-button"});
         restartButton = CreateHelper.createButton("Restart", new String[]{"blue-button", "default-button"});
         resumeButton = CreateHelper.createButton("Resume", new String[]{"green-button", "default-button"});
         this.getStyleClass().add("settings-screen");
-
 
     }
 
@@ -65,11 +58,11 @@ public class SettingsView extends StackPane {
         return exitButton;
     }
 
-     Button getRestartButton() {
+     public Button getRestartButton() {
         return restartButton;
     }
 
-     Button getResumeButton() {
+     public Button getResumeButton() {
         return resumeButton;
     }
 

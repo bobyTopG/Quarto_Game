@@ -19,3 +19,12 @@
     -fx-alignment: center;
 }
 
+.big-button{
+    -fx-border-radius: 40px;
+    -fx-background-radius: 40px;
+    -fx-min-height: 80px;
+    -fx-min-width: 160px;
+    -fx-border-width: 6px;
+    -fx-font-size:40px;
+
+}

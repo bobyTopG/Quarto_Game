@@ -73,7 +73,7 @@
 }
 
 .table-cell {
-    -fx-text-fill: black;
+    -fx-text-fill: #232323;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-padding: 5px;
@@ -113,7 +113,7 @@
 }
 
 .chart-legend-item-text {
-    -fx-fill: black;
+    -fx-fill: #232323;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }

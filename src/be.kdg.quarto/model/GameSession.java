@@ -18,18 +18,22 @@ public class GameSession {
     private final GameTimer gameTimer;
     private int gameSessionId;
 
-
-    public GameSession(Player player, Player opponent , Player currentPlayer) {
+    public boolean isOnline;
+    public GameSession(Player player, Player opponent , Player currentPlayer, boolean online) {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
+        this.isOnline = online;
+
         startTime = new Date();
         this.currentPlayer = currentPlayer == null ? player : opponent;
         gameTimer = new GameTimer(this.game);
         game.startNewMove(this.currentPlayer);
 
-        saveGameSessionToDb();
 
+        if(isOnline) {
+            saveGameSessionToDb();
+        }
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
@@ -49,9 +53,11 @@ public class GameSession {
             if (game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                saveMoveToDb(game.getCurrentMove());
+                if(isOnline)
+                    saveMoveToDb(game.getCurrentMove());
             }
-            updateGameSession(currentPlayer.getId());
+            if(isOnline)
+                updateGameSession(currentPlayer.getId());
         }
     }
 
@@ -99,7 +105,8 @@ public class GameSession {
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
         game.pickPieceIntoMove();
-        saveMoveToDb(game.getCurrentMove());
+        if(isOnline)
+            saveMoveToDb(game.getCurrentMove());
 
         game.endMove();
         switchTurns();

@@ -13,6 +13,10 @@
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
     -fx-alignment: center;
+    -fx-min-width: 500px;
+    -fx-max-width: 500px;
+    -fx-min-height: 500px;
+    -fx-max-height: 500px;
     -fx-padding: 20px 130px 20px 20px;
 }
 .ai-characters-hbox{
@@ -35,6 +39,11 @@
                 -fx-scale-y 1s ease; /* Add this line */
 
 }
+
+.character-label{
+    -fx-min-height: 120px;
+    -fx-max-height: 120px;
+}
 .ai-button:hover {
     -fx-scale-x: 1.1; /* Scale up on hover */
     -fx-scale-y: 1.1;
@@ -49,7 +58,7 @@
     -fx-font-weight: bolder;
     -fx-background-radius: 50px;
 
-    -fx-border-color: black;
+    -fx-border-color: #232323;
     -fx-border-width: 4px;
     -fx-border-radius: 50px;
     -fx-cursor: hand;

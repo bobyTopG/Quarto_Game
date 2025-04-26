@@ -42,7 +42,7 @@ public class StartView extends StackPane {
         leaderboard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
         quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
         mainHBox = CreateHelper.createHBox("root-hbox");
-        play = CreateHelper.createButton("Play", new String[]{"green-button", "default-button"});
+        play = CreateHelper.createButton("Play", new String[]{"green-button", "default-button","big-button"});
         leftVBox = CreateHelper.createVBox("start-main-vbox");
 
     }

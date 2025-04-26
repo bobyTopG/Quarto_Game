@@ -1,7 +1,11 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
+import be.kdg.quarto.view.SettingsScreen.SettingsView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
+import be.kdg.quarto.view.WinScreen.WinPresenter;
+import be.kdg.quarto.view.WinScreen.WinView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -60,6 +64,7 @@ public class GameView extends StackPane {
     private final StackPane overlayContainer = new StackPane();
     private final SettingsView settingsView = new SettingsView();
     private final StatisticsView statisticsView = new StatisticsView();
+    private final WinView winView = new WinView();
 
     private final String opponentName;
 
@@ -219,15 +224,26 @@ public class GameView extends StackPane {
         StackPane.setAlignment(settingsView, Pos.CENTER);
 
     }
-
-    void showSettingsScreen() {
+    void enableOverlay(){
         overlayContainer.setVisible(true);
         overlayContainer.getChildren().clear();
+
+    }
+    void showSettingsScreen() {
+        enableOverlay();
         overlayContainer.getChildren().add(settingsView);
+        new SettingsPresenter(settingsView);
+
+    }
+    void showWinScreen(){
+        enableOverlay();
+        overlayContainer.getChildren().add(winView);
+        new WinPresenter(winView);
+
+
     }
     void showStatisticsScreen() {
-        overlayContainer.setVisible(true);
-        overlayContainer.getChildren().clear();
+        enableOverlay();
         overlayContainer.getChildren().add(statisticsView);
     }
     private void createSelectedPieceHolder() {
@@ -343,6 +359,8 @@ public class GameView extends StackPane {
         return settingsView;
     }
 
+    WinView getWinView() { return  winView; }
+
     StatisticsView getStatisticsView() {
         return statisticsView;
     }
@@ -407,8 +425,5 @@ public class GameView extends StackPane {
         return playerImage;
     }
 
-    public String getOpponentName(){
-        return opponentName;
-    }
 
 }
