@@ -3,6 +3,7 @@ package be.kdg.quarto.view.StartScreen;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.FontHelper;
+import be.kdg.quarto.helpers.ImageHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,16 +13,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 
-public class StartView extends BorderPane {
+public class StartView extends StackPane {
 
     private Label label;
-    private Button register, login, leaderboard, quit;
+    private Button register, login, leaderboard, quit, play;
     private HBox mainHBox;
 
-    private static final int BUTTON_SPACING = 20;
-    private static final int VBOX_LEFT_PADDING = 70;
-    private static final int VBOX_TOP_PADDING = 10;
-    private static final int VBOX_BOTTOM_PADDING = 20;
+    private VBox leftVBox;
+    private BorderPane root;
+
+    private Button online;
+    private Label onlineText = CreateHelper.createLabel("","online-text");
+
     public StartView() {
         initialiseNodes();
         layoutNodes();
@@ -31,7 +34,7 @@ public class StartView extends BorderPane {
     private void initialiseNodes() {
         label = CreateHelper.createLabel("Quarto!", "main-title");
         label.setFont(FontHelper.getExtraLargeFont());
-
+        root = new BorderPane();
         ///To DO fix names to register and log in!!!
 
         register = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "New Game" : "Register",  new String[]{"green-button", "default-button"});
@@ -39,30 +42,78 @@ public class StartView extends BorderPane {
         leaderboard = CreateHelper.createButton("Leaderboard", new String[]{"blue-button", "default-button"});
         quit = CreateHelper.createButton("Quit", new String[]{"red-button", "default-button"});
         mainHBox = CreateHelper.createHBox("root-hbox");
+        play = CreateHelper.createButton("Play", new String[]{"green-button", "default-button"});
+        leftVBox = CreateHelper.createVBox("start-main-vbox");
+
     }
 
 
     private void layoutNodes() {
-        VBox vbox = CreateHelper.createVBox("start-main-vbox");
-        vbox.setPadding(new Insets(VBOX_TOP_PADDING, 10, VBOX_BOTTOM_PADDING, VBOX_LEFT_PADDING));
-        vbox.getChildren().addAll(label, register, login, leaderboard, quit);
-        vbox.setAlignment(Pos.CENTER);
 
 
-        mainHBox.getChildren().add(vbox);
+        mainHBox.getChildren().add(leftVBox);
+        //set the menu to Offline until not found connection
+        switchOnlineMode(false);
 
-        setCenter(mainHBox);
+        root.setCenter(mainHBox);
+        VBox onlineVBox =  createOnlineButton();
+        this.getChildren().addAll(root,onlineVBox);
+        this.setAlignment(Pos.TOP_RIGHT);
     }
 
-
     public void loadBoardImage(Image boardImage) {
-        StackPane stackPane = new StackPane();
+        StackPane board = new StackPane();
         ImageView boardImageView = new ImageView(boardImage); // No cast needed
         boardImageView.setFitHeight(400);
         boardImageView.setFitWidth(400);
-        stackPane.getChildren().add(boardImageView);
-        mainHBox.getChildren().add(stackPane);
+        board.getChildren().add(boardImageView);
+        mainHBox.getChildren().add(board);
     }
+    void setOnlineButtonToConnecting(){
+        onlineImageView.setImage(new Image(ImageHelper.getLoadingButtonPath()));
+        online.setGraphic(onlineImageView);
+
+    }
+
+    void switchOnlineMode(boolean online) {
+        if (online) {
+            //because the VBoxes share the buttons we need to reassign them every time
+            leftVBox.getChildren().clear();  // Clear first to prevent duplicates
+            leftVBox.getChildren().addAll(label, register, login, leaderboard, quit);
+        } else {
+            leftVBox.getChildren().clear();  // Clear first to prevent duplicates
+            leftVBox.getChildren().addAll(label, play, quit);
+        }
+    }
+    ImageView onlineImageView;
+    VBox createOnlineButton() {
+        VBox onlineBox = new VBox();
+        onlineBox.setAlignment(Pos.TOP_RIGHT);
+
+        online = new Button();
+        onlineImageView = new ImageView(new Image(ImageHelper.getLoadingButtonPath()));
+
+        // Set the image size
+        onlineImageView.setFitWidth(40);
+        onlineImageView.setFitHeight(40);
+
+        onlineImageView.setPreserveRatio(true);
+
+        // Set the image on the button
+        online.setGraphic(onlineImageView);
+        onlineBox.setPadding(new Insets(10));
+        onlineBox.setMaxWidth(150);      // Adjust to your desired size
+
+        // Remove default button styling
+        online.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+
+
+
+        onlineBox.getChildren().addAll(online, onlineText);
+        return onlineBox;
+    }
+
+
     // Getters
 
      Button getRegister() {
@@ -79,5 +130,16 @@ public class StartView extends BorderPane {
 
      Button getQuit() {
         return quit;
+    }
+
+    Button getOnline(){
+        return online;
+    }
+
+    Button getPlay() {
+        return play;
+    }
+    Label getOnlineText() {
+        return onlineText;
     }
 }

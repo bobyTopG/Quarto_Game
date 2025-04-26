@@ -251,7 +251,7 @@ public class GamePresenter {
     private void updateSelectedPiece() {
         Piece selected = model.getGame().getSelectedPiece();
         if (selected != null) {
-            Image img = new Image(ImageHelper.getPieceImage(selected));
+            Image img = new Image(ImageHelper.getPieceImagePath(selected));
             view.getSelectedPieceImage().setImage(img);
             double size = selected.getSize() == Size.SMALL ? SELECT_SMALL_PIECE_SIZE : SELECT_REGULAR_PIECE_SIZE;
             view.getSelectedPieceImage().setFitHeight(size);

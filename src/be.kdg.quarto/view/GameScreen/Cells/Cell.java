@@ -31,7 +31,7 @@ public class Cell {
         this.piece = piece;
 
         if (piece != null) {
-            ImageView imageView = new ImageView(ImageHelper.getPieceImage(piece));
+            ImageView imageView = new ImageView(ImageHelper.getPieceImagePath(piece));
             boolean isSmall = piece.getSize() == Size.SMALL;
             imageView.setFitHeight(isSmall ? SMALL_PIECE_SIZE : REGULAR_PIECE_SIZE);
             imageView.setFitWidth(isSmall ? SMALL_PIECE_SIZE : REGULAR_PIECE_SIZE);

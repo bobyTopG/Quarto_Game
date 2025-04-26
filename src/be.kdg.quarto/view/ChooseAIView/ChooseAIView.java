@@ -31,11 +31,14 @@ public class ChooseAIView extends BorderPane {
     private List<Button> notFoundButtons = new ArrayList<>();
     private VBox mainVBox, characterVBox;
 
+    private boolean isOnline;
+
     private ImageView selectedCharacter;
 
-    public ChooseAIView() {
+    public ChooseAIView(boolean online) {
         initialiseNodes();
         layoutNodes();
+        this.isOnline = online;
 
     }
     private void initialiseNodes() {

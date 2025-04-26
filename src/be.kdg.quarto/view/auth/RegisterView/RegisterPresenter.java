@@ -27,7 +27,7 @@ public class RegisterPresenter {
         });
 
         view.getContinueAsGuestButton().setOnAction(event -> {
-            ChooseAIView chooseAIView = new ChooseAIView();
+            ChooseAIView chooseAIView = new ChooseAIView(false);
             view.getScene().setRoot(chooseAIView);
             new ChooseAIPresenter(chooseAIView);
         });
