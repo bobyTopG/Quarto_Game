@@ -58,5 +58,10 @@ public class WinView extends StackPane {
     public Button getRestartButton() {
         return restartButton;
     }
+    public void setWinner(String name, boolean isOpponent) {
+        winLabel.setStyle(!isOpponent ? "-fx-background-color: #29ABE2" : "-fx-background-color: rgb(218,66,66)");
+        String text = isOpponent ? (name + " Wins!") : "You Win!";
+        winLabel.setText(text);
+    }
 
 }

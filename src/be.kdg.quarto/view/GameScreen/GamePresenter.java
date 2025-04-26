@@ -242,6 +242,7 @@ public class GamePresenter {
             if(model.isOnline){
                 loadStatisticsView();
             }else{
+                view.getWinView().setWinner(model.getCurrentPlayer().getName(), model.getCurrentPlayer() == model.getOpponent());
                 view.showWinScreen();
 
             }
