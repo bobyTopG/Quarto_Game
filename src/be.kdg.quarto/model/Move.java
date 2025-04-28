@@ -21,6 +21,17 @@ public class Move {
     public Move() {
 
     }
+
+    public Move(Player player, Piece piece, int position, int moveNumber, Date startTime, Date endTime) {
+        this.player = player;
+        this.piece = piece;
+        this.position = position;
+        this.moveNumber = moveNumber;
+        this.startTime = startTime;
+        this.endTime = endTime;
+
+    }
+
     // Pause functionality
     public void pause() {
         if (currentPauseStart == null) {
@@ -55,13 +66,14 @@ public class Move {
     }
 
     //placing the piece
-    public void placedPiece(Piece piece, int position,Date startTime) {
+    public void placedPiece(Piece piece, int position, Date startTime) {
         this.piece = piece;
         this.position = position;
         this.startTime = startTime;
     }
+
     public void placedPiece(Piece piece, int position, Date startTime, Date endTime) {
-        this.placedPiece(piece, position,startTime);
+        this.placedPiece(piece, position, startTime);
         this.endTime = endTime;
     }
 
@@ -69,11 +81,13 @@ public class Move {
     public String getWarningMessage() {
         return warningMessage;
     }
+
     //picking the piece
     public void pickedPiece(Piece piece) {
         this.selectedPiece = piece;
         this.endTime = new Date();
     }
+
     //if first move we also set the startTime
     public void pickedPiece(Piece piece, Date startTime) {
         this.startTime = startTime;
@@ -83,6 +97,7 @@ public class Move {
     public void setWarningMessage(String warningMessage) {
         this.warningMessage = warningMessage;
     }
+
     public Player getPlayer() {
         return player;
     }
