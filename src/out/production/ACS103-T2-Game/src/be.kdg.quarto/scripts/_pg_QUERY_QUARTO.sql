@@ -150,3 +150,5 @@ WHERE gs.is_completed = false
                            WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL
 -- ...
 ORDER BY 2;
+
+SELECT * FROM moves WHERE game_session_id = 112;

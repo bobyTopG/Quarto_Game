@@ -31,8 +31,8 @@ public AICharacters() {
 //        }
 
     Ai bobAi = new Ai(1, "Bob", AiLevel.EASY, new RandomPlayingStrategy(), "New to the game, understands \n the basic rules but has \n no other knowledge");
-    Ai robertAi = new Ai(1, "Robert", AiLevel.HARD, new RuleBasedStrategy(), "A robot specifically designed \n to beat you at the game.");
-    Ai catAi = new Ai(1, "Cat", AiLevel.MEDIUM, new MixedPlayingStrategy(), "A cat, \n smarter than it seems");
+    Ai robertAi = new Ai(2, "Robert", AiLevel.HARD, new RuleBasedStrategy(), "A robot specifically designed \n to beat you at the game.");
+    Ai catAi = new Ai(3, "Cat", AiLevel.MEDIUM, new MixedPlayingStrategy(), "A cat, \n smarter than it seems");
     Player friend = new Human("Friend" , null);
 
     characters.add(bobAi);
