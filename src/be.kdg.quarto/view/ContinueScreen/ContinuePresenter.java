@@ -2,6 +2,7 @@ package be.kdg.quarto.view.ContinueScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.DbConnection;
+import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.enums.AiLevel;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
@@ -76,11 +77,11 @@ public class ContinuePresenter {
     private void onGameSelected(int sessionId) {
         System.out.println("Continuing game " + sessionId + "...");
 
-//        GameView gameView = new GameView();
-//        GameSession model = new GameSession(AuthHelper.getLoggedInPlayer(), null, null, null, sessionId);
-//
-//
-//        view.getScene().setRoot(gameView);
-//        new GamePresenter(model, gameView);
+        GameSession model = new GameSession(sessionId);
+        GameView gameView = new GameView(ImageHelper.getPlayerImage(), ImageHelper.getOpponentImage(model.getOpponent()), model.getOpponent().getName());
+
+
+        view.getScene().setRoot(gameView);
+        new GamePresenter(model, gameView);
     }
 }
