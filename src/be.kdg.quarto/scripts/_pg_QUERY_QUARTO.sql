@@ -187,5 +187,6 @@ FROM moves m
 WHERE game_session_id = 13
 ORDER BY m.move_id;
 
+select * from pause_periods order by 1 desc;
 select * from game_sessions order by 1 desc;
-select * from moves where game_session_id = 43;
+select * from moves where game_session_id = 37;
