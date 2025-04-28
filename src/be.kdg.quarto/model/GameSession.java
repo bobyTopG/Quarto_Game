@@ -44,11 +44,25 @@ public class GameSession {
 
     }
 
+    public GameSession(Player player, Player opponent, Game game, Date startTime, int gameSessionId) {
+        this.game = game;
+        this.opponent = opponent;
+        this.player = player;
+        this.startTime = startTime;
+        this.gameSessionId = gameSessionId;
+        if (game.getMoves().getLast().getPlayer().equals(player)) {
+            this.currentPlayer = opponent;
+        } else {
+            this.currentPlayer = player;
+        }
+
+        this.gameTimer = new GameTimer(game, startTime);
+    }
+
 
     public void callQuarto() {
 
         if (game.getGameRules().checkWin()) {
-//            CreateHelper.createAlert("Game Over", currentPlayer.getName() + " Has won the game!", "Game Win");
             endTime = new Date();
             if (game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
@@ -57,7 +71,7 @@ public class GameSession {
                     saveMoveToDb(game.getCurrentMove());
             }
             if(isOnline)
-                updateGameSession(currentPlayer.getId());
+                updateGameSession();
         }
     }
 
@@ -137,7 +151,7 @@ public class GameSession {
 
 
         } catch (SQLException e) {
-            //e.printStackTrace();
+//            e.printStackTrace();
         }
 
         savePausePeriodsFromMoveToDb(move, moveIdTemp);
@@ -172,7 +186,7 @@ public class GameSession {
 
 
         } catch (SQLException e) {
-            //e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -191,14 +205,14 @@ public class GameSession {
             }
 
         } catch (SQLException | NullPointerException e) {
-            //e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
     // saves a finished game session to db
-    public void updateGameSession(int winnerId) {
+    public void updateGameSession() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            ps.setInt(1, winnerId);
+            ps.setInt(1, currentPlayer.getId());
             ps.setBoolean(2, true);
             java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
             ps.setTimestamp(3, sqlEndTime);
@@ -206,7 +220,7 @@ public class GameSession {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -241,6 +255,7 @@ public class GameSession {
         if (opponent instanceof Ai aiOpponent) return aiOpponent;
         return null;
     }
+
     public Player getOpponent() {
         return opponent;
     }

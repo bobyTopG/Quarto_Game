@@ -21,8 +21,6 @@ public class Game {
     private Move currentMove;
 
 
-
-
     public Game() {
         this.moves = new ArrayList<>();
 
@@ -39,14 +37,34 @@ public class Game {
         moves.add(dummyStart);
     }
 
-    public void startNewMove(Player player){
+    public Game(List<Move> moves) {
+        this.moves = moves;
+        board = new Board();
+        piecesToSelect = new Board();
+        board.createEmptyBoard();
+        piecesToSelect.generateAllPieces();
+
+        for (Move move : moves) {
+            if (move.getPiece() != null && move.getPosition() != -1) {
+                board.getTiles().get(move.getPosition()).setPiece(move.getPiece());
+            }
+            if (move.getSelectedPiece() != null) {
+                piecesToSelect.getTiles().removeIf(tile -> tile.getPiece().equals(move.getSelectedPiece()));
+            }
+        }
+
+        gameRules = new GameRules(board, moves);
+
+    }
+
+    public void startNewMove(Player player) {
         currentMove = new Move();
         addCurrentMove();
         currentMove.setPlayer(player);
-        currentMove.setMoveNumber(moves.size()-1);
+        currentMove.setMoveNumber(moves.size() - 1);
     }
 
-    public void endMove(){
+    public void endMove() {
         currentMove = null;
     }
 
@@ -61,11 +79,12 @@ public class Game {
         }
 
     }
+
     public void pickPieceIntoMove() {
         currentMove.setSelectedPiece(getSelectedPiece());
         currentMove.setEndTime(new Date());
 
-        if(board.isEmpty()){
+        if (board.isEmpty()) {
             currentMove.setStartTime(getStartTimeForMove());
         }
 
@@ -73,7 +92,7 @@ public class Game {
 
     public Date getStartTimeForMove() {
         List<Move> moves = getMoves();
-        if (moves == null || moves.isEmpty() || moves.size()-1 == 0) { // Check for null and empty
+        if (moves == null || moves.isEmpty() || moves.size() - 1 == 0) { // Check for null and empty
             return new Date();
         } else {
             return moves.get(moves.size() - 2).getEndTime();
