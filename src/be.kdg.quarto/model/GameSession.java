@@ -61,10 +61,9 @@ public class GameSession {
 
 
     public void callQuarto() {
-
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
-            if (game.getCurrentMove().getEndTime() == null) {
+            if (game.getMoves() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
                 if(isOnline)
@@ -77,7 +76,11 @@ public class GameSession {
 
     public void switchTurns() {
         currentPlayer = currentPlayer == player ? opponent : player;
-        game.startNewMove(currentPlayer);
+        if(!game.getBoard().isFull())
+        {
+            game.startNewMove(currentPlayer);
+
+        }
     }
 
     public Player getCurrentPlayer() {
@@ -89,8 +92,11 @@ public class GameSession {
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
         if (game.getSelectedPiece() != null) {
             placePiece(ai.getStrategy().selectTile());
-
-            if (ai.getStrategy().isCallingQuarto()) {
+            //force calling quarto at the last move
+            if (ai.getStrategy().isCallingQuarto() || game.getPiecesToSelect().isEmpty()) {
+                //isCallingQuarto = true;
+            }
+            if(game.getPiecesToSelect().isEmpty()){
                 isCallingQuarto = true;
             }
 
@@ -106,11 +112,8 @@ public class GameSession {
             // Picking
             try {
                 pickPiece(ai.getStrategy().selectPiece());
-            } catch (NullPointerException e) {
-                for (Move move : game.getMoves()) {
-                    System.out.println(move);
-                }
-                CreateHelper.createAlert("Game Over", "Game Over", "It is a tie!");
+            } catch (NullPointerException ignored) {
+
             }
         }
     }
@@ -118,7 +121,8 @@ public class GameSession {
     public void pickPiece(Piece piece) {
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
-        game.pickPieceIntoMove();
+        game.pickPieceIntoMove(startTime);
+
         if(isOnline)
             saveMoveToDb(game.getCurrentMove());
 
@@ -174,7 +178,6 @@ public class GameSession {
                 System.err.println(e.getMessage());
             }
         }
-
     }
 
     private void savePieceToDb(int moveId, Piece piece, int position) {
@@ -212,7 +215,7 @@ public class GameSession {
     // saves a finished game session to db
     public void updateGameSession() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            ps.setInt(1, currentPlayer.getId());
+            ps.setInt(1, isCallingQuarto ? currentPlayer.getId() : null);
             ps.setBoolean(2, true);
             java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
             ps.setTimestamp(3, sqlEndTime);
