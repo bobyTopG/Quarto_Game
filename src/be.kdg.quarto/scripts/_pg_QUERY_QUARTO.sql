@@ -114,41 +114,76 @@ order by 1 desc;
 
 -- specific unfinished game session
 SELECT gs.game_session_id,
-       p2.player_id as id2,
-       p2.name      as opponent,
-       pp.start_time
+       p2.player_id                                    as id2,
+       p2.name                                         as opponent,
+       (SELECT max(pp2.start_time)
+        FROM pause_periods pp2
+                 JOIN moves m2 on m2.move_id = pp2.move_id
+        WHERE m2.game_session_id = gs.game_session_id) as start_time
 FROM game_sessions gs
          JOIN players p2 on (gs.player_id2 = p2.player_id)
-         LEFT JOIN (select *
-                    from moves
-                    where (game_session_id, move_id) in
-                          (select game_session_id, max(move_id)
-                           from moves
-                           group by game_session_id)) m on gs.game_session_id = m.game_session_id
-         LEFT JOIN (select move_id, max(start_time) as start_time
-                    from pause_periods
-                    group by move_id) pp on m.move_id = pp.move_id
-WHERE gs.game_session_id = 112;
+         LEFT JOIN (SELECT *
+                    FROM moves
+                    WHERE (game_session_id, move_id) in (SELECT game_session_id, max(move_id)
+                                                         FROM moves
+                                                         GROUP BY game_session_id)) m
+                   on gs.game_session_id = m.game_session_id
+WHERE gs.game_session_id = 13;
+
+SELECT *
+FROM pause_periods;
 
 -- all unfinished game sessions
+-- SELECT gs.game_session_id,
+--        gs.player_id2,
+--        TO_CHAR(age((select max(pp.start_time)
+--                     from pause_periods pp
+--                     where pp.move_id = (select max(m.move_id)
+--                                         from moves m
+--                                         where m.game_session_id = gs.game_session_id)), gs.start_time),
+--                'HH24:MI:SS') as duration
+-- FROM game_sessions gs
+-- WHERE gs.is_completed = false
+--   and gs.player_id1 = 6
+-- -- can be deleted
+--   and (SELECT MAX(pp.start_time)
+--        FROM pause_periods pp
+--        WHERE pp.move_id = (SELECT MAX(m.move_id)
+--                            FROM moves m
+--                            WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL
+-- -- ...
+-- ORDER BY 2;
+
 SELECT gs.game_session_id,
        gs.player_id2,
-       TO_CHAR(age((select max(pp.start_time)
-                    from pause_periods pp
-                    where pp.move_id = (select max(m.move_id)
-                                        from moves m
-                                        where m.game_session_id = gs.game_session_id)), gs.start_time),
-               'HH24:MI:SS') as duration
+       TO_CHAR(age(latest_pause.start_time, gs.start_time), 'HH24:MI:SS') as duration
 FROM game_sessions gs
+         JOIN (SELECT m.game_session_id,
+                      max(pp.start_time) as start_time
+               FROM moves m
+                        JOIN pause_periods pp on pp.move_id = m.move_id
+               GROUP BY m.game_session_id) latest_pause on latest_pause.game_session_id = gs.game_session_id
 WHERE gs.is_completed = false
-  and gs.player_id1 = 5
--- can be deleted
-  and (SELECT MAX(pp.start_time)
-       FROM pause_periods pp
-       WHERE pp.move_id = (SELECT MAX(m.move_id)
-                           FROM moves m
-                           WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL
--- ...
-ORDER BY 2;
+  and gs.player_id1 = 6
+  and latest_pause.start_time IS NOT NULL
+ORDER BY gs.player_id2;
 
-SELECT * FROM moves WHERE game_session_id = 112;
+-- moves for continuing a game session
+SELECT m.move_id,
+       pl.player_id,
+       name,
+       start_time,
+       end_time,
+       move_nr,
+       pt.piece_type_id,
+       pt.color,
+       pt.size,
+       pt.fill,
+       pt.shape,
+       coalesce(pos, -1) as pos
+FROM moves m
+         JOIN players pl on m.player_id = pl.player_id
+         LEFT JOIN pieces pi on m.move_id = pi.move_id
+         LEFT JOIN piece_types pt on pi.piece_type_id = pt.piece_type_id
+WHERE game_session_id = 13
+ORDER BY m.move_id;
