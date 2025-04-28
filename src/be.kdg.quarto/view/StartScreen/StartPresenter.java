@@ -169,6 +169,13 @@ public class StartPresenter {
 
         setOnlineButton("");
         view.getOnlineText().setText(isConnected ? "Online" : "Offline");
+
+        if (isConnected) {
+            view.getUserText().setText(AuthHelper.isLoggedIn() ? "Logged in as:\n" + AuthHelper.getLoggedInPlayer().getName() : "Not logged in");
+        } else {
+            view.getUserText().setText("");
+        }
+
         isLoading = false;
 
         view.switchOnlineMode(isConnected);

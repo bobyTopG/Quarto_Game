@@ -19,6 +19,13 @@
     -fx-alignment: center;
 }
 
+.user-text{
+    -fx-font-size:15px;
+    -fx-alignment: center;
+    -fx-text-alignment: right;
+    -fx-font-family: "Berlin Sans FB";
+}
+
 .big-button{
     -fx-border-radius: 40px;
     -fx-background-radius: 40px;

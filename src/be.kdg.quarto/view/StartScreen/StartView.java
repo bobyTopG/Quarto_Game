@@ -24,6 +24,7 @@ public class StartView extends StackPane {
 
     private Button online;
     private Label onlineText = CreateHelper.createLabel("","online-text");
+    private Label userText = CreateHelper.createLabel("","user-text");
 
     public StartView() {
         initialiseNodes();
@@ -36,6 +37,7 @@ public class StartView extends StackPane {
         label.setFont(FontHelper.getExtraLargeFont());
         root = new BorderPane();
         ///To DO fix names to register and log in!!!
+
 
         register = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "New Game" : "Register",  new String[]{"green-button", "default-button"});
         login = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "Continue" : "Login", new String[]{"orange-button", "default-button"});
@@ -108,8 +110,7 @@ public class StartView extends StackPane {
         online.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
 
 
-
-        onlineBox.getChildren().addAll(online, onlineText);
+        onlineBox.getChildren().addAll(online, onlineText, userText);
         return onlineBox;
     }
 
@@ -141,5 +142,8 @@ public class StartView extends StackPane {
     }
     Label getOnlineText() {
         return onlineText;
+    }
+    Label getUserText() {
+        return userText;
     }
 }
