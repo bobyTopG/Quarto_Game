@@ -15,10 +15,10 @@ import java.util.Random;
 
 public class GameSession {
     private Player player;
-    private final Player opponent;
+    private Player opponent;
     private final Game game;
     private Player currentPlayer;
-    private final Date startTime;
+    private Date startTime;
     private Date endTime;
     private boolean isCallingQuarto;
     private final GameTimer gameTimer;
@@ -38,30 +38,29 @@ public class GameSession {
         game.startNewMove(this.currentPlayer);
 
 
-        if(isOnline) {
+        if (isOnline) {
             saveGameSessionToDb();
         }
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
-        if(currentPlayer == this.opponent) {
+        if (currentPlayer == this.opponent) {
             pickPieceAi();
         }
 
 
     }
 
-    public GameSession(Player opponent, int gameSessionId, Game game, Date startTime) {
+    public GameSession(int gameSessionId) {
         this.gameSessionId = gameSessionId;
-        this.game = new Game();
-        this.opponent = opponent;
         this.player = AuthHelper.getLoggedInPlayer();
-        this.startTime = startTime;
+        loadSessionFromDb();
+        this.game = new Game();
         loadMovesFromDb();
         placePiecesOnBoard();
 
         if (game.getMoves().getLast().getPlayer().equals(this.player)) {
-            this.currentPlayer = opponent;
+            this.currentPlayer = this.opponent;
         } else {
             this.currentPlayer = this.player;
         }
@@ -69,15 +68,17 @@ public class GameSession {
         this.gameTimer = new GameTimer(game, startTime);
     }
 
+
     private void loadSessionFromDb() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGameSession())) {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("id2");
-                if (id >= 4) {
+                int id = rs.getInt("opponent_id");
+                if (id <= 4) {
                     this.opponent = new Characters().getCharacters().get(id);
                 }
+                this.startTime = rs.getTimestamp("start_time");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,7 +105,7 @@ public class GameSession {
                         new Piece(color, size, fill, shape),
                         rs.getInt("pos"),
                         rs.getInt("move_nr"),
-                        rs.getDate("start_time"), rs.getDate("end_time")));
+                        rs.getTimestamp("start_time"), rs.getTimestamp("end_time")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -131,21 +132,23 @@ public class GameSession {
             if (game.getMoves() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                if(isOnline)
+                if (isOnline)
                     saveMoveToDb(game.getCurrentMove());
             }
             endGameSession(false);
             return;
         }
-        if(game.getPiecesToSelect().isEmpty()){
+        if (game.getPiecesToSelect().isEmpty()) {
             endGameSession(true);
         }
     }
-    public void endGameSession(boolean isTie){
-        if(isOnline)
+
+    public void endGameSession(boolean isTie) {
+        if (isOnline)
             updateGameSession(isTie);
 
     }
+
     public void switchTurns() {
         currentPlayer = currentPlayer == player ? opponent : player;
         if (!game.getBoard().isFull()) {
@@ -191,11 +194,12 @@ public class GameSession {
 
     public void pickPiece(Piece piece) {
         //if null that means it is either an error or AI is at last Move
-        if(piece != null){
+        if (piece != null) {
             game.setSelectedPiece(piece);
             game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
             game.pickPieceIntoMove(startTime);
-        }{
+        }
+        {
             game.getCurrentMove().setEndTime(new Date());
         }
 

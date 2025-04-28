@@ -114,11 +114,10 @@ order by 1 desc;
 
 -- specific unfinished game session
 SELECT gs.game_session_id,
-       p2.player_id                                    as id2,
-       p2.name                                         as opponent,
-       (SELECT max(pp2.start_time)
-        FROM pause_periods pp2
-                 JOIN moves m2 on m2.move_id = pp2.move_id
+       p2.player_id                                    as opponent_id,
+       (SELECT max(pp.start_time)
+        FROM pause_periods pp
+                 JOIN moves m2 on m2.move_id = pp.move_id
         WHERE m2.game_session_id = gs.game_session_id) as start_time
 FROM game_sessions gs
          JOIN players p2 on (gs.player_id2 = p2.player_id)
@@ -187,3 +186,7 @@ FROM moves m
          LEFT JOIN piece_types pt on pi.piece_type_id = pt.piece_type_id
 WHERE game_session_id = 13
 ORDER BY m.move_id;
+
+select * from pause_periods order by 1 desc;
+select * from game_sessions order by 1 desc;
+select * from moves where game_session_id = 37;
