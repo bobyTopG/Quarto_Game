@@ -92,7 +92,7 @@ FROM game_sessions;
 
 SELECT *
 FROM moves
-WHERE game_session_id = 6;
+WHERE game_session_id = 184;
 
 SELECT *
 FROM pieces
@@ -100,3 +100,55 @@ WHERE move_id >= 34;
 
 SELECT *
 FROM piece_types;
+
+--2025-04-24 17:52:54.642000
+select *
+from pause_periods;
+
+select *
+from players;
+
+select *
+from moves
+order by 1 desc;
+
+-- specific unfinished game session
+SELECT gs.game_session_id,
+       p2.player_id as id2,
+       p2.name      as opponent,
+       pp.start_time
+FROM game_sessions gs
+         JOIN players p2 on (gs.player_id2 = p2.player_id)
+         LEFT JOIN (select *
+                    from moves
+                    where (game_session_id, move_id) in
+                          (select game_session_id, max(move_id)
+                           from moves
+                           group by game_session_id)) m on gs.game_session_id = m.game_session_id
+         LEFT JOIN (select move_id, max(start_time) as start_time
+                    from pause_periods
+                    group by move_id) pp on m.move_id = pp.move_id
+WHERE gs.game_session_id = 112;
+
+-- all unfinished game sessions
+SELECT gs.game_session_id,
+       gs.player_id2,
+       TO_CHAR(age((select max(pp.start_time)
+                    from pause_periods pp
+                    where pp.move_id = (select max(m.move_id)
+                                        from moves m
+                                        where m.game_session_id = gs.game_session_id)), gs.start_time),
+               'HH24:MI:SS') as duration
+FROM game_sessions gs
+WHERE gs.is_completed = false
+  and gs.player_id1 = 5
+-- can be deleted
+  and (SELECT MAX(pp.start_time)
+       FROM pause_periods pp
+       WHERE pp.move_id = (SELECT MAX(m.move_id)
+                           FROM moves m
+                           WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL
+-- ...
+ORDER BY 2;
+
+SELECT * FROM moves WHERE game_session_id = 112;

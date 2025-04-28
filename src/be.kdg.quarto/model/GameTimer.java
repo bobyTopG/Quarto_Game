@@ -18,6 +18,12 @@ public class GameTimer {
         this.game = game;
     }
 
+    public GameTimer(Game game, Date startTime) {
+        // Initialize with current time
+        this.gameStartTime = startTime;
+        this.game = game;
+    }
+
 
     public void pauseGame() {
         if (!isPaused) {
