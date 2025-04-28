@@ -23,7 +23,7 @@ public class DbConnection {
         if (connection != null) {
             try {
                 connection.close();
-               // System.out.println("Database connection closed");
+                // System.out.println("Database connection closed");
             } catch (SQLException e) {
                 //System.out.println("Error closing connection: " + e.getMessage());
             }
@@ -96,13 +96,53 @@ public class DbConnection {
                 "WHERE game_session_id = ?;";
     }
 
+    public static String loadUnfinishedSessions() {
+        return "SELECT gs.game_session_id,\n" +
+                "       gs.player_id2,\n" +
+                "       TO_CHAR(age((select max(pp.start_time)\n" +
+                "                    from pause_periods pp\n" +
+                "                    where pp.move_id = (select max(m.move_id)\n" +
+                "                                        from moves m\n" +
+                "                                        where m.game_session_id = gs.game_session_id)), gs.start_time),\n" +
+                "               'HH24:MI:SS') as duration\n" +
+                "FROM game_sessions gs\n" +
+                "WHERE gs.is_completed = false and gs.player_id1 = 5\n" + // id must be changed to ?
+                "-- can be deleted\n" +
+                "  and (SELECT MAX(pp.start_time)\n" +
+                "       FROM pause_periods pp\n" +
+                "       WHERE pp.move_id = (SELECT MAX(m.move_id)\n" +
+                "                           FROM moves m\n" +
+                "                           WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL\n" +
+                "-- ...\n" +
+                "ORDER BY 2;";
+    }
+
+    public static String getGameSession() {
+        return "SELECT gs.game_session_id,\n" +
+                "       p2.player_id as id2,\n" +
+                "       p2.name      as opponent,\n" +
+                "       pp.start_time\n" +
+                "FROM game_sessions gs\n" +
+                "         JOIN players p2 on (gs.player_id2 = p2.player_id)\n" +
+                "         LEFT JOIN (select *\n" +
+                "                    from moves\n" +
+                "                    where (game_session_id, move_id) in\n" +
+                "                          (select game_session_id, max(move_id)\n" +
+                "                           from moves\n" +
+                "                           group by game_session_id)) m on gs.game_session_id = m.game_session_id\n" +
+                "         LEFT JOIN (select move_id, max(start_time) as start_time\n" +
+                "                    from pause_periods\n" +
+                "                    group by move_id) pp on m.move_id = pp.move_id\n" +
+                "WHERE gs.game_session_id = 112;"; // id must be changed to ?
+    }
+
     public static String setMove() {
         return "INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)\n" +
                 "VALUES (?, ?, ?, ?, ?);";
     }
 
-    public static String setPausePeriod(){
-        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n"+
+    public static String setPausePeriod() {
+        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n" +
                 "VALUES (?, ?, ?);";
     }
 

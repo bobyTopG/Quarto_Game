@@ -4,6 +4,8 @@ import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
+import be.kdg.quarto.view.ContinueScreen.ContinuePresenter;
+import be.kdg.quarto.view.ContinueScreen.ContinueView;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
 
@@ -60,7 +62,7 @@ public class StartPresenter {
             // Check if user is already logged in
             if (AuthHelper.isLoggedIn()) {
                 // User is logged in, go directly to Choose AI screen
-                goToChooseAIScreen();
+                goToContinueGame();
             } else {
                 // User is not logged in, go to Log in screen
                 LoginView loginView = new LoginView();
@@ -92,6 +94,12 @@ public class StartPresenter {
         ChooseAIView chooseAIView = new ChooseAIView();
         view.getScene().setRoot(chooseAIView);
         new ChooseAIPresenter(chooseAIView);
+    }
+
+    private void goToContinueGame() {
+        ContinueView continueView = new ContinueView();
+        view.getScene().setRoot(continueView);
+        new ContinuePresenter(continueView);
     }
 
     private void updateView() {
