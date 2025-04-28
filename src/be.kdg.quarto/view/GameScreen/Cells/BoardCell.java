@@ -7,7 +7,7 @@ import javafx.scene.shape.Circle;
 
  public class BoardCell extends Cell {
 
-     private Circle circle;
+     private final Circle circle;
      public BoardCell(int row, int col, int radius) {
          super(row,col);
          StackPane cell = new StackPane();

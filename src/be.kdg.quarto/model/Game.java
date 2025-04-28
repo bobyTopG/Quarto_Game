@@ -41,7 +41,7 @@ public class Game {
         currentMove = new Move();
         addCurrentMove();
         currentMove.setPlayer(player);
-        currentMove.setMoveNumber(moves.size() - 1);
+        currentMove.setMoveNumber(moves.size());
     }
 
     public void endMove() {
@@ -60,23 +60,18 @@ public class Game {
 
     }
 
-    public void pickPieceIntoMove() {
+    public void pickPieceIntoMove(Date gameSessionStartTime) {
         currentMove.setSelectedPiece(getSelectedPiece());
         currentMove.setEndTime(new Date());
-
+        //first Move
         if (board.isEmpty()) {
-            currentMove.setStartTime(getStartTimeForMove());
+            currentMove.setStartTime(gameSessionStartTime);
         }
 
     }
 
     public Date getStartTimeForMove() {
-        List<Move> moves = getMoves();
-        if (moves == null || moves.isEmpty() || moves.size() - 1 == 0) { // Check for null and empty
-            return new Date();
-        } else {
             return moves.get(moves.size() - 2).getEndTime();
-        }
     }
 
 

@@ -9,7 +9,7 @@ import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import be.kdg.quarto.helpers.AICharacters;
+import be.kdg.quarto.helpers.Characters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ChooseAIPresenter {
     private final ChooseAIView view;
     private Player opponentSelected;
-    private AICharacters aiCharacters = new AICharacters();
+    private Characters characters = new Characters();
     private boolean isOnline;
 
     public ChooseAIPresenter(ChooseAIView view, boolean online) {
@@ -25,7 +25,7 @@ public class ChooseAIPresenter {
         List<Image> images = findAICharacterImagesForButtons();
         String pathToNotFound = "/images/aiCharacters/100px/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
-        view.initialise(images, aiCharacters.getCharacters(), notFoundImage);
+        view.initialise(images, characters.getCharacters(), notFoundImage);
         this.isOnline = online;
 
         updateView();
@@ -33,7 +33,7 @@ public class ChooseAIPresenter {
     }
 
     private List<Image> findAICharacterImagesForButtons() {
-        List<Player> AiList = aiCharacters.getCharacters();
+        List<Player> AiList = characters.getCharacters();
         List<Image> images = new ArrayList<>();
         for (Player ai : AiList) {
             String imagePath = "/images/aiCharacters/100px/Boxed" + ai.getName() + ".png";
@@ -52,7 +52,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                opponentSelected = aiCharacters.getCharacters().get(id);
+                opponentSelected = characters.getCharacters().get(id);
             });
             count++;
         }

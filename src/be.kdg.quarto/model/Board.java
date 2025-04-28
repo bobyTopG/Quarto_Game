@@ -40,6 +40,10 @@ public class Board {
     public boolean isEmpty() {
         return tiles.stream().allMatch(Tile::isEmpty);
     }
+    public boolean isFull() {
+        return tiles.stream().noneMatch(Tile::isEmpty);
+    }
+
     public List<Tile> getTiles() {
         return tiles;
     }

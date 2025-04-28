@@ -11,7 +11,6 @@ import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
-import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsPresenter;
@@ -115,6 +114,11 @@ public class GamePresenter {
 
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
+
+            //force call Quarto on last Move
+            if(model.getGame().getPiecesToSelect().isEmpty()){
+                handleQuarto();
+            }
             updateView();
         });
 
@@ -130,6 +134,7 @@ public class GamePresenter {
 
         view.getQuarto().setOnMouseClicked(event -> handleQuarto());
         view.getSettings().setOnAction(event -> {
+
             model.getGameTimer().pauseGame();
             pauseAnimations();
             view.showSettingsScreen();
@@ -239,17 +244,26 @@ public class GamePresenter {
     private void handleQuarto() {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
-            if(model.isOnline){
-                loadStatisticsView();
-            }else{
-                view.getWinView().setWinner(model.getCurrentPlayer().getName(), model.getCurrentPlayer() == model.getOpponent());
-                view.showWinScreen();
+            showEndScreen(false);
+            return;
+        }
 
-            }
+        //show Tie EndScreen if Not Win
+        if(model.getGame().getPiecesToSelect().isEmpty()){
+            showEndScreen(true);
         }
     }
 
+    private void showEndScreen(boolean isTie){
+        if(model.isOnline){
+            loadStatisticsView();
 
+        }else{
+
+            view.getWinView().setWinner(!isTie ? model.getCurrentPlayer().getName() : null, model.getCurrentPlayer() == model.getOpponent());
+            view.showWinScreen();
+        }
+    }
     public void updateView() {
         updateMassage();
         updateSelectedPiece();
@@ -360,9 +374,10 @@ public class GamePresenter {
     private void handleAiTurn() {
 
         Random rand = new Random();
-        float placeDuration = rand.nextFloat(1.5f) + 1;
-        float pickDuration = rand.nextFloat(1.5f) + 1;
-
+//        float placeDuration = rand.nextFloat(1.5f) + 1;
+//        float pickDuration = rand.nextFloat(1.5f) + 1;
+        float placeDuration= 0.1f;
+        float pickDuration = 0.1f;
         animateLoadingBar(placeDuration + pickDuration);
 
         placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
