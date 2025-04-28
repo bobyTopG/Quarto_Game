@@ -147,7 +147,7 @@ public class GamePresenter {
     private void onBoardCellClicked(int index, BoardCell boardCell) {
         if (model.getGame().getBoard().findTile(index).getPiece() == null && (model.getPlayer() == model.getCurrentPlayer() || model.getOpponent().getName().equals("Friend"))) {
             if (selectedTile != null) {
-                if (selectedTile.equals(boardCell)) {
+                if (selectedTile.equals(boardCell) && !view.getPlacePiece().isDisabled()) {
                     placePiece();
                 } else {
                     selectedTile.deselect();
@@ -206,7 +206,7 @@ public class GamePresenter {
         if (selectedTile == null) return;
         Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
 
-        if (tile.getPiece() == null) {
+        if (tile.getPiece() == null && model.getGame().getSelectedPiece() != null) {
             model.placePiece(tile);
             model.getGame().setSelectedPiece(null);
         } else {

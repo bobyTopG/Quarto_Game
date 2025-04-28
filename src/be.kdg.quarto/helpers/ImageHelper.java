@@ -1,6 +1,8 @@
 package be.kdg.quarto.helpers;
 
 import be.kdg.quarto.model.Piece;
+import be.kdg.quarto.model.Player;
+import javafx.scene.image.Image;
 
 public class ImageHelper {
     public static String getPieceImagePath(Piece piece) {
@@ -18,5 +20,14 @@ public class ImageHelper {
     public static String getLoadingButtonPath(){
         return "/images/buttons/Loading.png";
     }
+    public static Image getOpponentImage(Player opponent){
+        String imagePath = "/images/aiCharacters/60px/Boxed" + opponent.getName() + ".png";
+        return new Image(imagePath);
+    }
 
+    public static Image getPlayerImage(){
+        String imagePath = "/images/aiCharacters/60px/BoxedPlayer.png";
+        return new Image(imagePath);
+
+    }
 }
