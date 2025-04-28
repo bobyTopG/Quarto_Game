@@ -159,8 +159,8 @@ public class DbConnection {
 
     public static String getGameSession() {
         return "SELECT gs.game_session_id,\n" +
-                "       p2.player_id                                    as id2,\n" +
-                "       p2.name                                         as opponent,\n" +
+                "       p2.player_id                                    as opponent_id,\n" +
+//                "       p2.name                                         as opponent,\n" +
                 "       (SELECT max(pp2.start_time)\n" +
                 "        FROM pause_periods pp2\n" +
                 "                 JOIN moves m2 on m2.move_id = pp2.move_id\n" +

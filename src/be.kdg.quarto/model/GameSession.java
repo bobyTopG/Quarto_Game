@@ -50,17 +50,16 @@ public class GameSession {
 
     }
 
-    public GameSession(Player opponent, int gameSessionId, Game game, Date startTime) {
+    public GameSession(int gameSessionId) {
         this.gameSessionId = gameSessionId;
-        this.game = new Game();
-        this.opponent = opponent;
+        loadSessionFromDb();
         this.player = AuthHelper.getLoggedInPlayer();
-        this.startTime = startTime;
+        this.game = new Game();
         loadMovesFromDb();
         placePiecesOnBoard();
 
         if (game.getMoves().getLast().getPlayer().equals(this.player)) {
-            this.currentPlayer = opponent;
+            this.currentPlayer = this.opponent;
         } else {
             this.currentPlayer = this.player;
         }
@@ -73,10 +72,11 @@ public class GameSession {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("id2");
+                int id = rs.getInt("opponent_id");
                 if (id >= 4) {
                     this.opponent = new Characters().getCharacters().get(id);
                 }
+                this.startTime = rs.getTimestamp("start_time");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class GameSession {
                         new Piece(color, size, fill, shape),
                         rs.getInt("pos"),
                         rs.getInt("move_nr"),
-                        rs.getDate("start_time"), rs.getDate("end_time")));
+                        rs.getTimestamp("start_time"), rs.getTimestamp("end_time")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
