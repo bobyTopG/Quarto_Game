@@ -3,8 +3,8 @@ package be.kdg.quarto.view.auth.RegisterView;
 import be.kdg.quarto.helpers.Auth.AuthException;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.model.Human;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIPresenter;
-import be.kdg.quarto.view.ChooseAIView.ChooseAIView;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseAIPresenter;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseAIView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.control.Alert;
@@ -29,7 +29,7 @@ public class RegisterPresenter {
         view.getContinueAsGuestButton().setOnAction(event -> {
             ChooseAIView chooseAIView = new ChooseAIView();
             view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView);
+            new ChooseAIPresenter(chooseAIView,false);
         });
         view.getRegisterButton().setOnAction(event -> {
             registerUser();

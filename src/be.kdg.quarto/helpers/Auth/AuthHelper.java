@@ -33,17 +33,8 @@ public class AuthHelper {
     }
 
     public static Human getGuestPlayer() {
-
-        try (PreparedStatement ps = DbConnection.connection.prepareStatement("SELECT player_id, name FROM players WHERE upper(name) = 'GUEST'")) {
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new Human(rs.getInt("player_id"), rs.getString("name"), null);
-            }
-        } catch (SQLException |NullPointerException e) {
-            //e.printStackTrace();
-        }
-        return null;
-
+        //one of the presets in the fill script
+        return new Human(5,"Guest", null);
     }
 
     public static Human login(String username, String password) throws AuthException {

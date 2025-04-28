@@ -63,7 +63,7 @@
 .white-text-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #000000;
-    -fx-text-fill: black;
+    -fx-text-fill: #232323;
     -fx-cursor: text;
 }
 

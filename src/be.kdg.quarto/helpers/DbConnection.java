@@ -1,32 +1,75 @@
 package be.kdg.quarto.helpers;
 
+import javafx.application.Platform;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DbConnection {
     public static Connection connection = null;
+    public static boolean isConnecting = false;
 
-    static {
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://10.134.178.22:5432/game", "game", "7sur7");
-            //System.out.println("Connection established");
-
-            //close connection when app is shutdown
-            Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
-        } catch (SQLException | NullPointerException e) {
-            System.out.println(e.getMessage());
-        }
+    public interface ConnectionCallback {
+        void onConnectionComplete(boolean isConnected);
     }
+    //put the code into a thread to not Block the UI (asynchronous operation)
+    public static void startConnection(ConnectionCallback callback) {
+        if (isConnecting) return;
+        isConnecting = true;
 
+        Thread connectionThread = new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+
+            try {
+                connection = DriverManager.getConnection("jdbc:postgresql://10.134.178.22:5432/game", "game", "7sur7");
+                Runtime.getRuntime().addShutdownHook(new Thread(DbConnection::closeConnection));
+            } catch (SQLException | NullPointerException e) {
+                System.out.println(e.getMessage());
+            }
+
+            final boolean connectionResult = connectedToDb();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            long remainingDelay = 1950 - elapsedTime;
+
+            // If connection was faster than 1950ms, wait for the remaining time
+            if (remainingDelay > 0) {
+                try {
+                    Thread.sleep(remainingDelay);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            Platform.runLater(() -> {
+                isConnecting = false;
+                if (callback != null) {
+
+                    callback.onConnectionComplete(connectionResult);
+                }
+            });
+        });
+
+        connectionThread.setDaemon(true);
+        connectionThread.start();
+    }
     public static void closeConnection() {
         if (connection != null) {
             try {
                 connection.close();
-                // System.out.println("Database connection closed");
             } catch (SQLException e) {
-                //System.out.println("Error closing connection: " + e.getMessage());
+                System.out.println(e.getMessage());
             }
+        }
+    }
+    public static boolean connectedToDb() {
+        try {
+            // Use the existing connection from DbConnection
+            // isValid() with a short timeout (2 seconds) avoids lengthy hangs
+            return connection != null &&
+                    !connection.isClosed() &&
+                    connection.isValid(2);
+        } catch (SQLException e) {
+            return false;
         }
     }
 
@@ -141,8 +184,8 @@ public class DbConnection {
                 "VALUES (?, ?, ?, ?, ?);";
     }
 
-    public static String setPausePeriod() {
-        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n" +
+    public static String setPausePeriod(){
+        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n"+
                 "VALUES (?, ?, ?);";
     }
 

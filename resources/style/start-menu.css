@@ -1,5 +1,8 @@
 .start-main-vbox{
     -fx-spacing: 15px;
+    -fx-min-width: 200px;
+    -fx-alignment: center;
+    -fx-padding: 10px 0 20px 70px;
 }
 .main-title{
     -fx-font-size: 64px;
@@ -10,5 +13,18 @@
     -fx-spacing: 100px;
 }
 
+.online-text{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-font-size:20px;
+    -fx-alignment: center;
+}
 
+.big-button{
+    -fx-border-radius: 40px;
+    -fx-background-radius: 40px;
+    -fx-min-height: 80px;
+    -fx-min-width: 160px;
+    -fx-border-width: 6px;
+    -fx-font-size:40px;
 
+}

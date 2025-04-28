@@ -1,7 +1,11 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
+import be.kdg.quarto.view.SettingsScreen.SettingsView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
+import be.kdg.quarto.view.WinScreen.WinPresenter;
+import be.kdg.quarto.view.WinScreen.WinView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -17,7 +21,7 @@ public class GameView extends StackPane {
     private final BorderPane root = new BorderPane();
     private final GridPane boardGrid = new GridPane();
     private final StackPane rotatedBoardPane = new StackPane();
-    private Label quartoText = new Label();
+    private Label quartoText;
     private final GridPane selectGrid = new GridPane();
 
     VBox choosePieceBox;
@@ -25,6 +29,15 @@ public class GameView extends StackPane {
 
     Button choosePieceConfirmation;
     Button backButton;
+
+
+    private final HBox VSHBox = new HBox();
+    private VBox player1 = new VBox();
+    private final Image playerImage;
+    private final VBox player2 = new VBox();
+    private final Image opponentImage;
+    private Label VSLabel = CreateHelper.createLabel("VS", "title");
+
 
     private final VBox selectedPieceContainer = new VBox();
     private final ImageView selectedPieceImage = new ImageView();
@@ -48,12 +61,17 @@ public class GameView extends StackPane {
     private final Button choosePiece = CreateHelper.createButton("Choose Piece", new String[]{"orange-button","game-button"});
     private final Button placePiece = CreateHelper.createButton("Place Piece", new String[]{ "blue-button", "game-button"});
 
-
     private final StackPane overlayContainer = new StackPane();
     private final SettingsView settingsView = new SettingsView();
     private final StatisticsView statisticsView = new StatisticsView();
+    private final WinView winView = new WinView();
 
-    public GameView() {
+    private final String opponentName;
+
+    public GameView(Image player, Image opponent, String opponentName) {
+        playerImage = player;
+        opponentImage = opponent;
+        this.opponentName = opponentName;
         initialiseNodes();
         layoutNodes();
     }
@@ -72,14 +90,54 @@ public class GameView extends StackPane {
         createSettingsButton();
 
         createLoadingButton();
+        
+        createVSHBox();
         // === Overlay (settings screen) ===
         createSettingsScreen();
+    }
+
+    private void createVSHBox() {
+        ImageView player1Image = new ImageView(playerImage);
+        player1Image.setFitHeight(70);
+        player1Image.setFitWidth(70);
+        Label playerLabel =  CreateHelper.createLabel("You","timer-label");
+
+        player1.setAlignment(Pos.CENTER);
+        player1.getChildren().addAll(player1Image,playerLabel);
+
+
+
+
+
+        ImageView player2Image = new ImageView(opponentImage);
+        player2Image.setFitHeight(70);
+        player2Image.setFitWidth(70);
+        Label opponentLabel =  CreateHelper.createLabel(opponentName,"timer-label");
+
+
+        player2.getChildren().addAll(player2Image,opponentLabel);
+        player2.setAlignment(Pos.CENTER);
+
+
+        VBox VSBox = new VBox();
+        VSBox.getChildren().addAll(VSLabel);
+        VSBox.setAlignment(Pos.CENTER);
+
+        VSHBox.setAlignment(Pos.CENTER);
+        VSHBox.setSpacing(15);
+        VSHBox.getChildren().addAll(player1,VSBox, player2);
+
+
+        VSHBox.setPadding(new Insets(20,0,0,0));
+        VSHBox.setMaxHeight(200);
+        VSHBox.setMinHeight(0);
+        VSHBox.setPrefHeight(200);
     }
 
     private void createLoadingButton() {
 
         loadingBar.getStyleClass().add("custom-progress-bar");
-
+        turnStack.setMaxHeight(65);
         turnStack.getChildren().addAll(loadingBar, turn);
     }
 
@@ -91,6 +149,7 @@ public class GameView extends StackPane {
         HBox bottomBox = new HBox(buttonsBox, selectedPieceContainer);
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setSpacing(25);
+        bottomBox.setMinHeight(150);
 
 
         Region vSpacer = new Region();
@@ -99,48 +158,63 @@ public class GameView extends StackPane {
 
 
         timerContainer.getChildren().addAll(timer, timerLabel);
+        timerContainer.setMaxHeight(200);
         timerContainer.setAlignment(Pos.CENTER);
+        Region topSpacer = new Region();
+        topSpacer.setPrefHeight(70);
+        topSpacer.setMinHeight(70);
 
-        leftBox = new VBox(vSpacer, timerContainer, bottomBox);
+        leftBox = new VBox(topSpacer,VSHBox, timerContainer, bottomBox);
+        BorderPane.setAlignment(leftBox, Pos.CENTER_LEFT);
+
+        leftBox.setMaxWidth(400);
         leftBox.setSpacing(15);
-        leftBox.setPadding(new Insets(10, 0, 20, 20));
+        leftBox.setPadding(new Insets(10, 0, 10, 20));
         leftBox.setAlignment(Pos.CENTER);
+
+
+
+
+
+
+        BorderPane.setMargin(rotatedBoardPane, new Insets(25, 0, 0, 20));
+
+        root.setLeft(leftBox);
+
+        root.setCenter(rotatedBoardPane);
+
+        quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
+
+
 
 
         Region hSpacer = new Region();
         // to make a separator from all the space left
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
+        VBox vBox = new VBox();
+        HBox buttonBox = new HBox(helpButton, settingsButton);
+        buttonBox.setSpacing(10);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-        HBox topBar = new HBox(turnStack,  hSpacer, helpButton, settingsButton);
+        vBox.setSpacing(10);
+
+        vBox.getChildren().addAll(buttonBox,quartoText);
+        vBox.setAlignment(Pos.CENTER_RIGHT);
+        HBox topBar = new HBox(turnStack,  hSpacer, vBox);
 
         topBar.setSpacing(10);
-        topBar.setPadding(new Insets(10));
+        topBar.setMaxHeight(100);
+        topBar.setPadding(new Insets(15,10,-10,10));
 
-        root.setTop(topBar);
-
-        root.setLeft(leftBox);
-
-        //to move the board a bit up
-        BorderPane.setMargin(rotatedBoardPane, new Insets(-100, -50, 0, 0));
-
-
-        root.setCenter(rotatedBoardPane);
-        quartoText.setManaged(false);
-        quartoText = CreateHelper.createLabel("Advise","choose-piece-label");
-        BorderPane.setMargin(quartoText, new Insets(0, 50, 0, -200));
-
-
-        VBox quartoBox = new VBox( quartoText , quarto);
+        VBox quartoBox = new VBox(quarto);
         quartoBox.setAlignment(Pos.BOTTOM_CENTER);
-        quartoBox.setSpacing(270);
-        //creating margin not to change the pos of other elements
         BorderPane.setMargin(quartoBox, new Insets(-15, 15, 15, -15));
 
         root.setRight(quartoBox);
         choosePiece.toFront();
 
-
-        this.getChildren().addAll(root,overlayContainer);
+        this.setAlignment(Pos.TOP_CENTER);
+        this.getChildren().addAll(root,topBar,overlayContainer);
     }
 
     private void createSettingsScreen() {
@@ -150,15 +224,26 @@ public class GameView extends StackPane {
         StackPane.setAlignment(settingsView, Pos.CENTER);
 
     }
-
-    void showSettingsScreen() {
+    void enableOverlay(){
         overlayContainer.setVisible(true);
         overlayContainer.getChildren().clear();
+
+    }
+    void showSettingsScreen() {
+        enableOverlay();
         overlayContainer.getChildren().add(settingsView);
+        new SettingsPresenter(settingsView);
+
+    }
+    void showWinScreen(){
+        enableOverlay();
+        overlayContainer.getChildren().add(winView);
+        new WinPresenter(winView);
+
+
     }
     void showStatisticsScreen() {
-        overlayContainer.setVisible(true);
-        overlayContainer.getChildren().clear();
+        enableOverlay();
         overlayContainer.getChildren().add(statisticsView);
     }
     private void createSelectedPieceHolder() {
@@ -191,15 +276,17 @@ public class GameView extends StackPane {
         HBox buttonBox = new HBox(backButton, choosePieceConfirmation);
         buttonBox.getStyleClass().add("choose-piece-button-box");
 
-
         selectGrid.getStyleClass().add("select-grid");
 
 
         choosePieceBox = new VBox();
         choosePieceBox.setSpacing(10);
         choosePieceBox.setAlignment(Pos.CENTER);
-
-        choosePieceBox.getChildren().addAll(choosePieceLabel,selectGrid, buttonBox);
+        choosePieceBox.setPrefWidth(289);
+        Region vSpacer = new Region();
+        vSpacer.setMinHeight(60);
+        vSpacer.setMaxHeight(60);
+        choosePieceBox.getChildren().addAll(vSpacer,choosePieceLabel,selectGrid, buttonBox);
 
     }
 
@@ -272,6 +359,8 @@ public class GameView extends StackPane {
         return settingsView;
     }
 
+    WinView getWinView() { return  winView; }
+
     StatisticsView getStatisticsView() {
         return statisticsView;
     }
@@ -319,15 +408,22 @@ public class GameView extends StackPane {
     }
     GridPane getBoardGrid() { return boardGrid; }
 
-    public Label getQuartoText() {
+    Label getQuartoText() {
         return quartoText;
     }
-    public ToggleButton getHelpButton() {
+    ToggleButton getHelpButton() {
         return helpButton;
     }
 
-    public ProgressBar getLoadingBar() {
+    ProgressBar getLoadingBar() {
         return loadingBar;
     }
+    public Image getOpponentImage(){
+        return opponentImage;
+    }
+    public Image getPlayerImage(){
+        return playerImage;
+    }
+
 
 }

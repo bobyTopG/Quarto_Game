@@ -1,9 +1,7 @@
-package be.kdg.quarto.view.ChooseAIView;
+package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
-import be.kdg.quarto.model.Human;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
 import be.kdg.quarto.view.GameScreen.GameView;
@@ -18,15 +16,18 @@ import java.util.List;
 
 public class ChooseAIPresenter {
     private final ChooseAIView view;
-    private Player aiSelected;
+    private Player opponentSelected;
     private AICharacters aiCharacters = new AICharacters();
+    private boolean isOnline;
 
-    public ChooseAIPresenter(ChooseAIView view) {
+    public ChooseAIPresenter(ChooseAIView view, boolean online) {
         this.view = view;
         List<Image> images = findAICharacterImagesForButtons();
-        String pathToNotFound = "/images/aiCharacters/BoxedNotFound.png";
+        String pathToNotFound = "/images/aiCharacters/100px/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
         view.initialise(images, aiCharacters.getCharacters(), notFoundImage);
+        this.isOnline = online;
+
         updateView();
         addEventHandlers();
     }
@@ -35,7 +36,7 @@ public class ChooseAIPresenter {
         List<Player> AiList = aiCharacters.getCharacters();
         List<Image> images = new ArrayList<>();
         for (Player ai : AiList) {
-            String imagePath = "/images/aiCharacters/Boxed" + ai.getName() + ".png";
+            String imagePath = "/images/aiCharacters/100px/Boxed" + ai.getName() + ".png";
             Image image = new Image(getClass().getResource(imagePath).toString());
             images.add(image);
         }
@@ -51,7 +52,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                aiSelected = aiCharacters.getCharacters().get(id);
+                opponentSelected = aiCharacters.getCharacters().get(id);
             });
             count++;
         }
@@ -61,7 +62,7 @@ public class ChooseAIPresenter {
             notFoundButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(-1);
                 view.getSelectButton().setDisable(true);
-                aiSelected = null;
+                opponentSelected = null;
             });
         }
 
@@ -74,14 +75,14 @@ public class ChooseAIPresenter {
 
 
         view.getSelectButton().setOnMouseClicked(event -> {
-            if (aiSelected != null) {
-                GameView gameView = new GameView();
-                GameSession model = new GameSession(
-                        AuthHelper.isLoggedIn() ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
-                        aiSelected , view.getTurnButton().isSelected()? null : aiSelected
-                );
-
-
+            if (opponentSelected != null) {
+                GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), opponentSelected.getName());
+                GameSession model;
+                //if offline play as guest
+                    model = new GameSession(
+                            (AuthHelper.isLoggedIn() && isOnline) ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
+                            opponentSelected, view.getTurnButton().isSelected()? null : opponentSelected, isOnline
+                    );
 
                 view.getScene().setRoot(gameView);
                 new GamePresenter(model, gameView);
@@ -91,5 +92,17 @@ public class ChooseAIPresenter {
 
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
+    }
+    private Image getOpponentImage(){
+        String imagePath = "/images/aiCharacters/60px/Boxed" + opponentSelected.getName() + ".png";
+        Image image = new Image(getClass().getResource(imagePath).toString());
+        return image;
+    }
+
+    private Image getPlayerImage(){
+        String imagePath = "/images/aiCharacters/60px/BoxedPlayer.png";
+        Image image = new Image(getClass().getResource(imagePath).toString());
+        return image;
+
     }
 }

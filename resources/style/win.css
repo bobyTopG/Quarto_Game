@@ -1,0 +1,31 @@
+.win-screen{
+    -fx-background-color: #fff4d5;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 40px;
+    -fx-border-color: #232323;
+    -fx-border-width: 15px;
+    -fx-min-width: 600px;
+    -fx-max-width: 600px;
+    -fx-min-height: 300px;
+    -fx-max-height: 300px;
+    -fx-padding: 20px;
+
+}
+
+.win-label{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-font-size: 65px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-background-color:  rgb(218,66,66);
+}
+
+.button.win-button{
+    -fx-font-size: 30px;
+    -fx-min-height: 50px;
+    -fx-text-alignment: center;
+    -fx-min-width: 100px;
+}

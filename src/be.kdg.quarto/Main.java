@@ -20,7 +20,7 @@ public class Main extends Application {
         primaryStage.setResizable(false);
 
         primaryStage.setScene(scene);
-        new StartPresenter(view);
+        new StartPresenter(view,true);
         primaryStage.setHeight(500);
         primaryStage.setWidth(900);
         primaryStage.show();
@@ -38,6 +38,7 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/start-menu.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/statistics.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/settings.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style/win.css").toExternalForm());
 
 
     }

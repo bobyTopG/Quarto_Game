@@ -5,6 +5,7 @@ import be.kdg.quarto.helpers.DbConnection;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.Random;
 
 public class GameSession {
     private Player player;
@@ -17,22 +18,26 @@ public class GameSession {
     private final GameTimer gameTimer;
     private int gameSessionId;
 
-
-    public GameSession(Player player, Player opponent, Player currentPlayer) {
+    public boolean isOnline;
+    public GameSession(Player player, Player opponent , Player currentPlayer, boolean online) {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
+        this.isOnline = online;
+
         startTime = new Date();
         this.currentPlayer = currentPlayer == null ? player : opponent;
         gameTimer = new GameTimer(this.game);
         game.startNewMove(this.currentPlayer);
 
-        saveGameSessionToDb();
 
+        if(isOnline) {
+            saveGameSessionToDb();
+        }
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
-        if (currentPlayer == this.opponent) {
+        if(currentPlayer == this.opponent) {
             pickPieceAi();
         }
 
@@ -62,9 +67,11 @@ public class GameSession {
             if (game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                saveMoveToDb(game.getCurrentMove());
+                if(isOnline)
+                    saveMoveToDb(game.getCurrentMove());
             }
-            updateGameSession();
+            if(isOnline)
+                updateGameSession();
         }
     }
 
@@ -112,7 +119,8 @@ public class GameSession {
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
         game.pickPieceIntoMove();
-        saveMoveToDb(game.getCurrentMove());
+        if(isOnline)
+            saveMoveToDb(game.getCurrentMove());
 
         game.endMove();
         switchTurns();
@@ -258,9 +266,5 @@ public class GameSession {
 
     public GameTimer getGameTimer() {
         return gameTimer;
-    }
-
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 }
