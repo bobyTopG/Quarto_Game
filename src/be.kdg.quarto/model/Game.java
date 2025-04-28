@@ -1,10 +1,14 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
 import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Size;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,30 +32,6 @@ public class Game {
         piecesToSelect = new Board();
         board.createEmptyBoard();
         piecesToSelect.generateAllPieces();
-
-        gameRules = new GameRules(board, moves);
-
-        // this will record the start time of the game as the start time of the first move
-        Move dummyStart = new Move();
-        dummyStart.setEndTime(new Date());
-        moves.add(dummyStart);
-    }
-
-    public Game(List<Move> moves) {
-        this.moves = moves;
-        board = new Board();
-        piecesToSelect = new Board();
-        board.createEmptyBoard();
-        piecesToSelect.generateAllPieces();
-
-        for (Move move : moves) {
-            if (move.getPiece() != null && move.getPosition() != -1) {
-                board.getTiles().get(move.getPosition()).setPiece(move.getPiece());
-            }
-            if (move.getSelectedPiece() != null) {
-                piecesToSelect.getTiles().removeIf(tile -> tile.getPiece().equals(move.getSelectedPiece()));
-            }
-        }
 
         gameRules = new GameRules(board, moves);
 

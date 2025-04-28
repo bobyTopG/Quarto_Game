@@ -1,11 +1,16 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.helpers.AICharacters;
+import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
+import be.kdg.quarto.model.enums.Color;
+import be.kdg.quarto.model.enums.Fill;
+import be.kdg.quarto.model.enums.Shape;
+import be.kdg.quarto.model.enums.Size;
 
 import java.sql.*;
 import java.util.Date;
-import java.util.Random;
 
 public class GameSession {
     private Player player;
@@ -19,7 +24,8 @@ public class GameSession {
     private int gameSessionId;
 
     public boolean isOnline;
-    public GameSession(Player player, Player opponent , Player currentPlayer, boolean online) {
+
+    public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
@@ -31,32 +37,90 @@ public class GameSession {
         game.startNewMove(this.currentPlayer);
 
 
-        if(isOnline) {
+        if (isOnline) {
             saveGameSessionToDb();
         }
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
-        if(currentPlayer == this.opponent) {
+        if (currentPlayer == this.opponent) {
             pickPieceAi();
         }
 
 
     }
 
-    public GameSession(Player player, Player opponent, Game game, Date startTime, int gameSessionId) {
-        this.game = game;
-        this.opponent = opponent;
-        this.player = player;
-        this.startTime = startTime;
+    public GameSession(Player opponent, int gameSessionId, Game game, Date startTime) {
         this.gameSessionId = gameSessionId;
-        if (game.getMoves().getLast().getPlayer().equals(player)) {
+        this.game = new Game();
+        this.opponent = opponent;
+        this.player = AuthHelper.getLoggedInPlayer();
+        this.startTime = startTime;
+        loadMovesFromDb();
+        placePiecesOnBoard();
+
+        if (game.getMoves().getLast().getPlayer().equals(this.player)) {
             this.currentPlayer = opponent;
         } else {
-            this.currentPlayer = player;
+            this.currentPlayer = this.player;
         }
 
         this.gameTimer = new GameTimer(game, startTime);
+    }
+
+    private void loadSessionFromDb() {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGameSession())) {
+            ps.setInt(1, this.gameSessionId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id2");
+                if (id >= 4) {
+                    this.opponent = new AICharacters().getCharacters().get(id);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMovesFromDb() {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadMoves())) {
+            ps.setInt(1, this.gameSessionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Player player;
+                if (rs.getInt("player_id") == AuthHelper.getLoggedInPlayer().getId()) {
+                    player = this.player;
+                } else {
+                    player = this.opponent;
+                }
+                Color color = rs.getString("color") != null ? Color.valueOf(rs.getString("color").toUpperCase()) : null;
+                Size size = rs.getString("size") != null ? Size.valueOf(rs.getString("size").toUpperCase()) : null;
+                Fill fill = rs.getString("fill") != null ? Fill.valueOf(rs.getString("fill").toUpperCase()) : null;
+                Shape shape = rs.getString("shape") != null ? Shape.valueOf(rs.getString("shape").toUpperCase()) : null;
+
+                game.getMoves().add(new Move(player,
+                        new Piece(color, size, fill, shape),
+                        rs.getInt("pos"),
+                        rs.getInt("move_nr"),
+                        rs.getDate("start_time"), rs.getDate("end_time")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void placePiecesOnBoard() {
+        if (!game.getMoves().isEmpty()) {
+            for (Move move : game.getMoves()) {
+                if (move.getPiece() != null && move.getPosition() != -1) {
+                    game.getBoard().getTiles().get(move.getPosition()).setPiece(move.getPiece());
+                }
+                if (move.getSelectedPiece() != null) {
+                    game.getPiecesToSelect().getTiles().removeIf(tile -> tile.getPiece().equals(move.getSelectedPiece()));
+                }
+            }
+        }
     }
 
 
@@ -67,10 +131,10 @@ public class GameSession {
             if (game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                if(isOnline)
+                if (isOnline)
                     saveMoveToDb(game.getCurrentMove());
             }
-            if(isOnline)
+            if (isOnline)
                 updateGameSession();
         }
     }
@@ -119,7 +183,7 @@ public class GameSession {
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
         game.pickPieceIntoMove();
-        if(isOnline)
+        if (isOnline)
             saveMoveToDb(game.getCurrentMove());
 
         game.endMove();

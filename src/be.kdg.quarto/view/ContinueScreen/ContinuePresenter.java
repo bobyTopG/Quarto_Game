@@ -14,12 +14,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ContinuePresenter {
 
     private ContinueView view;
-    private Map<Integer, String[]> sessions = new HashMap<>();
+    private Map<Integer, String[]> sessions = new LinkedHashMap<>();
 
     public ContinuePresenter(ContinueView view) {
         this.view = view;
@@ -31,6 +32,7 @@ public class ContinuePresenter {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
 
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadUnfinishedSessions())) {
+            ps.setInt(1, AuthHelper.getLoggedInPlayer().getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int sessionId = rs.getInt("game_session_id");
@@ -74,11 +76,11 @@ public class ContinuePresenter {
     private void onGameSelected(int sessionId) {
         System.out.println("Continuing game " + sessionId + "...");
 
-        GameView gameView = new GameView();
-        GameSession model = new GameSession(AuthHelper.getLoggedInPlayer(), null, null, null, sessionId);
-
-
-        view.getScene().setRoot(gameView);
-        new GamePresenter(model, gameView);
+//        GameView gameView = new GameView();
+//        GameSession model = new GameSession(AuthHelper.getLoggedInPlayer(), null, null, null, sessionId);
+//
+//
+//        view.getScene().setRoot(gameView);
+//        new GamePresenter(model, gameView);
     }
 }

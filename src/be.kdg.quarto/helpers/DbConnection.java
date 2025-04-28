@@ -13,6 +13,7 @@ public class DbConnection {
     public interface ConnectionCallback {
         void onConnectionComplete(boolean isConnected);
     }
+
     //put the code into a thread to not Block the UI (asynchronous operation)
     public static void startConnection(ConnectionCallback callback) {
         if (isConnecting) return;
@@ -52,6 +53,7 @@ public class DbConnection {
         connectionThread.setDaemon(true);
         connectionThread.start();
     }
+
     public static void closeConnection() {
         if (connection != null) {
             try {
@@ -61,6 +63,7 @@ public class DbConnection {
             }
         }
     }
+
     public static boolean connectedToDb() {
         try {
             // Use the existing connection from DbConnection
@@ -142,41 +145,35 @@ public class DbConnection {
     public static String loadUnfinishedSessions() {
         return "SELECT gs.game_session_id,\n" +
                 "       gs.player_id2,\n" +
-                "       TO_CHAR(age((select max(pp.start_time)\n" +
-                "                    from pause_periods pp\n" +
-                "                    where pp.move_id = (select max(m.move_id)\n" +
-                "                                        from moves m\n" +
-                "                                        where m.game_session_id = gs.game_session_id)), gs.start_time),\n" +
-                "               'HH24:MI:SS') as duration\n" +
+                "       TO_CHAR(age(latest_pause.start_time, gs.start_time), 'HH24:MI:SS') as duration\n" +
                 "FROM game_sessions gs\n" +
-                "WHERE gs.is_completed = false and gs.player_id1 = 5\n" + // id must be changed to ?
-                "-- can be deleted\n" +
-                "  and (SELECT MAX(pp.start_time)\n" +
-                "       FROM pause_periods pp\n" +
-                "       WHERE pp.move_id = (SELECT MAX(m.move_id)\n" +
-                "                           FROM moves m\n" +
-                "                           WHERE m.game_session_id = gs.game_session_id)) IS NOT NULL\n" +
-                "-- ...\n" +
+                "         JOIN (SELECT m.game_session_id,\n" +
+                "                      max(pp.start_time) as start_time\n" +
+                "               FROM moves m\n" +
+                "                        JOIN pause_periods pp on pp.move_id = m.move_id\n" +
+                "               GROUP BY m.game_session_id) latest_pause on latest_pause.game_session_id = gs.game_session_id\n" +
+                "WHERE gs.is_completed = false\n" +
+                "  and gs.player_id1 = ? and latest_pause.start_time IS NOT NULL\n" +
                 "ORDER BY 2;";
     }
 
     public static String getGameSession() {
         return "SELECT gs.game_session_id,\n" +
-                "       p2.player_id as id2,\n" +
-                "       p2.name      as opponent,\n" +
-                "       pp.start_time\n" +
+                "       p2.player_id                                    as id2,\n" +
+                "       p2.name                                         as opponent,\n" +
+                "       (SELECT max(pp2.start_time)\n" +
+                "        FROM pause_periods pp2\n" +
+                "                 JOIN moves m2 on m2.move_id = pp2.move_id\n" +
+                "        WHERE m2.game_session_id = gs.game_session_id) as start_time\n" +
                 "FROM game_sessions gs\n" +
                 "         JOIN players p2 on (gs.player_id2 = p2.player_id)\n" +
-                "         LEFT JOIN (select *\n" +
-                "                    from moves\n" +
-                "                    where (game_session_id, move_id) in\n" +
-                "                          (select game_session_id, max(move_id)\n" +
-                "                           from moves\n" +
-                "                           group by game_session_id)) m on gs.game_session_id = m.game_session_id\n" +
-                "         LEFT JOIN (select move_id, max(start_time) as start_time\n" +
-                "                    from pause_periods\n" +
-                "                    group by move_id) pp on m.move_id = pp.move_id\n" +
-                "WHERE gs.game_session_id = 112;"; // id must be changed to ?
+                "         LEFT JOIN (SELECT *\n" +
+                "                    FROM moves\n" +
+                "                    WHERE (game_session_id, move_id) in (SELECT game_session_id, max(move_id)\n" +
+                "                                                         FROM moves\n" +
+                "                                                         GROUP BY game_session_id)) m\n" +
+                "                   on gs.game_session_id = m.game_session_id\n" +
+                "WHERE gs.game_session_id = ?;";
     }
 
     public static String setMove() {
@@ -184,8 +181,29 @@ public class DbConnection {
                 "VALUES (?, ?, ?, ?, ?);";
     }
 
-    public static String setPausePeriod(){
-        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n"+
+    public static String loadMoves() {
+        return "SELECT m.move_id,\n" +
+                "       pl.player_id,\n" +
+                "       name,\n" +
+                "       start_time,\n" +
+                "       end_time,\n" +
+                "       move_nr,\n" +
+                "       pt.piece_type_id,\n" +
+                "       pt.color,\n" +
+                "       pt.size,\n" +
+                "       pt.fill,\n" +
+                "       pt.shape,\n" +
+                "       coalesce(pos, -1) as pos\n" +
+                "FROM moves m\n" +
+                "         JOIN players pl on m.player_id = pl.player_id\n" +
+                "         LEFT JOIN pieces pi on m.move_id = pi.move_id\n" +
+                "         LEFT JOIN piece_types pt on pi.piece_type_id = pt.piece_type_id\n" +
+                "WHERE game_session_id = ?\n" +
+                "ORDER BY m.move_id;";
+    }
+
+    public static String setPausePeriod() {
+        return "INSERT INTO pause_periods (move_id, start_time, end_time)\n" +
                 "VALUES (?, ?, ?);";
     }
 
