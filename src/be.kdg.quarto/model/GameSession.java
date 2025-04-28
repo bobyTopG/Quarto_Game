@@ -1,20 +1,18 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 
 import java.sql.*;
 import java.util.Date;
-import java.util.Random;
 
 public class GameSession {
     private Player player;
-    private Player opponent;
-    private Game game;
+    private final Player opponent;
+    private final Game game;
     private Player currentPlayer;
-    private Date startTime;
+    private final Date startTime;
     private Date endTime;
-    private boolean isCallingQuarto = false;
+    private boolean isCallingQuarto;
     private final GameTimer gameTimer;
     private int gameSessionId;
 
@@ -63,17 +61,24 @@ public class GameSession {
     public void callQuarto() {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
-            if (game.getMoves() == null) {
+            if(game.getCurrentMove()!= null && game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
                 if(isOnline)
                     saveMoveToDb(game.getCurrentMove());
             }
-            if(isOnline)
-                updateGameSession();
+            endGameSession(false);
+            return;
+        }
+        if(game.getPiecesToSelect().isEmpty()){
+            endGameSession(true);
         }
     }
+    public void endGameSession(boolean isTie){
+        if(isOnline)
+            updateGameSession(isTie);
 
+    }
     public void switchTurns() {
         currentPlayer = currentPlayer == player ? opponent : player;
         if(!game.getBoard().isFull())
@@ -94,9 +99,6 @@ public class GameSession {
             placePiece(ai.getStrategy().selectTile());
             //force calling quarto at the last move
             if (ai.getStrategy().isCallingQuarto() || game.getPiecesToSelect().isEmpty()) {
-                //isCallingQuarto = true;
-            }
-            if(game.getPiecesToSelect().isEmpty()){
                 isCallingQuarto = true;
             }
 
@@ -119,9 +121,14 @@ public class GameSession {
     }
 
     public void pickPiece(Piece piece) {
-        game.setSelectedPiece(piece);
-        game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
-        game.pickPieceIntoMove(startTime);
+        //if null that means it is either an error or AI is at last Move
+        if(piece != null){
+            game.setSelectedPiece(piece);
+            game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
+            game.pickPieceIntoMove(startTime);
+        }{
+            game.getCurrentMove().setEndTime(new Date());
+        }
 
         if(isOnline)
             saveMoveToDb(game.getCurrentMove());
@@ -213,33 +220,33 @@ public class GameSession {
     }
 
     // saves a finished game session to db
-    public void updateGameSession() {
+    public void updateGameSession(boolean isTie) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            ps.setInt(1, isCallingQuarto ? currentPlayer.getId() : null);
+            // Use setObject for values that might be null
+            if (!isTie) {
+                ps.setInt(1, currentPlayer.getId());
+            } else {
+                ps.setNull(1, java.sql.Types.INTEGER);
+            }
             ps.setBoolean(2, true);
             java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
             ps.setTimestamp(3, sqlEndTime);
             ps.setInt(4, gameSessionId);
             ps.executeUpdate();
-
         } catch (SQLException e) {
-//            e.printStackTrace();
+            e.printStackTrace(); // Consider proper error handling
         }
     }
 
     // to prevent error in case if AI won during the counting of timer
     public void handlePendingWin() {
-        if (isCallingQuarto) {
-            javafx.application.Platform.runLater(() -> {
-                callQuarto();
-                isCallingQuarto = false;
-            });
-        }
+        if (this.isCallingQuarto) javafx.application.Platform.runLater(this::callQuarto);
     }
 
     public boolean isCallingQuarto() {
         return isCallingQuarto;
     }
+
 
     public int getGameSessionId() {
         return gameSessionId;

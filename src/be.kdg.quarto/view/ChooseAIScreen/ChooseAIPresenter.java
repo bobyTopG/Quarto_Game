@@ -1,6 +1,7 @@
 package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
@@ -13,6 +14,8 @@ import be.kdg.quarto.helpers.Characters;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static be.kdg.quarto.helpers.ImageHelper.getOpponentImage;
 
 public class ChooseAIPresenter {
     private final ChooseAIView view;
@@ -76,7 +79,7 @@ public class ChooseAIPresenter {
 
         view.getSelectButton().setOnMouseClicked(event -> {
             if (opponentSelected != null) {
-                GameView gameView = new GameView(getPlayerImage(),getOpponentImage(), opponentSelected.getName());
+                GameView gameView = new GameView(ImageHelper.getPlayerImage(),ImageHelper.getOpponentImage(opponentSelected), opponentSelected.getName());
                 GameSession model;
                 //if offline play as guest
                     model = new GameSession(
@@ -93,16 +96,5 @@ public class ChooseAIPresenter {
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
     }
-    private Image getOpponentImage(){
-        String imagePath = "/images/aiCharacters/60px/Boxed" + opponentSelected.getName() + ".png";
-        Image image = new Image(getClass().getResource(imagePath).toString());
-        return image;
-    }
 
-    private Image getPlayerImage(){
-        String imagePath = "/images/aiCharacters/60px/BoxedPlayer.png";
-        Image image = new Image(getClass().getResource(imagePath).toString());
-        return image;
-
-    }
 }

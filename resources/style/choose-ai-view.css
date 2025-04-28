@@ -1,6 +1,7 @@
 /* choose-ai-view.css */
 .scene {
     -fx-background-color: #d89e30;
+    -fx-font-family: "Berlin Sans FB DemiBold";
 }
 .main-vbox {
     -fx-background-radius: 10px;
