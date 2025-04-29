@@ -4,11 +4,10 @@
 *.iml
 *.ipr
 *.iws
-
-# Compiled output #
+create-exe.bat# Compiled output #
 #################
-out/
-out.production.ACS103-T2-Game/
+src/out/
+src/out.production.ACS103-T2-Game/
 
 # Other potential build artifacts #
 ##################################

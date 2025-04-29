@@ -62,7 +62,7 @@ public class GameSession {
         if (game.getMoves().getLast().getPlayer().equals(this.player)) {
             this.currentPlayer = this.opponent;
         } else {
-            this.currentPlayer = this.player;
+            this.currentPlayer = player;
         }
 
         this.gameTimer = new GameTimer(game, startTime);
@@ -138,7 +138,7 @@ public class GameSession {
             endGameSession(false);
             return;
         }
-        if (game.getPiecesToSelect().isEmpty()) {
+        if(game.getPiecesToSelect().isEmpty()){
             endGameSession(true);
         }
     }
@@ -168,11 +168,9 @@ public class GameSession {
             placePiece(ai.getStrategy().selectTile());
             //force calling quarto at the last move
             if (ai.getStrategy().isCallingQuarto() || game.getPiecesToSelect().isEmpty()) {
-                //isCallingQuarto = true;
-            }
-            if (game.getPiecesToSelect().isEmpty()) {
                 isCallingQuarto = true;
             }
+
 
             game.setSelectedPiece(null);
         }

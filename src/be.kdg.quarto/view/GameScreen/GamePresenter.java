@@ -247,7 +247,6 @@ public class GamePresenter {
             showEndScreen(false);
             return;
         }
-
         //show Tie EndScreen if Not Win
         if(model.getGame().getPiecesToSelect().isEmpty()){
             showEndScreen(true);
@@ -374,10 +373,10 @@ public class GamePresenter {
     private void handleAiTurn() {
 
         Random rand = new Random();
-//        float placeDuration = rand.nextFloat(1.5f) + 1;
-//        float pickDuration = rand.nextFloat(1.5f) + 1;
-        float placeDuration= 0.1f;
-        float pickDuration = 0.1f;
+        float placeDuration = rand.nextFloat(1.5f) + 1;
+        float pickDuration = rand.nextFloat(1.5f) + 1;
+//        float placeDuration= 0.1f;
+//        float pickDuration = 0.1f;
         animateLoadingBar(placeDuration + pickDuration);
 
         placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
@@ -388,9 +387,6 @@ public class GamePresenter {
             model.placePieceAi();
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
-            if (model.isCallingQuarto()) {
-                handleQuarto();
-            }
             updateView();
 
             model.handlePendingWin();

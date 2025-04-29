@@ -13,7 +13,6 @@ public class DbConnection {
     public interface ConnectionCallback {
         void onConnectionComplete(boolean isConnected);
     }
-
     //put the code into a thread to not Block the UI (asynchronous operation)
     public static void startConnection(ConnectionCallback callback) {
         if (isConnecting) return;
@@ -53,7 +52,6 @@ public class DbConnection {
         connectionThread.setDaemon(true);
         connectionThread.start();
     }
-
     public static void closeConnection() {
         if (connection != null) {
             try {
@@ -63,7 +61,6 @@ public class DbConnection {
             }
         }
     }
-
     public static boolean connectedToDb() {
         try {
             // Use the existing connection from DbConnection
