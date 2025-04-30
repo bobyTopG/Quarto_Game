@@ -22,9 +22,10 @@ public class Move {
 
     }
 
-    public Move(Player player, Piece piece, int position, int moveNumber, Date startTime, Date endTime) {
+    public Move(Player player, Piece piece, Piece selectedPiece, int position, int moveNumber, Date startTime, Date endTime) {
         this.player = player;
         this.piece = piece;
+        this.selectedPiece = selectedPiece;
         this.position = position;
         this.moveNumber = moveNumber;
         this.startTime = startTime;

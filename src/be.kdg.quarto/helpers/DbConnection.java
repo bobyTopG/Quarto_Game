@@ -13,6 +13,7 @@ public class DbConnection {
     public interface ConnectionCallback {
         void onConnectionComplete(boolean isConnected);
     }
+
     //put the code into a thread to not Block the UI (asynchronous operation)
     public static void startConnection(ConnectionCallback callback) {
         if (isConnecting) return;
@@ -52,6 +53,7 @@ public class DbConnection {
         connectionThread.setDaemon(true);
         connectionThread.start();
     }
+
     public static void closeConnection() {
         if (connection != null) {
             try {
@@ -61,6 +63,7 @@ public class DbConnection {
             }
         }
     }
+
     public static boolean connectedToDb() {
         try {
             // Use the existing connection from DbConnection
@@ -123,7 +126,7 @@ public class DbConnection {
                 "HAVING count(distinct gs.game_session_id) > 0\n" +
                 "   and is_completed = true\n" +
                 "   and is_ai = false\n" +
-                "   and upper(name) != 'GUEST';";
+                "   and upper(name) NOT IN ('GUEST', 'FRIEND');";
     }
 
     public static String setGameSession() {
@@ -142,33 +145,27 @@ public class DbConnection {
     public static String loadUnfinishedSessions() {
         return "SELECT gs.game_session_id,\n" +
                 "       gs.player_id2,\n" +
-                "       TO_CHAR(age(latest_pause.start_time, gs.start_time), 'HH24:MI:SS') as duration\n" +
+                "       TO_CHAR(age(latest_pause.end_time, gs.start_time), 'HH24:MI:SS') as duration\n" +
                 "FROM game_sessions gs\n" +
-                "         JOIN (SELECT m.game_session_id,\n" +
-                "                      max(pp.start_time) as start_time\n" +
-                "               FROM moves m\n" +
-                "                        JOIN pause_periods pp on pp.move_id = m.move_id\n" +
-                "               GROUP BY m.game_session_id) latest_pause on latest_pause.game_session_id = gs.game_session_id\n" +
+                "         JOIN (select m.game_session_id, max(pp.end_time) as end_time\n" +
+                "               from moves m join pause_periods pp on pp.move_id = m.move_id\n" +
+                "               group by m.game_session_id) latest_pause on latest_pause.game_session_id = gs.game_session_id\n" +
                 "WHERE gs.is_completed = false\n" +
-                "  and gs.player_id1 = ? and latest_pause.start_time IS NOT NULL\n" +
+                "  and gs.player_id1 = ?\n" +
+                "  and latest_pause.end_time IS NOT NULL\n" +
                 "ORDER BY 2;";
     }
 
     public static String getGameSession() {
-        return "SELECT gs.game_session_id,\n" +
-                "       p2.player_id                                    as opponent_id,\n" +
-//                "       p2.name                                         as opponent,\n" +
-                "       (SELECT max(pp2.start_time)\n" +
-                "        FROM pause_periods pp2\n" +
-                "                 JOIN moves m2 on m2.move_id = pp2.move_id\n" +
-                "        WHERE m2.game_session_id = gs.game_session_id) as start_time\n" +
+        return "SELECT gs.player_id2                                  as opponent_id,\n" +
+                "       (select max(pp.end_time) from pause_periods pp\n" +
+                "                 join moves m on m.move_id = pp.move_id\n" +
+                "        where m.game_session_id = gs.game_session_id) as start_time\n" +
                 "FROM game_sessions gs\n" +
-                "         JOIN players p2 on (gs.player_id2 = p2.player_id)\n" +
-                "         LEFT JOIN (SELECT *\n" +
-                "                    FROM moves\n" +
-                "                    WHERE (game_session_id, move_id) in (SELECT game_session_id, max(move_id)\n" +
-                "                                                         FROM moves\n" +
-                "                                                         GROUP BY game_session_id)) m\n" +
+                "         LEFT JOIN (select * from moves\n" +
+                "                    where (game_session_id, move_id) in (select game_session_id, max(move_id)\n" +
+                "                                                         from moves\n" +
+                "                                                         group by game_session_id)) m\n" +
                 "                   on gs.game_session_id = m.game_session_id\n" +
                 "WHERE gs.game_session_id = ?;";
     }
@@ -180,23 +177,26 @@ public class DbConnection {
 
     public static String loadMoves() {
         return "SELECT m.move_id,\n" +
-                "       pl.player_id,\n" +
-                "       name,\n" +
+                "       m.player_id,\n" +
                 "       start_time,\n" +
                 "       end_time,\n" +
                 "       move_nr,\n" +
-                "       pt.piece_type_id,\n" +
-                "       pt.color,\n" +
-                "       pt.size,\n" +
-                "       pt.fill,\n" +
-                "       pt.shape,\n" +
+                "       spt.piece_type_id    selected_piece_id,\n" +
+                "       spt.color            selected_piece_color,\n" +
+                "       spt.size             selected_piece_size,\n" +
+                "       spt.fill             selected_piece_fill,\n" +
+                "       spt.shape            selected_piece_shape,\n" +
+                "       ppt.piece_type_id    placed_piece_id,\n" +
+                "       ppt.color            placed_piece_color,\n" +
+                "       ppt.size             placed_piece_size,\n" +
+                "       ppt.fill             placed_piece_fill,\n" +
+                "       ppt.shape            placed_piece_shape,\n" +
                 "       coalesce(pos, -1) as pos\n" +
                 "FROM moves m\n" +
-                "         JOIN players pl on m.player_id = pl.player_id\n" +
                 "         LEFT JOIN pieces pi on m.move_id = pi.move_id\n" +
-                "         LEFT JOIN piece_types pt on pi.piece_type_id = pt.piece_type_id\n" +
-                "WHERE game_session_id = ?\n" +
-                "ORDER BY m.move_id;";
+                "         LEFT JOIN piece_types spt on pi.selected_piece_type_id = spt.piece_type_id\n" +
+                "         LEFT JOIN piece_types ppt on pi.placed_piece_type_id = ppt.piece_type_id\n" +
+                "WHERE game_session_id = ? ORDER BY m.move_id;";
     }
 
     public static String setPausePeriod() {
@@ -205,8 +205,8 @@ public class DbConnection {
     }
 
     public static String setPiece() {
-        return "INSERT INTO pieces (piece_type_id, move_id, pos)\n" +
-                "VALUES (?, ?, ?);";
+        return "INSERT INTO pieces (selected_piece_type_id, placed_piece_type_id, move_id, pos)\n" +
+                "VALUES (?, ?, ?, ?);";
     }
 
     public static String getPieceId() {

@@ -2,7 +2,6 @@ package be.kdg.quarto.model;
 
 import be.kdg.quarto.helpers.Characters;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
-import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
@@ -11,7 +10,6 @@ import be.kdg.quarto.model.enums.Size;
 
 import java.sql.*;
 import java.util.Date;
-import java.util.Random;
 
 public class GameSession {
     private Player player;
@@ -55,17 +53,21 @@ public class GameSession {
         this.gameSessionId = gameSessionId;
         this.player = AuthHelper.getLoggedInPlayer();
         loadSessionFromDb();
+
         this.game = new Game();
         loadMovesFromDb();
         placePiecesOnBoard();
+        currentPlayer = game.getMoves().getLast().getPlayer();
+        game.setCurrentMove(game.getMoves().getLast());
+        pickPiece(game.getMoves().getLast().getSelectedPiece());
 
-        if (game.getMoves().getLast().getPlayer().equals(this.player)) {
-            this.currentPlayer = this.opponent;
-        } else {
-            this.currentPlayer = player;
+        this.isOnline = true;
+        this.gameTimer = new GameTimer(game, startTime);
+
+        if (this.opponent instanceof Ai aiOpponent) {
+            aiOpponent.getStrategy().fillNecessaryData(this);
         }
 
-        this.gameTimer = new GameTimer(game, startTime);
     }
 
 
@@ -74,10 +76,7 @@ public class GameSession {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("opponent_id");
-                if (id <= 4) {
-                    this.opponent = new Characters().getCharacters().get(id);
-                }
+                this.opponent = new Characters().getCharacters().get(rs.getInt("opponent_id") - 1);
                 this.startTime = rs.getTimestamp("start_time");
             }
         } catch (SQLException e) {
@@ -96,16 +95,22 @@ public class GameSession {
                 } else {
                     player = this.opponent;
                 }
-                Color color = rs.getString("color") != null ? Color.valueOf(rs.getString("color").toUpperCase()) : null;
-                Size size = rs.getString("size") != null ? Size.valueOf(rs.getString("size").toUpperCase()) : null;
-                Fill fill = rs.getString("fill") != null ? Fill.valueOf(rs.getString("fill").toUpperCase()) : null;
-                Shape shape = rs.getString("shape") != null ? Shape.valueOf(rs.getString("shape").toUpperCase()) : null;
+                Piece piece = new Piece(
+                        rs.getString("placed_piece_color") != null ? Color.valueOf(rs.getString("placed_piece_color").toUpperCase()) : null,
+                        rs.getString("placed_piece_size") != null ? Size.valueOf(rs.getString("placed_piece_size").toUpperCase()) : null,
+                        rs.getString("placed_piece_fill") != null ? Fill.valueOf(rs.getString("placed_piece_fill").toUpperCase()) : null,
+                        rs.getString("placed_piece_shape") != null ? Shape.valueOf(rs.getString("placed_piece_shape").toUpperCase()) : null
+                );
 
-                game.getMoves().add(new Move(player,
-                        new Piece(color, size, fill, shape),
-                        rs.getInt("pos"),
-                        rs.getInt("move_nr"),
-                        rs.getTimestamp("start_time"), rs.getTimestamp("end_time")));
+                Piece selectedPiece = new Piece(
+                        rs.getString("selected_piece_color") != null ? Color.valueOf(rs.getString("selected_piece_color").toUpperCase()) : null,
+                        rs.getString("selected_piece_size") != null ? Size.valueOf(rs.getString("selected_piece_size").toUpperCase()) : null,
+                        rs.getString("selected_piece_fill") != null ? Fill.valueOf(rs.getString("selected_piece_fill").toUpperCase()) : null,
+                        rs.getString("selected_piece_shape") != null ? Shape.valueOf(rs.getString("selected_piece_shape").toUpperCase()) : null
+                );
+
+                Move move = new Move(player, piece, selectedPiece, rs.getInt("pos"), rs.getInt("move_nr"), rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
+                game.getMoves().add(move);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,9 +122,10 @@ public class GameSession {
             for (Move move : game.getMoves()) {
                 if (move.getPiece() != null && move.getPosition() != -1) {
                     game.getBoard().getTiles().get(move.getPosition()).setPiece(move.getPiece());
-                }
-                if (move.getSelectedPiece() != null) {
-                    game.getPiecesToSelect().getTiles().removeIf(tile -> tile.getPiece().equals(move.getSelectedPiece()));
+                    game.getPiecesToSelect().getTiles().stream()
+                            .filter(tile -> tile.getPiece() != null && tile.getPiece().equals(move.getPiece()))
+                            .findFirst()
+                            .ifPresent(tile -> tile.setPiece(null));
                 }
             }
         }
@@ -132,13 +138,12 @@ public class GameSession {
             if (game.getMoves() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                if (isOnline)
-                    saveMoveToDb(game.getCurrentMove());
+                if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
             }
             endGameSession(false);
             return;
         }
-        if(game.getPiecesToSelect().isEmpty()){
+        if (game.getPiecesToSelect().isEmpty()) {
             endGameSession(true);
         }
     }
@@ -201,8 +206,7 @@ public class GameSession {
             game.getCurrentMove().setEndTime(new Date());
         }
 
-        if (isOnline)
-            saveMoveToDb(game.getCurrentMove());
+        if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
 
         game.endMove();
         switchTurns();
@@ -238,7 +242,7 @@ public class GameSession {
 
         savePausePeriodsFromMoveToDb(move, moveIdTemp);
         if (move.getPosition() != -1) {
-            savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPosition());
+            savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPiece(), move.getPosition());
         }
 
     }
@@ -258,11 +262,12 @@ public class GameSession {
         }
     }
 
-    private void savePieceToDb(int moveId, Piece piece, int position) {
+    private void savePieceToDb(int moveId, Piece selectedPiece, Piece placedPiece, int position) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
-            ps.setInt(1, piece.getPieceId());
-            ps.setInt(2, moveId);
-            ps.setInt(3, position);
+            ps.setInt(1, selectedPiece.getPieceId());
+            ps.setInt(2, placedPiece.getPieceId());
+            ps.setInt(3, moveId);
+            ps.setInt(4, position);
             ps.executeUpdate();
 
 

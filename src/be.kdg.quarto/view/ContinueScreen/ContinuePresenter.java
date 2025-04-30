@@ -75,8 +75,6 @@ public class ContinuePresenter {
     }
 
     private void onGameSelected(int sessionId) {
-        System.out.println("Continuing game " + sessionId + "...");
-
         GameSession model = new GameSession(sessionId);
         GameView gameView = new GameView(ImageHelper.getPlayerImage(), ImageHelper.getOpponentImage(model.getOpponent()), model.getOpponent().getName());
 
