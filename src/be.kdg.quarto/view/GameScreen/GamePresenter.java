@@ -163,19 +163,18 @@ public class GamePresenter {
 
     private void onSelectCellClicked(SelectCell selectCell) {
         if(selectCell.getPiece() != null){
-
             //double click
             if(selectCell == selectedPiece){
                 confirmPieceSelection();
                 engine.determineFacts(model);
                 engine.applyRules(model.getGame(), move);
                 updateView();
+            }else{
+                if (selectedPiece != null) selectedPiece.deselect();
+                selectedPiece = selectCell;
+                selectCell.select();
 
-                return;
             }
-            if (selectedPiece != null) selectedPiece.deselect();
-            selectedPiece = selectCell;
-            selectCell.select();
         }
     }
 
@@ -186,7 +185,6 @@ public class GamePresenter {
 
         });
     }
-
     private void addEventHandlersForSettings() {
         view.getSettingsView().getRestartButton().setOnAction(event -> {
             restartGame();
@@ -209,6 +207,8 @@ public class GamePresenter {
         if (tile.getPiece() == null && model.getGame().getSelectedPiece() != null) {
             model.placePiece(tile);
             model.getGame().setSelectedPiece(null);
+            
+            checkForGameEnd();
         } else {
             System.out.println("You can't place a piece on a tile that already has a piece!");
         }
@@ -216,6 +216,14 @@ public class GamePresenter {
         selectedTile.deselect();
         selectedTile = null;
         updateView();
+    }
+
+    private void checkForGameEnd() {
+        if(model.getGame().getPiecesToSelect().isEmpty()){
+            boolean isWon = model.getGame().getGameRules().checkWin();
+            model.endGameSession(!isWon);
+            showEndScreen(!isWon);
+        }
     }
 
     private void confirmPieceSelection() {
@@ -233,7 +241,6 @@ public class GamePresenter {
         selectedPiece.setPiece(null);
         selectedPiece = null;
         view.switchToMainSection();
-        updateView();
 
         if (model.getOpponent() instanceof Ai) {
             handleAiTurn();
@@ -245,20 +252,15 @@ public class GamePresenter {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
             showEndScreen(false);
-            return;
         }
-        //show Tie EndScreen if Not Win
-        if(model.getGame().getPiecesToSelect().isEmpty()){
-            showEndScreen(true);
-        }
+
     }
 
     private void showEndScreen(boolean isTie){
+        view.getTurnStack().getChildren().clear();
         if(model.isOnline){
             loadStatisticsView();
-
         }else{
-
             view.getWinView().setWinner(!isTie ? model.getCurrentPlayer().getName() : null, model.getCurrentPlayer() == model.getOpponent());
             view.showWinScreen();
         }
@@ -295,6 +297,7 @@ public class GamePresenter {
             view.getSelectedPieceImage().setImage(null);
         }
     }
+
     private void loadStatisticsView(){
         view.showStatisticsScreen();
         view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
@@ -308,6 +311,7 @@ public class GamePresenter {
             System.out.println("Error loading statistics: " + e.getMessage());
         }
     }
+
     private void updateBoard() {
         for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
             Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
@@ -372,11 +376,11 @@ public class GamePresenter {
 
     private void handleAiTurn() {
 
-        Random rand = new Random();
-        float placeDuration = rand.nextFloat(1.5f) + 1;
-        float pickDuration = rand.nextFloat(1.5f) + 1;
-//        float placeDuration= 0.1f;
-//        float pickDuration = 0.1f;
+//        Random rand = new Random();
+//        float placeDuration = rand.nextFloat(1.5f) + 1;
+//        float pickDuration = rand.nextFloat(1.5f) + 1;
+        float placeDuration= 0.1f;
+        float pickDuration = 0.1f;
         animateLoadingBar(placeDuration + pickDuration);
 
         placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
@@ -388,9 +392,11 @@ public class GamePresenter {
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
             updateView();
-
+            checkForGameEnd();
             model.handlePendingWin();
-
+            if(model.isGameOver()){
+                showEndScreen(false);
+            }
             pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
             pickPieceDelay.setOnFinished(e -> {
                 model.pickPieceAi();

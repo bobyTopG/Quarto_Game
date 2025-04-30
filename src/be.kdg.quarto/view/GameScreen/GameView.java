@@ -418,6 +418,11 @@ public class GameView extends StackPane {
     ProgressBar getLoadingBar() {
         return loadingBar;
     }
+    StackPane getTurnStack(){
+        return turnStack;
+    }
+
+    //so we can make reinitialization of the GameView Possible
     public Image getOpponentImage(){
         return opponentImage;
     }
