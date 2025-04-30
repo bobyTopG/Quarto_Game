@@ -132,6 +132,7 @@ public class StartPresenter {
 
             if(connectedToDb() && !isLoading) {
                 closeConnection();
+                AuthHelper.logout();
                 view.switchOnlineMode(false);
             } else {
                 isLoading = true;

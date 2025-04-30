@@ -79,12 +79,13 @@ public class StartView extends StackPane {
 
     void switchOnlineMode(boolean online) {
         if (online) {
-            //because the VBoxes share the buttons we need to reassign them every time
             leftVBox.getChildren().clear();  // Clear first to prevent duplicates
             leftVBox.getChildren().addAll(label, register, login, leaderboard, quit);
+            userText.setText(AuthHelper.isLoggedIn() ? "Logged in as:\n" + AuthHelper.getLoggedInPlayer().getName() : "Not logged in");
         } else {
             leftVBox.getChildren().clear();  // Clear first to prevent duplicates
             leftVBox.getChildren().addAll(label, play, quit);
+            userText.setText("");
         }
     }
     ImageView onlineImageView;

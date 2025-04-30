@@ -51,6 +51,9 @@ public class WinView extends StackPane {
     }
 
 
+
+
+    //we use public getters in order for the logic to work(to use the functions and model from another presenter )
     public Button getExitButton() {
         return exitButton;
     }
