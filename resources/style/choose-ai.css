@@ -1,7 +1,6 @@
 /* choose-ai.css */
 .scene {
     -fx-background-color: #d89e30;
-    -fx-font-family: "Berlin Sans FB DemiBold";
 }
 .main-vbox {
     -fx-background-radius: 10px;
@@ -29,6 +28,8 @@
 }
 
 .ai-button {
+    -fx-font-family: "Berlin Sans FB Demi Bold";
+
     -fx-background-color: none;
     -fx-padding: 0;
     -fx-cursor: hand;
@@ -42,6 +43,7 @@
 }
 
 .character-label{
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-min-height: 120px;
     -fx-max-height: 120px;
 }
@@ -54,9 +56,7 @@
     -fx-min-height: 60px;
     -fx-max-height: 60px;
 
-    -fx-text-fill: white;
     -fx-font-size: 36px;
-    -fx-font-weight: bolder;
     -fx-background-radius: 50px;
 
     -fx-border-color: #232323;
@@ -67,20 +67,9 @@
     -fx-padding: 0px;
 
 }
-.back-button {
-    -fx-background-color: #F7931E;
-}
-.back-button:hover {
-    -fx-background-color: #e6621d;
-}
-.select-button{
-    -fx-background-color: #42AF3F;
-}
-.select-button:hover{
-    -fx-background-color: #389a3d;
-}
+
 .choose-label{
-    -fx-font-weight: bolder;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 42px;
     -fx-padding: 0px 0px 0px 20px;
 }
@@ -93,17 +82,17 @@
 }
 
 .name-label{
-    -fx-font-weight: bold;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 42px;
 }
 .difficulty-holder-label{
-    -fx-font-weight: bold;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 42px;
 
 }
 
 .difficulty-label{
-    -fx-font-weight: bold;
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 42px;
     -fx-text-fill: #42AF3F;
 

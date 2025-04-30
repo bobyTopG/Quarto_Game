@@ -4,6 +4,7 @@ import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.Player;
 import be.kdg.quarto.model.enums.AiLevel;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -40,8 +41,8 @@ public class ChooseAIView extends BorderPane {
 
     }
     private void initialiseNodes() {
-        backButton = CreateHelper.createButton("Back",new String[]{"back-button","action-button"});
-        selectButton = CreateHelper.createButton("Select", new String[]{"select-button","action-button"});
+        backButton = CreateHelper.createButton("Back",new String[]{"orange-button","default-button","action-button"});
+        selectButton = CreateHelper.createButton("Select", new String[]{"green-button","default-button","action-button"});
         chooseAILabel = new Label("Choose opponent :");
         nameLabel = new Label("");
         descriptionLabel = CreateHelper.createLabel("","character-label");
@@ -105,12 +106,15 @@ public class ChooseAIView extends BorderPane {
             changeDifficultyColor(level);
             descriptionLabel.setText(ai.getDescription());
             descriptionLabel.setStyle("-fx-font-size: 20px;");
+            descriptionLabel.setPadding(new Insets(0,0,0,0));
+
 
         }
         else {
             difficultyHolderLabel.setText("");
             difficultyLabel.setText("");
             descriptionLabel.setText("Have fun with your friends!");
+            descriptionLabel.setPadding(new Insets(0,0,80,0));
             descriptionLabel.setStyle("-fx-font-size: 28px;");
         }
 
@@ -119,11 +123,7 @@ public class ChooseAIView extends BorderPane {
     }
 
     private String getDifficultyName(AiLevel level){
-        String difficulty = "";
-        if(level != AiLevel.MEDIUM)
-             difficulty = level.toString();
-        else
-            difficulty = "MID";
+        String difficulty = level.toString();
         //EASY -> Easy
         String firstLetter = difficulty.substring(0, 1).toUpperCase();
 

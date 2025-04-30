@@ -200,7 +200,8 @@ public class GamePresenter {
 
         view.getSettingsView().getExitButton().setOnAction(event -> {
             model.getGameTimer().resumeGame();
-            model.saveMoveToDb(model.getGame().getCurrentMove());
+            if(model.isOnline)
+                model.saveMoveToDb(model.getGame().getCurrentMove());
 
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
