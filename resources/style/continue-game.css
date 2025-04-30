@@ -1,0 +1,44 @@
+.row-style {
+    -fx-border-color: #ffa55d;
+    -fx-border-width: 0 0 2 0;
+    -fx-background-color: #ffe38c;
+}
+
+/* ScrollPane styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ScrollBar styling */
+.scroll-bar:vertical {
+    -fx-background-color: #ffb347;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ffa55d;
+    -fx-background-insets: 2;
+    -fx-background-radius: 2;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #ffe38c;
+}
+
+/* Hide scrollbar arrows (increment and decrement buttons) */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-shape: "";
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}

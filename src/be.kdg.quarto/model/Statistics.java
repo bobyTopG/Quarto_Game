@@ -96,6 +96,42 @@ public class Statistics {
         return moves;
     }
 
+    public ArrayList<Move> getOutliers() {
+        ArrayList<Move> moves = loadStatistics();
+        if (moves.size() < 4) return new ArrayList<>(); // Not enough data for IQR
+
+        ArrayList<Integer> durations = new ArrayList<>();
+        for (Move move : moves) {
+            durations.add(move.getTime());
+        }
+
+        durations.sort(Integer::compareTo);
+
+        double q1 = getPercentile(durations, 25);
+        double q3 = getPercentile(durations, 75);
+        double iqr = q3 - q1;
+
+        double lowerBound = q1 - 1.5 * iqr;
+        double upperBound = q3 + 1.5 * iqr;
+
+        ArrayList<Move> outliers = new ArrayList<>();
+        for (Move move : moves) {
+            int time = move.getTime();
+            if (time < lowerBound || time > upperBound) {
+                outliers.add(move);
+            }
+        }
+
+        return outliers;
+    }
+
+
+    private double getPercentile(ArrayList<Integer> sortedList, double percentile) {
+        if (sortedList.isEmpty()) return 0;
+        int index = (int) Math.ceil(percentile / 100.0 * sortedList.size()) - 1;
+        return sortedList.get(Math.min(Math.max(index, 0), sortedList.size() - 1));
+    }
+
     public class Move {
         int playerId;
         int moveNumber;
@@ -105,11 +141,6 @@ public class Statistics {
             this.playerId = playerId;
             this.moveNumber = moveNumber;
             this.time = time;
-        }
-
-        @Override
-        public String toString() {
-            return "Move [playerId=" + playerId + ", moveNumber=" + moveNumber + ", time=" + time + "]";
         }
 
         public int getPlayerId() {

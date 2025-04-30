@@ -10,14 +10,17 @@ WHERE game_session_id = 2;
 SELECT p.player_id,
        name,
        count(*)                                                                                as total_moves,
-       sum(extract(epoch from age(end_time, start_time))::numeric)                             as total_duration,
-       round(sum(extract(epoch from age(end_time, start_time)))::numeric / 60.0 / count(*), 2) as avg
+       sum(extract(epoch from age(m.end_time, m.start_time))::numeric)                             as total_duration,
+       round(sum(extract(epoch from age(m.end_time, m.start_time)))::numeric / 60.0 / count(*), 2) as avg
 FROM moves m
          INNER JOIN game_sessions gs on (gs.game_session_id = m.game_session_id)
          INNER JOIN players p on (p.player_id = m.player_id)
-WHERE p.player_id = 3
-  and gs.game_session_id = 2
+WHERE p.player_id = 6
+  and gs.game_session_id = 15
 GROUP BY p.player_id, name;
+
+select * from game_sessions;
+select * from moves left join pieces on moves.move_id = pieces.move_id where game_session_id = 16;
 
 -- 2.
 SELECT player_id,
@@ -25,7 +28,7 @@ SELECT player_id,
        round(extract(epoch from age(end_time, start_time))::numeric, 2) as duration
 FROM moves
 WHERE player_id = 1
-  and game_session_id = 1;
+  and game_session_id = 15;
 
 -- 3.
 SELECT name,

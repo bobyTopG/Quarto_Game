@@ -151,8 +151,9 @@ public class GameSession {
     public void endGameSession(boolean isTie) {
         if(isCompleted) return;
         isCompleted = true;
-        if (isOnline)
+        if (isOnline) {
             updateGameSession(isTie);
+        }
     }
 
     public void switchTurns() {
