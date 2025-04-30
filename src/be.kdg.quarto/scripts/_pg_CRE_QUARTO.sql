@@ -27,8 +27,8 @@ CREATE TABLE game_sessions
     winner_id       INTEGER
         CONSTRAINT fk_winner_id REFERENCES players (player_id),
     is_completed    BOOLEAN DEFAULT false,
-    start_time timestamp,
-    end_time timestamp
+    start_time      timestamp,
+    end_time        timestamp
 );
 
 CREATE TABLE moves
@@ -43,13 +43,16 @@ CREATE TABLE moves
     end_time        timestamp,
     move_nr         INTEGER
 );
-CREATE TABLE  pause_periods (
+
+CREATE TABLE pause_periods
+(
     pause_period_id INTEGER GENERATED ALWAYS AS IDENTITY,
-    move_id INTEGER NOT NULL
+    move_id         INTEGER NOT NULL
         CONSTRAINT fk_move_id REFERENCES moves (move_id),
-    start_time timestamp,
-    end_time timestamp
+    start_time      timestamp,
+    end_time        timestamp
 );
+
 CREATE TABLE piece_types
 (
     piece_type_id INTEGER GENERATED ALWAYS AS IDENTITY
@@ -62,11 +65,13 @@ CREATE TABLE piece_types
 
 CREATE TABLE pieces
 (
-    piece_type_id INTEGER NOT NULL,
-    move_id       INTEGER NOT NULL,
-    pos           INTEGER,
+    selected_piece_type_id INTEGER NOT NULL,
+    placed_piece_type_id   INTEGER NOT NULL,
+    move_id                INTEGER NOT NULL,
+    pos                    INTEGER,
 
-    CONSTRAINT pk_piece_type_move_id PRIMARY KEY (piece_type_id, move_id),
-    CONSTRAINT fk_piece_type_id FOREIGN KEY (piece_type_id) REFERENCES piece_types (piece_type_id),
+    CONSTRAINT pk_piece_type_move_id PRIMARY KEY (selected_piece_type_id, placed_piece_type_id, move_id),
+    CONSTRAINT fk_selected_piece_type_id FOREIGN KEY (selected_piece_type_id) REFERENCES piece_types (piece_type_id),
+    CONSTRAINT fk_placed_piece_type_id FOREIGN KEY (placed_piece_type_id) REFERENCES piece_types (piece_type_id),
     CONSTRAINT fk_move_id FOREIGN KEY (move_id) REFERENCES moves (move_id)
 );
