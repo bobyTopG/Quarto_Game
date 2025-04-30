@@ -50,6 +50,8 @@ public class StatisticsPresenter {
 
         view.getNextBtn().setOnAction(event -> {
             view.setCenter(view.getLineChart());
+            view.getLineChart().getData().clear();
+
             for (Statistics.Move move : stats.loadStatistics()) {
                 if (move.getPlayerId() == stats.getPlayerId1()) {
                     view.getSeries1().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
@@ -57,15 +59,11 @@ public class StatisticsPresenter {
                     view.getSeries2().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
                 }
             }
-            view.getLineChart().getData().clear();
+
             view.getLineChart().getData().addAll(view.getSeries1(), view.getSeries2());
 
             view.getBackBtn().setDisable(false);
             view.getNextBtn().setDisable(true);
-        });
-
-        view.getCloseBtn().setOnAction(event -> {
-
         });
     }
 
