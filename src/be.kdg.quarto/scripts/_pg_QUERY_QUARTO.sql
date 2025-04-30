@@ -19,8 +19,8 @@ WHERE p.player_id = 6
   and gs.game_session_id = 15
 GROUP BY p.player_id, name;
 
-select * from game_sessions;
-select * from moves left join pieces on moves.move_id = pieces.move_id where game_session_id = 16;
+select * from game_sessions where player_id1 = 6 and is_completed = true;
+select * from moves left join pieces on moves.move_id = pieces.move_id where game_session_id = 19;
 
 -- 2.
 SELECT player_id,
