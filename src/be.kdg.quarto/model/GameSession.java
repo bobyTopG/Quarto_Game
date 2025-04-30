@@ -157,9 +157,9 @@ public class GameSession {
     public void callQuarto() {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
+            //if move is not complete at the end of the game, complete it
             if (game.getMoves().getLast().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
-                game.getCurrentMove().setPosition(-1);
                 if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
             }
             endGameSession(false);
@@ -216,7 +216,6 @@ public class GameSession {
     }
 
     public void pickPiece(Piece piece) {
-        //if null that means it is either an error or AI is at last Move
         if (piece != null) {
             game.setSelectedPiece(piece);
             game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
