@@ -54,16 +54,19 @@ public class SettingsView extends StackPane {
     }
 
 
-     Button getExitButton() {
-        return exitButton;
-    }
     //we use public getters in order for the logic to work(to use the functions and model from another presenter )
+    // check in the GamePresenter how it is used
      public Button getRestartButton() {
         return restartButton;
     }
-
      public Button getResumeButton() {
         return resumeButton;
     }
+
+    public Button getExitButton() {
+        return exitButton;
+    }
+
+
 
 }

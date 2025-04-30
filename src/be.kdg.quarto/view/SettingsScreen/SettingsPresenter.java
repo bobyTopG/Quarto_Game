@@ -17,13 +17,6 @@ public class SettingsPresenter {
     }
 
     private void addEventHandlers() {
-
-        view.getExitButton().setOnAction(event -> {
-            //model.restartGame();
-            StartView startView = new StartView();
-            view.getScene().setRoot(startView);
-            new StartPresenter(startView);
-        });
     }
 
     private void updateView() {

@@ -197,6 +197,15 @@ public class GamePresenter {
             model.getGameTimer().resumeGame();
             closeSettings();
         });
+
+        view.getSettingsView().getExitButton().setOnAction(event -> {
+            model.getGameTimer().resumeGame();
+            model.saveMoveToDb(model.getGame().getCurrentMove());
+
+            StartView startView = new StartView();
+            view.getScene().setRoot(startView);
+            new StartPresenter(startView);
+        });
     }
 
 

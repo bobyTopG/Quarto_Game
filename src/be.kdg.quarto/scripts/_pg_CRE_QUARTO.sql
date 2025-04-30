@@ -65,13 +65,15 @@ CREATE TABLE piece_types
 
 CREATE TABLE pieces
 (
-    selected_piece_type_id INTEGER NOT NULL,
-    placed_piece_type_id   INTEGER NOT NULL,
-    move_id                INTEGER NOT NULL,
+--     NEW pieces table implemented for incomplete moves
+    /*we make piece_types not null for the incomplete move when the player exits with an unfinished game*/
+    move_id                INTEGER NOT NULL
+        CONSTRAINT pk_piece_move_id PRIMARY KEY
+        CONSTRAINT fk_move_id REFERENCES moves (move_id),
+    selected_piece_type_id INTEGER,
+    placed_piece_type_id   INTEGER,
     pos                    INTEGER,
 
-    CONSTRAINT pk_piece_type_move_id PRIMARY KEY (selected_piece_type_id, placed_piece_type_id, move_id),
     CONSTRAINT fk_selected_piece_type_id FOREIGN KEY (selected_piece_type_id) REFERENCES piece_types (piece_type_id),
-    CONSTRAINT fk_placed_piece_type_id FOREIGN KEY (placed_piece_type_id) REFERENCES piece_types (piece_type_id),
-    CONSTRAINT fk_move_id FOREIGN KEY (move_id) REFERENCES moves (move_id)
+    CONSTRAINT fk_placed_piece_type_id FOREIGN KEY (placed_piece_type_id) REFERENCES piece_types (piece_type_id)
 );

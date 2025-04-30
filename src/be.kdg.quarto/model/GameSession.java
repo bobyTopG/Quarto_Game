@@ -63,7 +63,15 @@ public class GameSession {
         placePiecesOnBoard();
         currentPlayer = game.getMoves().getLast().getPlayer();
         game.setCurrentMove(game.getMoves().getLast());
-        pickPiece(game.getMoves().getLast().getSelectedPiece());
+
+
+        //set selected Piece if it exists (if not then the player is on the choose piece phase)
+        Piece piece = game.getMoves().get(game.getMoves().size() - 2).getSelectedPiece();
+        if (piece != null) {
+            game.setSelectedPiece(piece);
+            game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
+            game.pickPieceIntoMove(startTime);
+        }
 
         this.isOnline = true;
         this.gameTimer = new GameTimer(game, startTime);
@@ -99,19 +107,29 @@ public class GameSession {
                 } else {
                     player = this.opponent;
                 }
-                Piece piece = new Piece(
-                        rs.getString("placed_piece_color") != null ? Color.valueOf(rs.getString("placed_piece_color").toUpperCase()) : null,
-                        rs.getString("placed_piece_size") != null ? Size.valueOf(rs.getString("placed_piece_size").toUpperCase()) : null,
-                        rs.getString("placed_piece_fill") != null ? Fill.valueOf(rs.getString("placed_piece_fill").toUpperCase()) : null,
-                        rs.getString("placed_piece_shape") != null ? Shape.valueOf(rs.getString("placed_piece_shape").toUpperCase()) : null
-                );
+                Piece piece = null;
+                // Check if the column is NULL before getting its value
+                rs.getInt("placed_piece_id");
+                if(!rs.wasNull()) {
+                    piece = new Piece(
+                            rs.getString("placed_piece_color") != null ? Color.valueOf(rs.getString("placed_piece_color").toUpperCase()) : null,
+                            rs.getString("placed_piece_size") != null ? Size.valueOf(rs.getString("placed_piece_size").toUpperCase()) : null,
+                            rs.getString("placed_piece_fill") != null ? Fill.valueOf(rs.getString("placed_piece_fill").toUpperCase()) : null,
+                            rs.getString("placed_piece_shape") != null ? Shape.valueOf(rs.getString("placed_piece_shape").toUpperCase()) : null
+                    );
+                }
 
-                Piece selectedPiece = new Piece(
-                        rs.getString("selected_piece_color") != null ? Color.valueOf(rs.getString("selected_piece_color").toUpperCase()) : null,
-                        rs.getString("selected_piece_size") != null ? Size.valueOf(rs.getString("selected_piece_size").toUpperCase()) : null,
-                        rs.getString("selected_piece_fill") != null ? Fill.valueOf(rs.getString("selected_piece_fill").toUpperCase()) : null,
-                        rs.getString("selected_piece_shape") != null ? Shape.valueOf(rs.getString("selected_piece_shape").toUpperCase()) : null
-                );
+                Piece selectedPiece = null;
+                // First get the value, then check if it was NULL
+                rs.getInt("selected_piece_id");
+                if(!rs.wasNull()) {
+                    selectedPiece = new Piece(
+                            rs.getString("selected_piece_color") != null ? Color.valueOf(rs.getString("selected_piece_color").toUpperCase()) : null,
+                            rs.getString("selected_piece_size") != null ? Size.valueOf(rs.getString("selected_piece_size").toUpperCase()) : null,
+                            rs.getString("selected_piece_fill") != null ? Fill.valueOf(rs.getString("selected_piece_fill").toUpperCase()) : null,
+                            rs.getString("selected_piece_shape") != null ? Shape.valueOf(rs.getString("selected_piece_shape").toUpperCase()) : null
+                    );
+                }
 
                 Move move = new Move(player, piece, selectedPiece, rs.getInt("pos"), rs.getInt("move_nr"), rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
                 game.getMoves().add(move);
@@ -227,7 +245,7 @@ public class GameSession {
             ps.setTimestamp(3,
                     new java.sql.Timestamp(move.getStartTime().getTime()));
             ps.setTimestamp(4,
-                    new java.sql.Timestamp(move.getEndTime().getTime()));
+                    move.getEndTime() != null ? new Timestamp(move.getEndTime().getTime()) : null);
             ps.setInt(5, move.getMoveNumber());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -241,9 +259,8 @@ public class GameSession {
         }
 
         savePausePeriodsFromMoveToDb(move, moveIdTemp);
-        if (move.getPosition() != -1) {
-            savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPiece(), move.getPosition());
-        }
+
+        savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPiece(), move.getPosition());
 
     }
 
@@ -262,17 +279,31 @@ public class GameSession {
         }
     }
 
+
+    //considering that the move can be non-completed
     private void savePieceToDb(int moveId, Piece selectedPiece, Piece placedPiece, int position) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
-            ps.setInt(1, selectedPiece.getPieceId());
-            ps.setInt(2, placedPiece.getPieceId());
             ps.setInt(3, moveId);
-            ps.setInt(4, position);
+
+            if(selectedPiece != null) {
+                ps.setInt(1, selectedPiece.getPieceId());
+            }else{
+                ps.setNull(1, Types.INTEGER);
+            }
+            if(placedPiece != null) {
+                ps.setInt(2, placedPiece.getPieceId());
+                ps.setInt(4, position);
+
+            }else{
+                ps.setNull(2, Types.INTEGER);
+                ps.setNull(4, Types.INTEGER);
+
+            }
             ps.executeUpdate();
 
 
         } catch (SQLException e) {
-//            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -298,14 +329,13 @@ public class GameSession {
     // saves a finished game session to db
     public void updateGameSession(boolean isTie) {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
-            // Use setObject for values that might be null
             if (!isTie) {
                 ps.setInt(1, currentPlayer.getId());
             } else {
-                ps.setNull(1, java.sql.Types.INTEGER);
+                ps.setNull(1, Types.INTEGER);
             }
             ps.setBoolean(2, true);
-            java.sql.Timestamp sqlEndTime = new java.sql.Timestamp(endTime.getTime());
+            Timestamp sqlEndTime = new Timestamp(endTime.getTime());
             ps.setTimestamp(3, sqlEndTime);
             ps.setInt(4, gameSessionId);
             ps.executeUpdate();

@@ -33,6 +33,7 @@ public class Game {
         addCurrentMove();
         currentMove.setPlayer(player);
         currentMove.setMoveNumber(moves.size());
+        currentMove.setStartTime(getStartTimeForMove());
     }
 
     public void endMove() {
@@ -42,7 +43,6 @@ public class Game {
     public void placePieceIntoMove(Tile selectedTile) {
         currentMove.setPiece(selectedPiece);
         currentMove.setPosition(board.getTiles().indexOf(selectedTile));
-        currentMove.setStartTime(getStartTimeForMove());
         //if last move
         if (piecesToSelect.isEmpty()) {
             currentMove.setEndTime(new Date());
