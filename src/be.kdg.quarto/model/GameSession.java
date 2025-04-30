@@ -139,9 +139,9 @@ public class GameSession {
     public void callQuarto() {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
-            if (game.getMoves().get(game.getMoves().size() - 1).getEndTime() == null) {
+            if (game.getMoves().getLast().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
-                game.getCurrentMove().setSelectedPiece(null);
+                game.getCurrentMove().setPosition(-1);
                 if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
             }
             endGameSession(false);
