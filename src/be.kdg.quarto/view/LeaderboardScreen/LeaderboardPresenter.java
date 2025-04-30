@@ -14,15 +14,6 @@ public class LeaderboardPresenter {
     private final LeaderboardView view;
     private final Leaderboard leaderboard;
 
-    private TableView<Leaderboard.Player> table;
-    private TableColumn<Leaderboard.Player, String> name;
-    private TableColumn<Leaderboard.Player, Integer> totalGames;
-    private TableColumn<Leaderboard.Player, Integer> wins;
-    private TableColumn<Leaderboard.Player, Integer> losses;
-    private TableColumn<Leaderboard.Player, Float> winsPercent;
-    private TableColumn<Leaderboard.Player, Float> avgMoves;
-    private TableColumn<Leaderboard.Player, Float> avgMoveDuration;
-
     public LeaderboardPresenter(LeaderboardView view, Leaderboard leaderboard) {
         this.view = view;
         this.leaderboard = leaderboard;
@@ -33,77 +24,76 @@ public class LeaderboardPresenter {
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
 
-        table = new TableView<>();
+        TableView<Leaderboard.Player> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+//        table.setFixedCellSize(30);
 
         TableColumn<Leaderboard.Player, Integer> order = new TableColumn<>("Nr");
         order.setPrefWidth(40);
-        order.setCellValueFactory(cellData ->
-                new ReadOnlyObjectWrapper<>(table.getItems().indexOf(cellData.getValue()) + 1));
+        order.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(table.getItems().indexOf(cellData.getValue()) + 1));
+        order.setSortable(false);
 
-        name = new TableColumn<>("Name");
-        name.setPrefWidth(165);
-        name.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        table.getColumns().addAll(
+                order,
+                createStringColumn("Name", 140, p -> p.nameProperty().get()),
+                createIntegerColumn("Total Games", 140, p -> p.totalGamesProperty().get()),
+                createIntegerColumn("Wins", 85, p -> p.winsProperty().get()),
+                createIntegerColumn("Losses", 85, p -> p.lossesProperty().get()),
+                createFloatColumn("Wins Percent", 140, p -> p.winPercentageProperty().get()),
+                createFloatColumn("Moves", 85, p -> p.avgMovesProperty().get()),
+                createFloatColumn("Move Duration", 140, p -> p.avgMoveDurationProperty().get())
+        );
 
-        totalGames = new TableColumn<>("Total Games");
-        totalGames.setPrefWidth(125);
-        totalGames.setCellValueFactory(cellData -> cellData.getValue().totalGamesProperty().asObject());
-
-        wins = new TableColumn<>("Wins");
-        wins.setPrefWidth(85);
-        wins.setCellValueFactory(cellData -> cellData.getValue().winsProperty().asObject());
-
-        losses = new TableColumn<>("Losses");
-        losses.setPrefWidth(85);
-        losses.setCellValueFactory(cellData -> cellData.getValue().lossesProperty().asObject());
-
-        winsPercent = new TableColumn<>("Wins Percent");
-        winsPercent.setPrefWidth(125);
-        winsPercent.setCellValueFactory(cellData -> cellData.getValue().winPercentageProperty().asObject());
-
-        avgMoves = new TableColumn<>("Moves");
-        avgMoves.setPrefWidth(95);
-        avgMoves.setCellValueFactory(cellData -> cellData.getValue().avgMovesProperty().asObject());
-
-        avgMoveDuration = new TableColumn<>("Move Duration");
-        avgMoveDuration.setPrefWidth(135);
-        avgMoveDuration.setCellValueFactory(cellData -> cellData.getValue().avgMoveDurationProperty().asObject());
+        for (TableColumn<Leaderboard.Player, ?> column : table.getColumns()) {
+            column.setReorderable(false);
+            column.setResizable(false);
+        }
 
         try {
-            table.setItems(new Leaderboard().loadLeaderboard());
-            table.getColumns().addAll(order, name, totalGames, wins, losses, winsPercent, avgMoves, avgMoveDuration);
-
-            // disables the columns to be reordered and resized
-            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-            table.setFixedCellSize(30);
-            for (TableColumn<Leaderboard.Player, ?> column : table.getColumns()) {
-                column.setReorderable(false);
-                column.setResizable(false);
-            }
-            // disables the order column to be sorted
-            order.setSortable(false);
-
             table.setItems(leaderboard.loadLeaderboard());
             view.setCenter(table);
-        }
-        catch (SQLException e){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Connection Error");
-            alert.setHeaderText("You are currently offline");
-            alert.setContentText("Please connect again!");
-            alert.showAndWait();
-
-                StartView startView = new StartView();
-                view.getScene().setRoot(startView);
-                new StartPresenter(startView);
-           
+        } catch (SQLException e) {
+            showOfflineAlert();
+            switchToStartScreen();
         }
     }
 
     private void addEventHandlers() {
-        view.getBackBtn().setOnAction(event -> {
-            StartView startView = new StartView();
-            view.getScene().setRoot(startView);
-            new StartPresenter(startView);
-        });
+        view.getBackBtn().setOnAction(event -> switchToStartScreen());
+    }
+
+    private void switchToStartScreen() {
+        StartView startView = new StartView();
+        view.getScene().setRoot(startView);
+        new StartPresenter(startView);
+    }
+
+    private void showOfflineAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Connection Error");
+        alert.setHeaderText("You are currently offline");
+        alert.setContentText("Please connect again!");
+        alert.showAndWait();
+    }
+
+    private TableColumn<Leaderboard.Player, String> createStringColumn(String title, double width, java.util.function.Function<Leaderboard.Player, String> mapper) {
+        TableColumn<Leaderboard.Player, String> col = new TableColumn<>(title);
+        col.setPrefWidth(width);
+        col.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(mapper.apply(cellData.getValue())));
+        return col;
+    }
+
+    private TableColumn<Leaderboard.Player, Integer> createIntegerColumn(String title, double width, java.util.function.ToIntFunction<Leaderboard.Player> mapper) {
+        TableColumn<Leaderboard.Player, Integer> col = new TableColumn<>(title);
+        col.setPrefWidth(width);
+        col.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(mapper.applyAsInt(cellData.getValue())));
+        return col;
+    }
+
+    private TableColumn<Leaderboard.Player, Float> createFloatColumn(String title, double width, java.util.function.ToDoubleFunction<Leaderboard.Player> mapper) {
+        TableColumn<Leaderboard.Player, Float> col = new TableColumn<>(title);
+        col.setPrefWidth(width);
+        col.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>((float) mapper.applyAsDouble(cellData.getValue())));
+        return col;
     }
 }

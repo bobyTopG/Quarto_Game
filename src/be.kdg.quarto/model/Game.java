@@ -1,14 +1,5 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.helpers.DbConnection;
-import be.kdg.quarto.model.enums.Color;
-import be.kdg.quarto.model.enums.Fill;
-import be.kdg.quarto.model.enums.Shape;
-import be.kdg.quarto.model.enums.Size;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +54,7 @@ public class Game {
     public void pickPieceIntoMove(Date gameSessionStartTime) {
         currentMove.setSelectedPiece(getSelectedPiece());
         currentMove.setEndTime(new Date());
-        //first Move
+        // first Move
         if (board.isEmpty()) {
             currentMove.setStartTime(gameSessionStartTime);
         }
@@ -71,7 +62,12 @@ public class Game {
     }
 
     public Date getStartTimeForMove() {
+        List<Move> moves = getMoves();
+        if (moves == null || moves.isEmpty() || moves.size() - 1 == 0) { // Check for null and empty
+            return new Date();
+        } else {
             return moves.get(moves.size() - 2).getEndTime();
+        }
     }
 
 

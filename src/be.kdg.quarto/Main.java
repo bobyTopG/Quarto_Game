@@ -6,8 +6,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.net.MalformedURLException;
-
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
@@ -33,7 +31,8 @@ public class Main extends Application {
     private void loadStyleSheets(Scene scene) {
         //order is important, first loaded low priority, last loaded higher priority
         scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/choose-ai-view.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style/choose-ai.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style/continue-game.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/game.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/start-menu.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/statistics.css").toExternalForm());

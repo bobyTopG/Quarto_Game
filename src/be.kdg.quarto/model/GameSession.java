@@ -135,10 +135,12 @@ public class GameSession {
     public void callQuarto() {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
-            if (game.getMoves() == null) {
+            if (game.getCurrentMove().getEndTime() == null) {
                 game.getCurrentMove().setEndTime(endTime);
                 game.getCurrentMove().setPosition(-1);
-                if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
+                if (isOnline) {
+                    saveMoveToDb(game.getCurrentMove());
+                }
             }
             endGameSession(false);
             return;
@@ -149,9 +151,9 @@ public class GameSession {
     }
 
     public void endGameSession(boolean isTie) {
-        if (isOnline)
+        if (isOnline) {
             updateGameSession(isTie);
-
+        }
     }
 
     public void switchTurns() {
@@ -206,7 +208,9 @@ public class GameSession {
             game.getCurrentMove().setEndTime(new Date());
         }
 
-        if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
+        if (isOnline) {
+            saveMoveToDb(game.getCurrentMove());
+        }
 
         game.endMove();
         switchTurns();
