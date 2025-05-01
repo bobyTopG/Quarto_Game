@@ -41,7 +41,11 @@ CREATE TABLE moves
         CONSTRAINT fk_player_id REFERENCES players (player_id),
     start_time      timestamp,
     end_time        timestamp,
-    move_nr         INTEGER
+    move_nr         INTEGER,
+    --     to prevent for the same move being recorded (will trigger constraint error if triggered, for debugging purposes)
+
+    CONSTRAINT unique_game_move UNIQUE (game_session_id, move_nr)
+
 );
 
 CREATE TABLE pause_periods
@@ -50,7 +54,10 @@ CREATE TABLE pause_periods
     move_id         INTEGER NOT NULL
         CONSTRAINT fk_move_id REFERENCES moves (move_id),
     start_time      timestamp,
-    end_time        timestamp
+    end_time        timestamp,
+--     to prevent for the same pause_period being recorded (will trigger constraint error if triggered, for debugging purposes)
+    CONSTRAINT unique_timestamps UNIQUE (start_time, end_time, move_id)
+
 );
 
 CREATE TABLE piece_types

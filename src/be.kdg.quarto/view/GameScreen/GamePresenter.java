@@ -4,6 +4,7 @@ import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Move;
+import be.kdg.quarto.model.PausePeriod;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.Tile;
@@ -75,6 +76,7 @@ public class GamePresenter {
     }
 
     private void setUpTimer() {
+        updateTimerDisplay();
         Timeline uiUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimerDisplay()));
         uiUpdateTimer.setCycleCount(Timeline.INDEFINITE);
         uiUpdateTimer.play();
@@ -199,9 +201,10 @@ public class GamePresenter {
         });
 
         view.getSettingsView().getExitButton().setOnAction(event -> {
-            model.getGameTimer().resumeGame();
-            if(model.isOnline)
+            if(model.isOnline){
+                model.getGame().getCurrentMove().getPausePeriods().add(new PausePeriod(model.getGameTimer().getCurrentPauseStart(),null));
                 model.saveMoveToDb(model.getGame().getCurrentMove());
+            }
 
             StartView startView = new StartView();
             view.getScene().setRoot(startView);

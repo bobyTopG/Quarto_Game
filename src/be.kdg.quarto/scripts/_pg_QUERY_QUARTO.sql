@@ -180,3 +180,34 @@ select moves.*, p.pos from moves
 select * from moves m left join pieces p on m.move_id = p.move_id
 where game_session_id = 1
 order by m.move_id desc;
+
+
+
+
+
+--extracting total duration of Game_Session
+SELECT
+    -- Part 1: Extract reference values for debugging/analysis
+    EXTRACT(EPOCH FROM (gs.start_time)) as start_time_epoch,
+    EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP)) as current_time_epoch,
+
+    -- Part 2: Calculate total pause duration in seconds
+    COALESCE(SUM(
+                     EXTRACT(EPOCH FROM (COALESCE(pp.end_time, CURRENT_TIMESTAMP) - pp.start_time))
+             ), 0) as total_pause_seconds,
+
+    -- Part 3: Calculate and format the actual game duration
+    TO_CHAR(
+            MAKE_INTERVAL(secs => (
+                EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - gs.start_time)) -
+                COALESCE(SUM(
+                                 EXTRACT(EPOCH FROM (COALESCE(pp.end_time, CURRENT_TIMESTAMP) - pp.start_time))
+                         ), 0)
+                )),
+            'HH24:MI:SS'
+    ) AS formatted_duration
+FROM game_sessions gs
+         LEFT JOIN moves m ON gs.game_session_id = m.game_session_id
+         LEFT JOIN pause_periods pp ON m.move_id = pp.move_id
+WHERE gs.game_session_id =1
+GROUP BY gs.game_session_id, gs.start_time;

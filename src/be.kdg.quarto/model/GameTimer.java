@@ -10,7 +10,6 @@ public class GameTimer {
     private Date gameEndTime;
     private boolean isPaused = false;
     private Date currentPauseStart;
-    private final List<PausePeriod> pausePeriods = new ArrayList<>();
 
     public GameTimer(Game game) {
         // Initialize with current time
@@ -36,8 +35,6 @@ public class GameTimer {
 
     public void resumeGame() {
         if (isPaused) {
-            Date pauseEnd = new Date();
-            pausePeriods.add(new PausePeriod(currentPauseStart, pauseEnd));
             isPaused = false;
             currentPauseStart = null;
             game.getCurrentMove().resume();
@@ -49,8 +46,10 @@ public class GameTimer {
         long totalPausedTime = 0;
 
         // Add all completed pause periods
-        for (PausePeriod pause : pausePeriods) {
-            totalPausedTime += pause.getDurationInMillis();
+        for(Move move : game.getMoves()){
+            for(PausePeriod pausePeriod : move.getPausePeriods()){
+                totalPausedTime += pausePeriod.getDurationInMillis();
+            }
         }
 
         // If we're currently paused, add the current pause time
@@ -81,5 +80,9 @@ public class GameTimer {
 
     public Date getGameEndTime() {
         return gameEndTime;
+    }
+
+    public Date getCurrentPauseStart() {
+        return currentPauseStart;
     }
 }

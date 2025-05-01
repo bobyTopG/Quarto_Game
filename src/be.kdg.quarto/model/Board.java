@@ -171,5 +171,11 @@ public class Board {
 
         return lines;
     }
+    public void removePiece(Piece piece){
+        tiles.stream()
+                .filter(tile -> tile.getPiece() != null && tile.getPiece().equals(piece))
+                .findFirst()
+                .ifPresent(tile -> tile.setPiece(null));
+    }
 
 }

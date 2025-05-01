@@ -26,6 +26,9 @@ public class PausePeriod {
     }
 
     public long getDurationInMillis() {
-        return pauseEnd.getTime() - pauseStart.getTime();
+        if(pauseEnd != null)
+            return pauseEnd.getTime() - pauseStart.getTime();
+        else
+            return (new Date().getTime() - pauseStart.getTime());
     }
 }

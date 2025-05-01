@@ -9,7 +9,9 @@ import be.kdg.quarto.model.enums.Shape;
 import be.kdg.quarto.model.enums.Size;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class GameSession {
     private Player player;
@@ -27,6 +29,10 @@ public class GameSession {
 
     private boolean isCompleted;
     public boolean isOnline;
+
+
+    //we use this to check if the last move is loaded, if yes we need to update it instead of saving a new one
+    private boolean isLoaded = false;
 
     public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) {
         this.game = new Game();
@@ -62,24 +68,33 @@ public class GameSession {
         loadMovesFromDb();
         placePiecesOnBoard();
         currentPlayer = game.getMoves().getLast().getPlayer();
+        this.gameTimer = new GameTimer(game,startTime);
         game.setCurrentMove(game.getMoves().getLast());
 
-
-        //set selected Piece if it exists (if not then the player is on the choose piece phase)
+    if(game.getCurrentMove().getPiece() == null && game.getMoves().size() != 1) {
         Piece piece = game.getMoves().get(game.getMoves().size() - 2).getSelectedPiece();
-        if (piece != null) {
-            game.setSelectedPiece(piece);
-            game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
-            game.pickPieceIntoMove(startTime);
-        }
+        game.setSelectedPiece(piece);
+        game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
+    }
+
 
         this.isOnline = true;
-        this.gameTimer = new GameTimer(game, startTime);
-
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
 
+    }
+
+    private void eraseCurrentMoveFromDb(int moveId) {
+        try(PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.deleteMoveWithCascade())){
+            ps.setInt(1,moveId);
+            ps.setInt(2,moveId);
+            ps.setInt(3,moveId);
+
+            ps.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -132,22 +147,50 @@ public class GameSession {
                 }
 
                 Move move = new Move(player, piece, selectedPiece, rs.getInt("pos"), rs.getInt("move_nr"), rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
+                int moveId = rs.getInt("move_id");
+                move.getPausePeriods().addAll(loadPausePeriodsForMove(moveId));
+                rs.getTimestamp("end_time");
+                if(rs.wasNull()) {
+                    eraseCurrentMoveFromDb(moveId);
+                }
+
                 game.getMoves().add(move);
             }
         } catch (SQLException e) {
+            System.out.println("1");
             e.printStackTrace();
         }
     }
+
+    private List<PausePeriod> loadPausePeriodsForMove(int moveId) {
+        List<PausePeriod> pausePeriods = new ArrayList<>();
+            try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadPausePeriods())) {
+                ps.setInt(1, moveId);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    PausePeriod pausePeriod;
+                    if(rs.getTimestamp("end_time") != null)
+                         pausePeriod = new PausePeriod(rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
+                    else {
+                        Date currentTime = new Date();
+                        pausePeriod = new PausePeriod(rs.getTimestamp("start_time"), currentTime);
+                    }
+                    pausePeriods.add(pausePeriod);
+                }
+            } catch (Exception e) {
+                System.out.println("2");
+                System.out.println(e.getMessage());
+            }
+
+            return  pausePeriods;
+        }
 
     private void placePiecesOnBoard() {
         if (!game.getMoves().isEmpty()) {
             for (Move move : game.getMoves()) {
                 if (move.getPiece() != null && move.getPosition() != -1) {
                     game.getBoard().getTiles().get(move.getPosition()).setPiece(move.getPiece());
-                    game.getPiecesToSelect().getTiles().stream()
-                            .filter(tile -> tile.getPiece() != null && tile.getPiece().equals(move.getPiece()))
-                            .findFirst()
-                            .ifPresent(tile -> tile.setPiece(null));
+                    game.getPiecesToSelect().removePiece(move.getPiece());
                 }
             }
         }
@@ -251,13 +294,13 @@ public class GameSession {
             if (rs.next()) {
                 moveIdTemp = rs.getInt(1);
             }
+            savePausePeriodsFromMoveToDb(move, moveIdTemp);
 
 
         } catch (SQLException e) {
 //            e.printStackTrace();
         }
 
-        savePausePeriodsFromMoveToDb(move, moveIdTemp);
 
         savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPiece(), move.getPosition());
 
@@ -267,13 +310,19 @@ public class GameSession {
         for (PausePeriod pausePeriod : move.getPausePeriods()) {
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPausePeriod())) {
                 ps.setInt(1, moveId);
-                ps.setTimestamp(2, new java.sql.Timestamp(pausePeriod.getPauseStart().getTime()));
-                ps.setTimestamp(3, new java.sql.Timestamp(pausePeriod.getPauseEnd().getTime()));
+                ps.setTimestamp(2, new Timestamp(pausePeriod.getPauseStart().getTime()));
+                ps.setTimestamp(3,pausePeriod.getPauseEnd() != null ? new Timestamp(pausePeriod.getPauseEnd().getTime()) : null);
 
                 ps.executeUpdate();
 
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                if (e.getMessage().contains("unique_timestamps") ||
+                        e.getMessage().contains("pk_piece_move_id")) {
+                    System.out.println("Expected error");
+                } else {
+                    // Log other unexpected errors
+                    System.err.println("Unexpected SQL error: " + e.getMessage());
+                }
             }
         }
     }
@@ -310,7 +359,7 @@ public class GameSession {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
             ps.setInt(2, this.opponent.getId());
-            java.sql.Timestamp sqlStartTime = new java.sql.Timestamp(startTime.getTime());
+            java.sql.Timestamp sqlStartTime = new Timestamp(startTime.getTime());
             ps.setTimestamp(3, sqlStartTime);
             ps.executeUpdate();
 

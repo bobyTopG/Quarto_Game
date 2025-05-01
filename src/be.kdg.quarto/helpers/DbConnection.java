@@ -10,6 +10,8 @@ public class DbConnection {
     public static Connection connection = null;
     public static boolean isConnecting = false;
 
+
+
     public interface ConnectionCallback {
         void onConnectionComplete(boolean isConnected);
     }
@@ -142,7 +144,7 @@ public class DbConnection {
                 "WHERE game_session_id = ?;";
     }
 
-    public static String loadUnfinishedSessions() {
+    public static String loadUnfinishedSessionsOld() {
         return "SELECT gs.game_session_id,\n" +
                 "       gs.player_id2,\n" +
                 "       TO_CHAR(age(latest_pause.end_time, gs.start_time), 'HH24:MI:SS') as duration\n" +
@@ -156,7 +158,34 @@ public class DbConnection {
                 "ORDER BY 2;";
     }
 
-    public static String getGameSession() {
+    //new Variant (calculating including all pause_periods)
+    public static String loadUnfinishedSessions(){
+        return """
+        SELECT 
+            gs.game_session_id,
+            gs.player_id2,
+            gs.end_time,
+            TO_CHAR(
+                MAKE_INTERVAL(secs => (
+                    EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - gs.start_time)) - 
+                    COALESCE(SUM(
+                        EXTRACT(EPOCH FROM (COALESCE(pp.end_time, CURRENT_TIMESTAMP) - pp.start_time))
+                    ), 0)
+                )),
+                'HH24:MI:SS'
+            ) AS formatted_duration,
+            CASE WHEN COUNT(pp.pause_period_id) FILTER (WHERE pp.end_time IS NULL) > 0 THEN true ELSE false END AS is_corrupted
+        FROM game_sessions gs
+        LEFT JOIN moves m ON gs.game_session_id = m.game_session_id
+        LEFT JOIN pause_periods pp ON m.move_id = pp.move_id
+        WHERE gs.is_completed = false
+          AND gs.player_id1 = ?
+        GROUP BY gs.game_session_id, gs.player_id2, gs.start_time, gs.end_time;
+        """;
+    }
+
+
+    public static String getGameSessionOld() {
         return "SELECT gs.player_id2                                  as opponent_id,\n" +
                 "       (select max(pp.end_time) from pause_periods pp\n" +
                 "                 join moves m on m.move_id = pp.move_id\n" +
@@ -169,14 +198,20 @@ public class DbConnection {
                 "                   on gs.game_session_id = m.game_session_id\n" +
                 "WHERE gs.game_session_id = ?;";
     }
-
-    public static String setMove() {
-        return "INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)\n" +
-                "VALUES (?, ?, ?, ?, ?);";
+    public static String getGameSession() {
+        return """
+            SELECT gs.player_id2 as opponent_id,
+                   gs.start_time
+            FROM game_sessions gs
+            WHERE gs.game_session_id = ?;
+            """;
     }
 
+
+
+
     public static String loadMoves() {
-        return "SELECT m.move_id,\n" +
+        return "SELECT  m.move_id            move_id,\n" +
                 "       m.player_id,\n" +
                 "       start_time,\n" +
                 "       end_time,\n" +
@@ -199,16 +234,32 @@ public class DbConnection {
                 "WHERE game_session_id = ? ORDER BY m.move_id;";
     }
 
+    public static String loadPausePeriods(){
+        return "SELECT pause_period_id, start_time, end_time FROM pause_periods" +
+                " WHERE move_id = ?;";
+    }
+
     public static String setPausePeriod() {
         return "INSERT INTO pause_periods (move_id, start_time, end_time)\n" +
                 "VALUES (?, ?, ?);";
+    }
+    //update entry if already exists
+    public static String setMove() {
+        return """
+        INSERT INTO moves (game_session_id, player_id, start_time, end_time, move_nr)
+        VALUES (?, ?, ?, ?, ?)
+        """;
     }
 
     public static String setPiece() {
         return "INSERT INTO pieces (selected_piece_type_id, placed_piece_type_id, move_id, pos)\n" +
                 "VALUES (?, ?, ?, ?);";
     }
-
+    public static String deleteMoveWithCascade() {
+        return "DELETE FROM pause_periods WHERE move_id = ?;\n" +
+                "DELETE FROM pieces WHERE move_id = ?;\n" +
+                "DELETE FROM moves WHERE move_id = ?;";
+    }
     public static String getPieceId() {
         return "SELECT piece_type_id FROM piece_types\n" +
                 "WHERE upper(fill)  = ?\n" +

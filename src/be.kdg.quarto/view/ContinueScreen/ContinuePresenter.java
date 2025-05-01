@@ -14,9 +14,7 @@ import javafx.scene.control.Button;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ContinuePresenter {
 
@@ -32,6 +30,17 @@ public class ContinuePresenter {
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");
 
+        loadGameSessions();
+
+        int count = 1;
+        for (Map.Entry<Integer, String[]> entry : sessions.entrySet()) {
+            view.addGameRow(count, entry.getValue()[0], entry.getValue()[1]);
+            count++;
+        }
+
+    }
+
+    private void loadGameSessions() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadUnfinishedSessions())) {
             ps.setInt(1, AuthHelper.getLoggedInPlayer().getId());
             ResultSet rs = ps.executeQuery();
@@ -41,20 +50,16 @@ public class ContinuePresenter {
                 String difficulty = (level >= 0 && level < AiLevel.values().length)
                         ? AiLevel.values()[level].toString()
                         : "FRIENDLY";
-                String duration = rs.getString("duration");
 
-                sessions.put(sessionId, new String[]{difficulty, duration});
+                //if gameSession does not have any pause periods with null end_time
+                // that means that the game was suddenly closed and not saved properly
+                //TODO: fix the corrupted gameSessions
+                if(rs.getBoolean("is_corrupted"))
+                    sessions.put(sessionId, new String[]{difficulty, rs.getString("formatted_duration")});
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        int count = 1;
-        for (Map.Entry<Integer, String[]> entry : sessions.entrySet()) {
-            view.addGameRow(count, entry.getValue()[0], entry.getValue()[1]);
-            count++;
-        }
-
     }
 
     private void addEventHandlers() {
