@@ -50,11 +50,7 @@ public class RandomPlayingStrategy implements PlayingStrategy {
     public Tile selectTile() {
         return getRandomFreeTile();
     }
-    /**
-     * Returns the identifier for this strategy.
-     *
-     * @return a string representing the strategy name
-     */
+
     @Override
     public String getName() {
         return "S1";

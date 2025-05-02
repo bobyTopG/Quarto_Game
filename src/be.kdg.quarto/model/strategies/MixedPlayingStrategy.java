@@ -65,11 +65,6 @@ public class MixedPlayingStrategy implements PlayingStrategy {
         }
     }
 
-    /**
-     * Returns the name of this strategy.
-     *
-     * @return the name "Mixed"
-     */
     @Override
     public String getName() {
         return "Mixed";

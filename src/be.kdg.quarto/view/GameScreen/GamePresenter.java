@@ -9,7 +9,7 @@ import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.model.Tile;
 import be.kdg.quarto.model.enums.Size;
-import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
+import be.kdg.quarto.model.strategies.rulebasedsystem.InferenceEngine;
 import be.kdg.quarto.view.GameScreen.Cells.BoardCell;
 import be.kdg.quarto.view.GameScreen.Cells.SelectCell;
 import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
@@ -35,7 +35,7 @@ public class GamePresenter {
     private final Move move = new Move();
     private final GameSession model;
     private final GameView view;
-    private final InterfaceEngine engine = new InterfaceEngine();
+    private final InferenceEngine inferenceEngine = new InferenceEngine();
     private SelectCell selectedPiece;
     private BoardCell selectedTile;
     private List<BoardCell> board;
@@ -128,8 +128,8 @@ public class GamePresenter {
         view.getPlacePiece().setOnAction(event -> {
             placePiece();
 
-            engine.determineFacts(model);
-            engine.applyRules(model.getGame(), move);
+            inferenceEngine.determineFacts(model);
+            inferenceEngine.applyRules(model.getGame(), move);
 
             //force call Quarto on last Move
             if(model.getGame().getPiecesToSelect().isEmpty()){
@@ -150,8 +150,8 @@ public class GamePresenter {
             } catch (Exception e) {
                 ErrorHelper.showError(e,"Failed to select Piece");
             }
-            engine.determineFacts(model);
-            engine.applyRules(model.getGame(), move);
+            inferenceEngine.determineFacts(model);
+            inferenceEngine.applyRules(model.getGame(), move);
             updateView();
         });
 
@@ -199,8 +199,8 @@ public class GamePresenter {
             //double click
             if(selectCell == selectedPiece){
                 confirmPieceSelection();
-                engine.determineFacts(model);
-                engine.applyRules(model.getGame(), move);
+                inferenceEngine.determineFacts(model);
+                inferenceEngine.applyRules(model.getGame(), move);
                 updateView();
             }else{
                 if (selectedPiece != null) selectedPiece.deselect();
@@ -412,8 +412,8 @@ public class GamePresenter {
             } catch (Exception e) {
                 ErrorHelper.showError(e,"AI place piece error");
             }
-            engine.determineFacts(model);
-            engine.applyRules(model.getGame(), move);
+            inferenceEngine.determineFacts(model);
+            inferenceEngine.applyRules(model.getGame(), move);
             updateView();
             try {
                 checkForGameEnd();
@@ -451,8 +451,8 @@ public class GamePresenter {
                 ErrorHelper.showDBError(ex);
             }
 
-            engine.determineFacts(model);
-            engine.applyRules(model.getGame(), move);
+            inferenceEngine.determineFacts(model);
+            inferenceEngine.applyRules(model.getGame(), move);
             updateView();
         });
         pickPieceDelay.play();

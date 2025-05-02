@@ -5,35 +5,35 @@ import be.kdg.quarto.model.Move;
 import be.kdg.quarto.model.Piece;
 import be.kdg.quarto.model.PlayingStrategy;
 import be.kdg.quarto.model.Tile;
-import be.kdg.quarto.model.strategies.rulebasedsystem.InterfaceEngine;
+import be.kdg.quarto.model.strategies.rulebasedsystem.InferenceEngine;
 
 import java.util.List;
 
 public class RuleBasedStrategy implements PlayingStrategy {
-    private final InterfaceEngine engine;
+    private final InferenceEngine inferenceEngine;
     private GameSession game;
 
     /**
-     * Constructs a RuleBasedStrategy using an internal inference engine.
+     * Constructs a RuleBasedStrategy using an internal inference inferenceEngine.
      */
     public RuleBasedStrategy() {
-        this.engine = new InterfaceEngine();
+        this.inferenceEngine = new InferenceEngine();
     }
 
     /**
-     * Selects a tile based on facts and rules processed by the inference engine.
-     * If the inference engine fails or produces an invalid move, returns null.
+     * Selects a tile based on facts and rules processed by the inference inferenceEngine.
+     * If the inference inferenceEngine fails or produces an invalid move, returns null.
      *
-     * @return a Tile determined by the rule engine, or null if selection fails
-     * @throws Exception if rule engine processing encounters an error
+     * @return a Tile determined by the rule inferenceEngine, or null if selection fails
+     * @throws Exception if rule inferenceEngine processing encounters an error
      */
 
     @Override
     public Tile selectTile() throws Exception {
         Move move = new Move();
         try {
-            engine.determineFacts(game);
-            engine.applyRules(game.getGame(), move);
+            inferenceEngine.determineFacts(game);
+            inferenceEngine.applyRules(game.getGame(), move);
 
             move.setPlayer(game.getCurrentPlayer());
             move.setPiece(game.getGame().getSelectedPiece());
@@ -44,7 +44,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
 
 
         } catch (Exception e) {
-            throw new Exception("\"Rule engine error during tile selection: \" + e.getMessage()");
+            throw new Exception("\"Rule inferenceEngine error during tile selection: \" + e.getMessage()");
         }
         int pos = move.getPosition();
         if (pos >= 0 && pos < game.getGame().getBoard().getTiles().size()) {
@@ -56,7 +56,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
 
     /**
      * Selects a piece to give to the opponent using rule-based logic.
-     * Falls back to a random piece if the engine fails or returns null.
+     * Falls back to a random piece if the inferenceEngine fails or returns null.
      *
      * @return the selected Piece
      */
@@ -65,8 +65,8 @@ public class RuleBasedStrategy implements PlayingStrategy {
         Move move;
         try {
             move = new Move();
-            engine.determineFacts(game);
-            engine.applyRules(game.getGame(), move);
+            inferenceEngine.determineFacts(game);
+            inferenceEngine.applyRules(game.getGame(), move);
         } catch (Exception e) {
             move = new Move();
         }
@@ -83,11 +83,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
         return piecesLeft.stream().findAny().map(Tile::getPiece).orElse(null);
     }
 
-    /**
-     * Returns the name of this strategy.
-     *
-     * @return an empty string (or intended strategy name if defined)
-     */
+
     @Override
     public String getName() {
         return "";
