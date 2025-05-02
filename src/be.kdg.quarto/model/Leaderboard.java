@@ -72,7 +72,6 @@ public class Leaderboard {
         }
 
 
-
         public SimpleIntegerProperty lossesProperty() {
             return losses;
         }

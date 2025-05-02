@@ -14,7 +14,7 @@
 }
 
 .scroll-pane .viewport {
-    -fx-background-color: transparent;
+    -fx-background-color: #ffe38c;
 }
 
 /* ScrollBar styling */

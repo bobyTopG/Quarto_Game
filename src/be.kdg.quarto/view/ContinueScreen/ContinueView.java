@@ -78,6 +78,14 @@ public class ContinueView extends BorderPane {
         continueButtons.add(continueButton);
     }
 
+    public void noIncompleteGames() {
+        Label noGamesLabel = CreateHelper.createLabel("All games completed. Ready to start a new one?", "info");
+        noGamesLabel.setAlignment(Pos.CENTER);
+        noGamesLabel.setPadding(new Insets(20));
+
+        this.setCenter(noGamesLabel);
+    }
+
     List<Button> getContinueButtons() {
         return continueButtons;
     }

@@ -71,11 +71,21 @@ public class StatisticsPresenter {
                         view.getSeries2().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
                     }
                 }
+
+                for (Statistics.Move move : stats.getOutliers()) {
+                    view.getOutlierSeries().getData().add(new XYChart.Data<>(move.getMoveNumber(), move.getTime()));
+                }
+
             } catch (SQLException e) {
                 ErrorHelper.showDBError(e);
             }
 
-            view.getLineChart().getData().addAll(view.getSeries1(), view.getSeries2());
+            view.getLineChart().getData().add(view.getSeries1());
+            view.getLineChart().getData().add(view.getSeries2());
+            if (!view.getOutlierSeries().getData().isEmpty()) {
+                view.getLineChart().getData().add(view.getOutlierSeries());
+                view.getOutlierSeries().getNode().setStyle("-fx-stroke-width: 0;");
+            }
 
             view.getBackBtn().setDisable(false);
             view.getNextBtn().setDisable(true);
