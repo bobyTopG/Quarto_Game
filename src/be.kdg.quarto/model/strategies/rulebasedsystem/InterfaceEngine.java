@@ -9,6 +9,11 @@ import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactsHandler;
 import be.kdg.quarto.model.strategies.rulebasedsystem.facts.FactValues;
 import be.kdg.quarto.model.strategies.rulebasedsystem.rules.RulesHandler;
 
+/**
+ * The InterfaceEngine coordinates fact determination and rule evaluation
+ * for the RuleBasedStrategy. It uses the FactsHandler to analyze the game state
+ * and the RulesHandler to apply appropriate logic to determine moves.
+ */
 public class InterfaceEngine {
     private boolean ruleFired;
     private final FactsHandler currentFacts = new FactsHandler();

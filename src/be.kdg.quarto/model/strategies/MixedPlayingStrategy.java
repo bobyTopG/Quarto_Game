@@ -14,18 +14,32 @@ public class MixedPlayingStrategy implements PlayingStrategy {
     private RandomPlayingStrategy randomStrategy;
     private RuleBasedStrategy ruleStrategy;
 
+    /**
+     * Constructs a MixedPlayingStrategy that blends rule-based and random strategies.
+     * Initializes both internal strategy instances.
+     */
     public MixedPlayingStrategy() {
         randomStrategy = new RandomPlayingStrategy();
         ruleStrategy = new RuleBasedStrategy();
     }
 
+    /**
+     * Loads the current game session into both rule-based and random strategies.
+     *
+     * @param gameSession the current game session
+     */
     public void fillNecessaryData(GameSession gameSession) {
         game = gameSession;
         randomStrategy.fillNecessaryData(game);
         ruleStrategy.fillNecessaryData(game);
     }
 
-    // for every logic-based decision, 70% of the time it will use the rule-based strategy and 30% of the time, it will use the random strategy
+    /**
+     * Selects a piece to give to the opponent.
+     * 70% of the time uses the rule-based strategy, 30% uses the random strategy.
+     *
+     * @return the selected Piece
+     */
     @Override
     public Piece selectPiece() {
         if (Math.random() < 0.70) {
@@ -35,6 +49,13 @@ public class MixedPlayingStrategy implements PlayingStrategy {
         }
     }
 
+    /**
+     * Selects a tile to place the current piece.
+     * 70% of the time uses the rule-based strategy, 30% uses the random strategy.
+     *
+     * @return the selected Tile
+     * @throws Exception if tile selection fails
+     */
     @Override
     public Tile selectTile() throws Exception {
         if (Math.random() < 0.70) {
@@ -44,12 +65,22 @@ public class MixedPlayingStrategy implements PlayingStrategy {
         }
     }
 
+    /**
+     * Returns the name of this strategy.
+     *
+     * @return the name "Mixed"
+     */
     @Override
     public String getName() {
         return "Mixed";
     }
 
-    // rule always returns true, random returns true 50% of the time. 0.5 * 0.3 = 0.15, the chance that the mixed AI will NOT call quarto
+    /**
+     * Determines whether to call Quarto.
+     * Has an 85% chance to return true, combining behaviors of both strategies.
+     *
+     * @return true if Quarto should be called, false otherwise
+     */
     @Override
     public boolean isCallingQuarto() {
         if (Math.random() < 0.85) {

@@ -13,6 +13,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ * Represents a full session of a Quarto game between two players (human or AI).
+ * A GameSession handles the game flow, including player turns, move tracking,
+ * AI integration, database persistence, and game timer management.
+ *
+ * <p>It supports both offline and online games. In online mode, it saves and loads
+ * session data, moves, and piece selections from a database. It can resume a session
+ * using an ID and restore all previous moves and states.</p>
+ *
+ * <p>Responsibilities include:</p>
+ * <ul>
+ *     <li>Initializing new games and restoring saved ones</li>
+ *     <li>Switching turns and placing/picking pieces</li>
+ *     <li>Calling Quarto and handling endgame logic</li>
+ *     <li>Supporting AI player actions via strategy patterns</li>
+ *     <li>Saving and updating data in the database</li>
+ * </ul>
+ *
+ * <p>It interacts with Game, Player, Tile, Piece, Move, GameTimer, and the database layer
+ * via prepared statements defined in DbConnection.</p>
+ */
+
 public class GameSession {
     private Player player;
     private Player opponent;
