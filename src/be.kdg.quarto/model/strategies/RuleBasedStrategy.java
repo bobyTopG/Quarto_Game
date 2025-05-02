@@ -13,9 +13,20 @@ public class RuleBasedStrategy implements PlayingStrategy {
     private final InterfaceEngine engine;
     private GameSession game;
 
+    /**
+     * Constructs a RuleBasedStrategy using an internal inference engine.
+     */
     public RuleBasedStrategy() {
         this.engine = new InterfaceEngine();
     }
+
+    /**
+     * Selects a tile based on facts and rules processed by the inference engine.
+     * If the inference engine fails or produces an invalid move, returns null.
+     *
+     * @return a Tile determined by the rule engine, or null if selection fails
+     * @throws Exception if rule engine processing encounters an error
+     */
 
     @Override
     public Tile selectTile() throws Exception {
@@ -43,6 +54,12 @@ public class RuleBasedStrategy implements PlayingStrategy {
         return null;
     }
 
+    /**
+     * Selects a piece to give to the opponent using rule-based logic.
+     * Falls back to a random piece if the engine fails or returns null.
+     *
+     * @return the selected Piece
+     */
     @Override
     public Piece selectPiece() {
         Move move;
@@ -66,16 +83,32 @@ public class RuleBasedStrategy implements PlayingStrategy {
         return piecesLeft.stream().findAny().map(Tile::getPiece).orElse(null);
     }
 
+    /**
+     * Returns the name of this strategy.
+     *
+     * @return an empty string (or intended strategy name if defined)
+     */
     @Override
     public String getName() {
         return "";
     }
 
+    /**
+     * Loads the current GameSession data required for decision making.
+     *
+     * @param gameSession the current game session
+     */
     @Override
     public void fillNecessaryData(GameSession gameSession) {
         this.game = gameSession;
     }
 
+    /**
+     * Determines whether the strategy decides to call Quarto.
+     * Always returns true if a pure win is detected by the game rules.
+     *
+     * @return true if Quarto is to be called
+     */
     @Override
     public boolean isCallingQuarto() {
         return game.getGame().getGameRules().checkPureWin();
