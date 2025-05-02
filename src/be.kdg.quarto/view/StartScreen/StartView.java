@@ -22,8 +22,8 @@ public class StartView extends StackPane {
     private BorderPane root;
 
     private Button online;
-    private Label onlineText = CreateHelper.createLabel("","online-text");
-    private Label userText = CreateHelper.createLabel("","user-text");
+    private final Label onlineText = CreateHelper.createLabel("","online-text");
+    private final Label userText = CreateHelper.createLabel("","user-text");
 
     public StartView() {
         initialiseNodes();

@@ -5,7 +5,6 @@ import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Leaderboard;
-import be.kdg.quarto.model.Statistics;
 import be.kdg.quarto.view.ContinueScreen.ContinuePresenter;
 import be.kdg.quarto.view.ContinueScreen.ContinueView;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
@@ -157,9 +156,7 @@ public class StartPresenter {
                 setOnlineButton("");
         });
 
-        view.getPlay().setOnMousePressed(e -> {
-            goToChooseAIScreen(false);
-        });
+        view.getPlay().setOnMousePressed(e -> goToChooseAIScreen(false));
 
     }
     private void goToChooseAIScreen(boolean online) {

@@ -6,8 +6,8 @@ import java.util.List;
 public class GameRules {
     private Piece lastPiecePlaced;
     private Piece beforeLastPiecePlaced;
-    private Board board;
-    private List<Move> moves;
+    private final Board board;
+    private final List<Move> moves;
 
     public GameRules(Board board, List<Move> moves) {
         this.board = board;
@@ -16,7 +16,7 @@ public class GameRules {
 
     public boolean checkWin() {
         if (moves.size() < 4) return false;
-        lastPiecePlaced = moves.get(moves.size() - 1).getPiece();
+        lastPiecePlaced = moves.getLast().getPiece();
         beforeLastPiecePlaced = moves.get(moves.size() - 2).getPiece();
         return checkHorizontalWin() || checkVerticalWin() || checkMainDiagonalWin() || checkAntiDiagonalWin();
     }

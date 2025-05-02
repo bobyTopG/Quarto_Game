@@ -1,30 +1,70 @@
 package be.kdg.quarto.view.WinScreen;
 
+import be.kdg.quarto.helpers.ErrorHelper;
+import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.view.GameScreen.GamePresenter;
+import be.kdg.quarto.view.GameScreen.GameView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 
+import java.sql.SQLException;
+
 public class WinPresenter {
-    private WinView view;
+    private final WinView view;
+    private final GameSession model;
+    private final GamePresenter gamePresenter;
 
-    public WinPresenter(WinView view) {
+    public WinPresenter(WinView view, GameSession model, GamePresenter gamePresenter) {
         this.view = view;
+        this.model = model;
+        this.gamePresenter = gamePresenter;
 
-        updateView();
         addEventHandlers();
     }
 
     private void addEventHandlers() {
-        view.getExitButton().setOnAction(event -> {
-            StartView startView = new StartView();
-            view.getScene().setRoot(startView);
-            new StartPresenter(startView);
+        view.getExitButton().setOnAction(event -> exitToMainMenu());
+
+        view.getRestartButton().setOnAction(event -> {
+            try {
+                restartGame();
+            } catch (SQLException e) {
+                ErrorHelper.showDBError(e);
+            }
+            gamePresenter.closeSettings();
         });
     }
 
-    private void updateView() {
+    private void restartGame() throws SQLException {
+        // Create a new Game instance with the same players from the current game
+        GameSession newGameSession = new GameSession(
+                model.getPlayer(),
+                model.getOpponent(),
+                model.getOpponent(),
+                model.isOnline
+        );
 
+        // Create a new view
+        GameView newGameView = new GameView(
+                ImageHelper.getPlayerImage(),
+                ImageHelper.getOpponentImage(model.getOpponent()),
+                model.getOpponent().getName()
+        );
+        // Replace the scene root
+        gamePresenter.getView().getScene().setRoot(newGameView);
+
+        // Create a new presenter
+        new GamePresenter(newGameSession, newGameView);
     }
 
+    private void exitToMainMenu() {
+        StartView startView = new StartView();
+        view.getScene().setRoot(startView);
+        new StartPresenter(startView);
+    }
+
+    public void setWinner(String name, boolean isOpponent) {
+        view.setWinner(name, isOpponent);
+    }
 }

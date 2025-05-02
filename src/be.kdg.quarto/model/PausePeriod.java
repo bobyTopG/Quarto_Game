@@ -1,10 +1,11 @@
 package be.kdg.quarto.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class PausePeriod {
-    private Date pauseStart;
-    private Date pauseEnd;
+    private final Date pauseStart;
+    private final Date pauseEnd;
 
     public PausePeriod(Date pauseStart, Date pauseEnd) {
         this.pauseStart = pauseStart;
@@ -18,17 +19,8 @@ public class PausePeriod {
         return pauseEnd;
     }
 
-    public void setPauseEnd(Date pauseEnd) {
-        this.pauseEnd = pauseEnd;
-    }
-    public void setPauseStart(Date pauseStart) {
-        this.pauseStart = pauseStart;
-    }
 
     public long getDurationInMillis() {
-        if(pauseEnd != null)
-            return pauseEnd.getTime() - pauseStart.getTime();
-        else
-            return (new Date().getTime() - pauseStart.getTime());
+        return Objects.requireNonNullElseGet(pauseEnd, Date::new).getTime() - pauseStart.getTime();
     }
 }

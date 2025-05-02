@@ -62,7 +62,8 @@ public class WinView extends StackPane {
     }
     public void setWinner(String name, boolean isOpponent) {
         if(name != null){
-            winLabel.setStyle(!isOpponent ? "-fx-background-color: #29ABE2" : "-fx-background-color: rgb(218,66,66)");
+            if (!isOpponent) winLabel.setStyle("-fx-background-color: #29ABE2");
+            else winLabel.setStyle("-fx-background-color: rgb(218,66,66)");
             String text = isOpponent ? (name + " Wins!") : "You Win!";
             winLabel.setText(text);
         }else{

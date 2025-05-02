@@ -1,16 +1,11 @@
 package be.kdg.quarto.helpers;
 
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
 public class CreateHelper {
     public static Button createButton(String text, String styleClass) {
         Button button = new Button(text);

@@ -41,9 +41,6 @@ public class Cell {
     }
     public StackPane getCellVisual() { return cell; }
     public Piece getPiece() { return piece; }
-    public ImageView getPieceVisual(){
-        return pieceImageView;
-    }
 
     public int getRow() { return row; }
     public int getColumn() { return column; }

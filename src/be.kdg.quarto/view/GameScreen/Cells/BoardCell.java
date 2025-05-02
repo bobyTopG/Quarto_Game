@@ -25,7 +25,6 @@ import javafx.scene.shape.Circle;
 
 
     }
-    public Circle getCircle() { return circle; }
     public void select(){
          isSelected = true;
          this.circle.setFill(new Color(1.0,1.0,1.0,0.7));

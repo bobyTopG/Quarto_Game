@@ -5,7 +5,6 @@ import be.kdg.quarto.model.enums.Fill;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.enums.Shape;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

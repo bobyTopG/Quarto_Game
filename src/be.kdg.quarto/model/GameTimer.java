@@ -1,13 +1,11 @@
 package be.kdg.quarto.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class GameTimer {
     private final Game game;
-    private Date gameStartTime;
-    private Date gameEndTime;
+    //we do not need end Time as this timer is used only while Game session is not completed
+    private final Date gameStartTime;
     private boolean isPaused = false;
     private Date currentPauseStart;
 
@@ -61,26 +59,13 @@ public class GameTimer {
     }
 
     public int getGameDurationInSeconds() {
-        // Calculate end timestamp (current time if game isn't finished)
-        long endTimestamp = (gameEndTime != null) ? gameEndTime.getTime() : new Date().getTime();
 
         // Calculate total duration excluding pauses (in milliseconds)
-        long durationInMillis = endTimestamp - gameStartTime.getTime() - getTotalPausedTimeInMillis();
+        long durationInMillis = new Date().getTime() - gameStartTime.getTime() - getTotalPausedTimeInMillis();
 
         return (int) (durationInMillis / 1000);
     }
 
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    public Date getGameStartTime() {
-        return gameStartTime;
-    }
-
-    public Date getGameEndTime() {
-        return gameEndTime;
-    }
 
     public Date getCurrentPauseStart() {
         return currentPauseStart;

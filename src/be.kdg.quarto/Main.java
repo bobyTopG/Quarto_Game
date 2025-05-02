@@ -1,11 +1,14 @@
 package be.kdg.quarto;
 
+import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class Main extends Application {
     @Override
@@ -35,15 +38,18 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream("/fonts/berlin.ttf"), 12);
 
         //order is important, first loaded low priority, last loaded higher priority
-        scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/choose-ai.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/continue-game.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/game.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/start-menu.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/statistics.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/settings.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/style/win.css").toExternalForm());
-
+        try {
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/style.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/choose-ai.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/continue-game.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/game.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/start-menu.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/statistics.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/settings.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/win.css")).toExternalForm());
+        }catch (Exception e){
+            ErrorHelper.showError(e,"Error loading one of the style sheets");
+        }
 
 
     }

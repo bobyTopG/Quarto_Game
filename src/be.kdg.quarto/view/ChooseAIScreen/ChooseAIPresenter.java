@@ -2,6 +2,7 @@ package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
+import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Player;
@@ -16,33 +17,43 @@ import be.kdg.quarto.helpers.Characters;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static be.kdg.quarto.helpers.ImageHelper.getOpponentImage;
 
 public class ChooseAIPresenter {
     private final ChooseAIView view;
     private Player opponentSelected;
-    private Characters characters = new Characters();
-    private boolean isOnline;
+    private final boolean isOnline;
 
     public ChooseAIPresenter(ChooseAIView view, boolean online) {
         this.view = view;
-        List<Image> images = findAICharacterImagesForButtons();
+        List<Image> images = null;
+        try {
+            images = findAICharacterImagesForButtons();
+        } catch (Exception e) {
+            ErrorHelper.showError(e,"One or more AI character images could not found");
+        }
         String pathToNotFound = "/images/aiCharacters/100px/BoxedNotFound.png";
         Image notFoundImage = new Image(pathToNotFound);
-        view.initialise(images, characters.getCharacters(), notFoundImage);
+        view.initialise(images, Characters.getCharacters(), notFoundImage);
         this.isOnline = online;
 
         updateView();
         addEventHandlers();
     }
 
-    private List<Image> findAICharacterImagesForButtons() {
-        List<Player> AiList = characters.getCharacters();
+    private List<Image> findAICharacterImagesForButtons() throws Exception {
+        List<Player> AiList = Characters.getCharacters();
         List<Image> images = new ArrayList<>();
         for (Player ai : AiList) {
             String imagePath = "/images/aiCharacters/100px/Boxed" + ai.getName() + ".png";
-            Image image = new Image(getClass().getResource(imagePath).toString());
+            Image image;
+            try {
+                image = new Image(Objects.requireNonNull(getClass().getResource(imagePath)).toString());
+            }catch (Exception e) {
+                throw new Exception("Ai Character Image not Found");
+            }
             images.add(image);
         }
         return images;
@@ -57,7 +68,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                opponentSelected = characters.getCharacter(id);
+                opponentSelected = Characters.getCharacter(id);
             });
             count++;
         }

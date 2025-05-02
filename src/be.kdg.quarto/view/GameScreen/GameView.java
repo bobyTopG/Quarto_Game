@@ -1,10 +1,8 @@
 package be.kdg.quarto.view.GameScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.view.SettingsScreen.SettingsPresenter;
 import be.kdg.quarto.view.SettingsScreen.SettingsView;
 import be.kdg.quarto.view.StatisticsScreen.StatisticsView;
-import be.kdg.quarto.view.WinScreen.WinPresenter;
 import be.kdg.quarto.view.WinScreen.WinView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,11 +30,11 @@ public class GameView extends StackPane {
 
 
     private final HBox VSHBox = new HBox();
-    private VBox player1 = new VBox();
+    private final VBox player1 = new VBox();
     private final Image playerImage;
     private final VBox player2 = new VBox();
     private final Image opponentImage;
-    private Label VSLabel = CreateHelper.createLabel("VS", "title");
+    private final Label VSLabel = CreateHelper.createLabel("VS", "title");
 
 
     private final VBox selectedPieceContainer = new VBox();
@@ -90,7 +88,7 @@ public class GameView extends StackPane {
         createSettingsButton();
 
         createLoadingButton();
-        
+
         createVSHBox();
         // === Overlay (settings screen) ===
         createSettingsScreen();
@@ -232,14 +230,10 @@ public class GameView extends StackPane {
     void showSettingsScreen() {
         enableOverlay();
         overlayContainer.getChildren().add(settingsView);
-        new SettingsPresenter(settingsView);
-
     }
     void showWinScreen(){
         enableOverlay();
         overlayContainer.getChildren().add(winView);
-        new WinPresenter(winView);
-
 
     }
     void showStatisticsScreen() {
@@ -264,7 +258,7 @@ public class GameView extends StackPane {
 
         selectedPieceContainer.getChildren().addAll(pieceHolder,label);
         selectedPieceContainer.setSpacing(10);
-    };
+    }
     void createChoosePieceView(){
 
          choosePieceConfirmation = CreateHelper.createButton("Choose Piece", new String[]{"default-button", "green-button"});
@@ -365,9 +359,6 @@ public class GameView extends StackPane {
         return statisticsView;
     }
 
-    VBox getSelectedPieceContainer() {
-        return selectedPieceContainer;
-    }
 
     ImageView getSelectedPieceImage() {
         return selectedPieceImage;
@@ -377,9 +368,6 @@ public class GameView extends StackPane {
         return turn;
     }
 
-    Label getTimer() {
-        return timer;
-    }
     void setTimer(int time) {
        int minutes = time / 60;
        int seconds = time % 60;
@@ -421,14 +409,5 @@ public class GameView extends StackPane {
     StackPane getTurnStack(){
         return turnStack;
     }
-
-    //so we can make reinitialization of the GameView Possible
-    public Image getOpponentImage(){
-        return opponentImage;
-    }
-    public Image getPlayerImage(){
-        return playerImage;
-    }
-
 
 }

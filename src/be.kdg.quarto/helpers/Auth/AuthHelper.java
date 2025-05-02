@@ -1,10 +1,7 @@
 package be.kdg.quarto.helpers.Auth;
 
-import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Human;
-
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,10 +12,6 @@ import java.sql.SQLException;
  */
 public class AuthHelper {
     private static Human loggedInPlayer;
-
-    // Static initialization block to set up database connection
-    static {
-    }
 
     // Private constructor to prevent instantiation
     private AuthHelper() {
@@ -35,7 +28,7 @@ public class AuthHelper {
 
     public static Human getGuestPlayer() {
         //one of the presets in the fill script
-        return new Human(5,"Guest", null);
+        return new Human("Guest", null);
     }
 
     public static Human login(String username, String password) throws AuthException {

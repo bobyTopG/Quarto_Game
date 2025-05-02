@@ -28,8 +28,8 @@ public class ChooseAIView extends BorderPane {
             descriptionLabel,difficultyHolderLabel, difficultyLabel;
 
     private HBox difficultyHBox;
-    private List<Button> characterButtons = new ArrayList<>();
-    private List<Button> notFoundButtons = new ArrayList<>();
+    private final List<Button> characterButtons = new ArrayList<>();
+    private final List<Button> notFoundButtons = new ArrayList<>();
     private VBox mainVBox, characterVBox;
 
 
@@ -97,8 +97,7 @@ public class ChooseAIView extends BorderPane {
         //set the character that is the nth on the list
         selectedCharacter.setImage(AIImages.get(n));
         nameLabel.setText(AiCharacters.get(n).getName());
-        if(AiCharacters.get(n) instanceof  Ai) {
-            Ai ai = (Ai) AiCharacters.get(n);
+        if(AiCharacters.get(n) instanceof Ai ai) {
             AiLevel level = ai.getDifficultyLevel();
             difficultyHolderLabel.setText("Difficulty:");
 
@@ -170,15 +169,15 @@ public class ChooseAIView extends BorderPane {
 
         selectButton.disableProperty().set(true);
         // create a Hbox of buttons with the "amount" amount
-        HBox AICharactersHBox = generateButtonsForAI(4);
+        HBox AICharactersHBox = generateButtonsForAI();
         mainVBox.getChildren().add(1, AICharactersHBox);
     }
 
-    private HBox generateButtonsForAI(int amount){
+    private HBox generateButtonsForAI(){
         HBox AICharactersHBox = new HBox();
         AICharactersHBox.getStyleClass().add("ai-characters-hbox");
         int count = 0;
-        for (Player character : AiCharacters) {
+        for (Player ignored : AiCharacters) {
             Button AICharacterButton = CreateHelper.createButton("","ai-button");
             Image image = AIImages.get(count);
             ImageView imageView = new ImageView(image);
@@ -191,7 +190,7 @@ public class ChooseAIView extends BorderPane {
             AICharactersHBox.getChildren().add(AICharacterButton);
             count++;
         }
-        for (int i = 0; i < amount-count; i++){
+        for (int i = 0; i < 4 -count; i++){
             Button notFoundButton = CreateHelper.createButton("","ai-button");
             ImageView imageView = new ImageView(notFoundImage);
             imageView.setFitHeight(100);

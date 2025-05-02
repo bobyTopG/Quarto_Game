@@ -70,10 +70,6 @@ public class Statistics {
                 this.averageMoveDuration = rs.getFloat(4);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            // Log the specific SQL error message
-            System.err.println("SQL Error: " + e.getMessage());
-
             throw new SQLException("failed to load Statistics");
         }
 

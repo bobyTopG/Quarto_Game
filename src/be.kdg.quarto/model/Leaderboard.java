@@ -34,7 +34,7 @@ public class Leaderboard {
         return playerList;
     }
 
-    public class Player {
+    public static class Player {
         private final SimpleStringProperty name;
         private final SimpleIntegerProperty totalGames;
         private final SimpleIntegerProperty wins;
@@ -61,49 +61,32 @@ public class Leaderboard {
             return name;
         }
 
-        public int getTotalGames() {
-            return totalGames.get();
-        }
 
         public SimpleIntegerProperty totalGamesProperty() {
             return totalGames;
         }
 
-        public int getWins() {
-            return wins.get();
-        }
 
         public SimpleIntegerProperty winsProperty() {
             return wins;
         }
 
-        public int getLosses() {
-            return losses.get();
-        }
+
 
         public SimpleIntegerProperty lossesProperty() {
             return losses;
         }
 
-        public float getWinPercentage() {
-            return winPercentage.get();
-        }
 
         public SimpleFloatProperty winPercentageProperty() {
             return winPercentage;
         }
 
-        public float getAvgMoves() {
-            return avgMoves.get();
-        }
 
         public SimpleFloatProperty avgMovesProperty() {
             return avgMoves;
         }
 
-        public float getAvgMoveDuration() {
-            return avgMoveDuration.get();
-        }
 
         public SimpleFloatProperty avgMoveDurationProperty() {
             return avgMoveDuration;

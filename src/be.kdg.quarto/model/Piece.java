@@ -1,6 +1,5 @@
 package be.kdg.quarto.model;
 
-import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
@@ -13,10 +12,10 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class Piece {
-    private Color color;
-    private Size size;
-    private Fill fill;
-    private Shape shape;
+    private final Color color;
+    private final Size size;
+    private final Fill fill;
+    private final Shape shape;
 
     private int pieceId;
 

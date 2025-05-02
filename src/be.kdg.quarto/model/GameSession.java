@@ -50,10 +50,6 @@ public class GameSession {
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
         }
-        if (currentPlayer == this.opponent) {
-            pickPieceAi();
-        }
-
 
     }
 
@@ -105,7 +101,7 @@ public class GameSession {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.opponent = new Characters().getCharacter(rs.getInt("opponent_id") - 1);
+                this.opponent = Characters.getCharacter(rs.getInt("opponent_id") - 1);
                 this.startTime = rs.getTimestamp("start_time");
             }
         } catch (SQLException e) {
