@@ -5,15 +5,12 @@ import javafx.scene.paint.Color;
 
 public class SelectCell extends Cell {
     String color;
-    private final int SIZE = 55;
+
     public SelectCell(int row, int col, String color) {
         super(row,col);
-        try{
-            this.cell.setStyle("-fx-background-color: " + color + ";");
-            this.color = color;
-        }catch(Exception e){
-            System.out.println("Invalid Color");
-        }
+        this.cell.setStyle("-fx-background-color: " + color + ";");
+        this.color = color;
+        int SIZE = 55;
         this.cell.setPrefSize(SIZE, SIZE);
         this.cell.setMinSize(SIZE, SIZE);
         this.cell.setMaxSize(SIZE, SIZE);

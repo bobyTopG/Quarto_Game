@@ -5,6 +5,7 @@ import be.kdg.quarto.model.enums.Fill;
 import be.kdg.quarto.model.enums.Size;
 import be.kdg.quarto.model.enums.Shape;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,7 +31,8 @@ public class Board {
             for (Size size : Size.values()) {
                 for (Fill fill : Fill.values()) {
                     for (Shape shape : Shape.values()) {
-                        tiles.add(new Tile(new Piece(color, size, fill, shape)));
+                        Piece piece = new Piece(color, size, fill, shape);
+                        tiles.add(new Tile(piece));
                     }
                 }
             }

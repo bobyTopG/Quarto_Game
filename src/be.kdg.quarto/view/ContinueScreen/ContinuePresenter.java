@@ -1,7 +1,9 @@
 package be.kdg.quarto.view.ContinueScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
+import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.enums.AiLevel;
@@ -53,12 +55,11 @@ public class ContinuePresenter {
 
                 //if gameSession does not have any pause periods with null end_time
                 // that means that the game was suddenly closed and not saved properly
-                //TODO: fix the corrupted gameSessions
                 if(rs.getBoolean("is_corrupted"))
                     sessions.put(sessionId, new String[]{difficulty, rs.getString("formatted_duration")});
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorHelper.showDBError(e);
         }
     }
 
@@ -80,11 +81,19 @@ public class ContinuePresenter {
     }
 
     private void onGameSelected(int sessionId) {
-        GameSession model = new GameSession(sessionId);
+        GameSession model = null;
+        try {
+            model = new GameSession(sessionId);
+
         GameView gameView = new GameView(ImageHelper.getPlayerImage(), ImageHelper.getOpponentImage(model.getOpponent()), model.getOpponent().getName());
 
 
         view.getScene().setRoot(gameView);
         new GamePresenter(model, gameView);
+        } catch (SQLException e) {
+            CreateHelper.showAlert("Database Error", e.getMessage(), true);
+        } catch (Exception e) {
+            CreateHelper.showAlert("Something went wrong", e.getMessage(), true);
+        }
     }
 }

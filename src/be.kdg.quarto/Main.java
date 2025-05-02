@@ -4,6 +4,7 @@ import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -12,7 +13,7 @@ public class Main extends Application {
         StartView view = new StartView();
 
         Scene scene = new Scene(view);
-        loadStyleSheets(scene);
+        loadStyleSheetsAndFonts(scene);
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -28,7 +29,11 @@ public class Main extends Application {
         javafx.application.Application.launch(args);
     }
 
-    private void loadStyleSheets(Scene scene) {
+    private void loadStyleSheetsAndFonts(Scene scene) {
+
+        Font.loadFont(getClass().getResourceAsStream("/fonts/berlinBold.ttf"), 12);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/berlin.ttf"), 12);
+
         //order is important, first loaded low priority, last loaded higher priority
         scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/style/choose-ai.css").toExternalForm());
@@ -40,5 +45,7 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("/style/win.css").toExternalForm());
 
 
+
     }
+
 }

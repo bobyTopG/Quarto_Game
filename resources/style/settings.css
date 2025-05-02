@@ -12,10 +12,12 @@
 
 /* Paused Label Styling */
 .paused-label {
+    -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-text-fill: #ffa55d;
     -fx-effect: dropshadow(three-pass-box, rgb(46, 46, 46), 0, 1.0, 6, 3);
     -fx-border-width: 10px;
     -fx-alignment: center;
     -fx-padding: 20px 0 40px 0;
+    -fx-font-size: 64px;
 }
 

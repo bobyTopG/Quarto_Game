@@ -2,7 +2,6 @@ package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,10 +33,7 @@ public class StartView extends StackPane {
 
     private void initialiseNodes() {
         label = CreateHelper.createLabel("Quarto!", "main-title");
-        label.setFont(FontHelper.getExtraLargeFont());
         root = new BorderPane();
-        ///To DO fix names to register and log in!!!
-
 
         register = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "New Game" : "Register",  new String[]{"green-button", "default-button"});
         login = CreateHelper.createButton(AuthHelper.isLoggedIn() ? "Continue" : "Login", new String[]{"orange-button", "default-button"});

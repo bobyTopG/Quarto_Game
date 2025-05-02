@@ -2,11 +2,14 @@ package be.kdg.quarto.view.auth.LoginView;
 
 import be.kdg.quarto.helpers.Auth.AuthException;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.model.Human;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+
+import static be.kdg.quarto.helpers.CreateHelper.showAlert;
 
 public class LoginPresenter {
 
@@ -42,41 +45,37 @@ public class LoginPresenter {
 
         // Validate input fields
         if (username == null || username.trim().isEmpty()) {
-            showAlert("Login Error", "Username cannot be empty.");
+            showAlert("Login Error", "Username cannot be empty.", true);
             return;
         }
 
         if (password == null || password.isEmpty()) {
-            showAlert("Login Error", "Password cannot be empty.");
+            showAlert("Login Error", "Password cannot be empty.", true);
             return;
         }
 
-        // Attempt to login
+        // Attempt to log in
         try {
             Human loggedInUser = AuthHelper.login(username, password);
-
             // If successful, proceed to Choose AI View
-            showAlert("Login Successful", "Welcome back, " + loggedInUser.getName() + "!");
+            showAlert("Login Successful", "Welcome back, " + loggedInUser.getName() + "!", false);
 
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
 
-        } catch (AuthException | NullPointerException e) {
-            showAlert("Something went wrong", "Please try again later.");
+        } catch (AuthException e) {
+            // Check the exception message to determine the specific error
+            if (e.getMessage().equals("User not found")) {
+                showAlert("User not Found", "No account found with that username. Please check your spelling or register a new account.", true);
+            } else {
+                showAlert("Authentication Error", "Failed to log in: " + e.getMessage(), true);
+            }
+        } catch (Exception e) {
+            showAlert("Login Error", "An unexpected error occurred: " + e.getMessage(), true);
         }
     }
 
-    /**
-     * Helper method to display alerts to the user
-     */
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Error");
-        alert.setHeaderText(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");

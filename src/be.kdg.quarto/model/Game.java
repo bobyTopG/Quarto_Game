@@ -1,5 +1,6 @@
 package be.kdg.quarto.model;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Game {
     private Move currentMove;
 
 
-    public Game() {
+    public Game() throws SQLException {
         this.moves = new ArrayList<>();
 
         board = new Board();

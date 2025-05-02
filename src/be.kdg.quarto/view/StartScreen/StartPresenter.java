@@ -2,6 +2,7 @@ package be.kdg.quarto.view.StartScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.helpers.DbConnection;
+import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Leaderboard;
 import be.kdg.quarto.model.Statistics;
@@ -21,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -131,7 +133,11 @@ public class StartPresenter {
             setOnlineButton("press");
 
             if(connectedToDb() && !isLoading) {
-                closeConnection();
+                try {
+                    closeConnection();
+                } catch (SQLException ex) {
+                    ErrorHelper.showDBError(ex);
+                }
                 AuthHelper.logout();
                 view.switchOnlineMode(false);
             } else {
@@ -181,7 +187,7 @@ public class StartPresenter {
 
         view.switchOnlineMode(isConnected);
     }
-    private void closeConnection(){
+    private void closeConnection() throws SQLException {
         DbConnection.closeConnection();
         setOnlineButton("");
         view.getOnlineText().setText("Offline");

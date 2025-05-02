@@ -64,10 +64,10 @@ CREATE TABLE piece_types
 (
     piece_type_id INTEGER GENERATED ALWAYS AS IDENTITY
         CONSTRAINT pk_piece_type_id PRIMARY KEY,
-    fill          varchar(20),
-    shape         varchar(20),
-    color         varchar(20),
-    size          varchar(20)
+    fill          varchar(20) NOT NULL ,
+    shape         varchar(20) NOT NULL,
+    color         varchar(20) NOT NULL,
+    size          varchar(20) NOT NULL
 );
 
 CREATE TABLE pieces

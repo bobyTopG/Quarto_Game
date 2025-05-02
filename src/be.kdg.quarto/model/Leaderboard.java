@@ -28,8 +28,7 @@ public class Leaderboard {
                 ));
             }
         } catch (SQLException | NullPointerException e) {
-            System.out.println(e.getMessage());
-            throw new SQLException(e.getMessage());
+            throw new SQLException("Failed to load Leaderboard");
         }
 
         return playerList;

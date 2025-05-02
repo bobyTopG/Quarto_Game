@@ -1,7 +1,6 @@
 package be.kdg.quarto.view.SettingsScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.helpers.FontHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -45,8 +44,6 @@ public class SettingsView extends StackPane {
         hbox.setPadding(new Insets(10, 10, 10, 10));
         hbox.getChildren().addAll( exitButton ,resumeButton, restartButton);
         hbox.setAlignment(Pos.BOTTOM_CENTER);
-
-        pausedLabel.setFont(FontHelper.getExtraLargeFont());
 
         vbox.getChildren().addAll(pausedLabel,hbox);
         this.getChildren().add(vbox);

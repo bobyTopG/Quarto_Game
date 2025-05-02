@@ -1,5 +1,6 @@
 package be.kdg.quarto.view.GameScreen;
 
+import be.kdg.quarto.helpers.ErrorHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.Ai;
 import be.kdg.quarto.model.GameSession;
@@ -30,7 +31,7 @@ public class GamePresenter {
     private static final double SELECT_SMALL_PIECE_SIZE = 30.0;
     private static final double SELECT_REGULAR_PIECE_SIZE = 45.0;
 
-    private Move move = new Move();
+    private final Move move = new Move();
     private final GameSession model;
     private final GameView view;
     private final InterfaceEngine engine = new InterfaceEngine();
@@ -88,9 +89,7 @@ public class GamePresenter {
 
     private void addEventHandlers() {
 
-        view.getHelpButton().selectedProperty().addListener((obs, oldVal, newVal) -> {
-            updateMassage();
-        });
+        view.getHelpButton().selectedProperty().addListener((obs, oldVal, newVal) -> updateMassage());
 
 
         //board
@@ -103,7 +102,13 @@ public class GamePresenter {
         }
         //select
         for (SelectCell selectCell : piecesToSelect) {
-            selectCell.getCellVisual().setOnMouseClicked(event -> onSelectCellClicked(selectCell));
+            selectCell.getCellVisual().setOnMouseClicked(event -> {
+                try {
+                    onSelectCellClicked(selectCell);
+                } catch (Exception e) {
+                    ErrorHelper.showError(e,"Failed to select Cell");
+                }
+            });
             selectCell.getCellVisual().setOnMouseEntered(event -> selectCell.hover());
             selectCell.getCellVisual().setOnMouseExited(event -> selectCell.unhover());
         }
@@ -119,7 +124,11 @@ public class GamePresenter {
 
             //force call Quarto on last Move
             if(model.getGame().getPiecesToSelect().isEmpty()){
-                handleQuarto();
+                try {
+                    handleQuarto();
+                } catch (SQLException e) {
+                    ErrorHelper.showDBError(e);
+                }
             }
             updateView();
         });
@@ -127,14 +136,24 @@ public class GamePresenter {
         view.getBackButton().setOnAction(event -> view.switchToMainSection());
 
         view.getChoosePieceConfirmButton().setOnAction(event -> {
-            confirmPieceSelection();
+            try {
+                confirmPieceSelection();
+            } catch (Exception e) {
+                ErrorHelper.showError(e,"Failed to select Piece");
+            }
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
             updateView();
         });
 
 
-        view.getQuarto().setOnMouseClicked(event -> handleQuarto());
+        view.getQuarto().setOnMouseClicked(event -> {
+            try {
+                handleQuarto();
+            } catch (SQLException e) {
+                ErrorHelper.showDBError(e);
+            }
+        });
         view.getSettings().setOnAction(event -> {
 
             model.getGameTimer().pauseGame();
@@ -163,7 +182,7 @@ public class GamePresenter {
         }
     }
 
-    private void onSelectCellClicked(SelectCell selectCell) {
+    private void onSelectCellClicked(SelectCell selectCell) throws Exception {
         if(selectCell.getPiece() != null){
             //double click
             if(selectCell == selectedPiece){
@@ -182,14 +201,22 @@ public class GamePresenter {
 
     private void addEventHandlersForWin(){
         view.getWinView().getRestartButton().setOnAction(event -> {
-            restartGame();
+            try {
+                restartGame();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             closeSettings();
 
         });
     }
     private void addEventHandlersForSettings() {
         view.getSettingsView().getRestartButton().setOnAction(event -> {
-            restartGame();
+            try {
+                restartGame();
+            } catch (SQLException e) {
+                ErrorHelper.showDBError(e);
+            }
             closeSettings();
 
         });
@@ -203,7 +230,12 @@ public class GamePresenter {
         view.getSettingsView().getExitButton().setOnAction(event -> {
             if(model.isOnline){
                 model.getGame().getCurrentMove().getPausePeriods().add(new PausePeriod(model.getGameTimer().getCurrentPauseStart(),null));
-                model.saveMoveToDb(model.getGame().getCurrentMove());
+
+                try {
+                    model.saveMoveToDb(model.getGame().getCurrentMove());
+                }catch (SQLException e) {
+                    ErrorHelper.showDBError(e);
+                }
             }
 
             StartView startView = new StartView();
@@ -220,10 +252,14 @@ public class GamePresenter {
         if (tile.getPiece() == null && model.getGame().getSelectedPiece() != null) {
             model.placePiece(tile);
             model.getGame().setSelectedPiece(null);
-            
-            checkForGameEnd();
+
+            try {
+                checkForGameEnd();
+            } catch (SQLException e) {
+                ErrorHelper.showDBError(e);
+            }
         } else {
-            System.out.println("You can't place a piece on a tile that already has a piece!");
+            ErrorHelper.showError(new Exception("You can't place a piece on a tile that already has a piece!"),"Failed to place piece");
         }
 
         selectedTile.deselect();
@@ -231,7 +267,7 @@ public class GamePresenter {
         updateView();
     }
 
-    private void checkForGameEnd() {
+    private void checkForGameEnd() throws SQLException {
         if(model.getGame().getPiecesToSelect().isEmpty()){
             boolean isWon = model.getGame().getGameRules().checkWin();
             model.endGameSession(!isWon);
@@ -239,12 +275,10 @@ public class GamePresenter {
         }
     }
 
-    private void confirmPieceSelection() {
+    private void confirmPieceSelection() throws Exception {
         if (selectedPiece == null) {
-            System.out.println("Selected Piece is null!");
-            return;
+            throw new Exception("Selected Piece is null!");
         }
-
         try {
             model.pickPiece(selectedPiece.getPiece());
         } catch (NullPointerException e) {
@@ -261,7 +295,7 @@ public class GamePresenter {
     }
     PauseTransition placePieceDelay;
     PauseTransition pickPieceDelay;
-    private void handleQuarto() {
+    private void handleQuarto() throws SQLException {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
             showEndScreen(false);
@@ -269,7 +303,7 @@ public class GamePresenter {
 
     }
 
-    private void showEndScreen(boolean isTie){
+    private void showEndScreen(boolean isTie) throws SQLException {
         view.getTurnStack().getChildren().clear();
         if(model.isOnline){
             loadStatisticsView();
@@ -311,18 +345,15 @@ public class GamePresenter {
         }
     }
 
-    private void loadStatisticsView(){
+    private void loadStatisticsView() throws SQLException {
         view.showStatisticsScreen();
         view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
         });
-        try {
             new StatisticsPresenter(view.getStatisticsView(), new Statistics(model.getGameSessionId()));
-        } catch (SQLException e) {
-            System.out.println("Error loading statistics: " + e.getMessage());
-        }
+
     }
 
     private void updateBoard() {
@@ -345,7 +376,8 @@ public class GamePresenter {
         boolean pieceSelected = model.getGame().getSelectedPiece() != null;
         boolean isVsAi = model.getOpponent() instanceof Ai;
         view.getLoadingBar().setOpacity(0);
-        view.getTurn().setStyle(isHumanTurn ? "-fx-background-color: #29ABE2" : "-fx-background-color: transparent");
+        if (isHumanTurn) view.getTurn().setStyle("-fx-background-color: #29ABE2");
+        else view.getTurn().setStyle("-fx-background-color: transparent");
 
         if (isHumanTurn) {
             if (pieceSelected) {
@@ -389,11 +421,9 @@ public class GamePresenter {
 
     private void handleAiTurn() {
 
-//        Random rand = new Random();
-//        float placeDuration = rand.nextFloat(1.5f) + 1;
-//        float pickDuration = rand.nextFloat(1.5f) + 1;
-        float placeDuration= 0.1f;
-        float pickDuration = 0.1f;
+        Random rand = new Random();
+        float placeDuration = rand.nextFloat(1.5f) + 1;
+        float pickDuration = rand.nextFloat(1.5f) + 1;
         animateLoadingBar(placeDuration + pickDuration);
 
         placePieceDelay = new PauseTransition(Duration.seconds(placeDuration));
@@ -401,23 +431,39 @@ public class GamePresenter {
         updateView();
 
         placePieceDelay.setOnFinished(event -> {
-            model.placePieceAi();
+            try {
+                model.placePieceAi();
+            } catch (Exception e) {
+                ErrorHelper.showError(e,"AI place piece error");
+            }
             engine.determineFacts(model);
             engine.applyRules(model.getGame(), move);
             updateView();
-            checkForGameEnd();
-            model.handlePendingWin();
-            if(model.isGameOver()){
-                showEndScreen(false);
+            try {
+                checkForGameEnd();
+                model.handlePendingWin();
+
+                if (model.isGameOver()) {
+                    showEndScreen(false);
+
+                }
+            }catch (SQLException e){
+                ErrorHelper.showDBError(e);
             }
-            pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
-            pickPieceDelay.setOnFinished(e -> {
-                model.pickPieceAi();
-                engine.determineFacts(model);
-                engine.applyRules(model.getGame(), move);
-                updateView();
-            });
-            pickPieceDelay.play();
+                pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
+                pickPieceDelay.setOnFinished(e -> {
+                    try {
+                        model.pickPieceAi();
+                    } catch (SQLException ex) {
+                        ErrorHelper.showDBError(ex);
+                    }
+
+                    engine.determineFacts(model);
+                    engine.applyRules(model.getGame(), move);
+                    updateView();
+                });
+                pickPieceDelay.play();
+
         });
 
         placePieceDelay.play();
@@ -490,7 +536,7 @@ public class GamePresenter {
         view.getOverlayContainer().setVisible(false);
     }
 
-    private void restartGame(){
+    private void restartGame() throws SQLException {
         // Create a new Game instance with the same players from the current game
         GameSession newGameSession = new GameSession(model.getPlayer(), model.getOpponent() , model.getOpponent(), model.isOnline);
         // Create a new view (this will properly initialize all UI components)

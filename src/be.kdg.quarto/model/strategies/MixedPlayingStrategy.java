@@ -36,7 +36,7 @@ public class MixedPlayingStrategy implements PlayingStrategy {
     }
 
     @Override
-    public Tile selectTile() {
+    public Tile selectTile() throws Exception {
         if (Math.random() < 0.70) {
             return ruleStrategy.selectTile();
         } else {

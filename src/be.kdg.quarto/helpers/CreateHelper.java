@@ -35,48 +35,24 @@ public class CreateHelper {
         label.getStyleClass().add(styleClass);
         return label;
     }
+
     public static VBox createVBox(String styleClass) {
         VBox vbox = new VBox();
         vbox.getStyleClass().add(styleClass);
         return vbox;
     }
+
     public static HBox createHBox(String styleClass) {
         HBox hbox = new HBox();
         hbox.getStyleClass().add(styleClass);
         return hbox;
     }
-    public static void createAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
+
+    public static void showAlert(String title, String message, boolean isError) {
+        Alert alert = new Alert(isError ? Alert.AlertType.WARNING : Alert.AlertType.INFORMATION);
+        alert.setTitle(isError ? "Error" : "");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
         alert.showAndWait();
-
     }
-    //we use T instead of Parent to keep the View type instead of sending a generic View
-    public static <T extends Parent> T createPopUp(T popupView, Parent mainView, String title, int width, int height) {
-        Stage stage = new Stage();
-
-        // Get the owner window directly from the main view
-        if (mainView.getScene() != null && mainView.getScene().getWindow() != null) {
-            stage.initOwner(mainView.getScene().getWindow());
-        }
-
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Scene scene = new Scene(popupView);
-
-        // Copy stylesheets from the main view
-        if (mainView.getScene() != null) {
-            scene.getStylesheets().addAll(mainView.getScene().getStylesheets());
-        }
-
-        stage.setScene(scene);
-        stage.setTitle(title);
-        stage.setWidth(width);
-        stage.setHeight(height);
-        stage.setResizable(false);
-        stage.show();
-
-        // Return the popup view for further configuration
-        return popupView;
-    }}
+}

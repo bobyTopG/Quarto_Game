@@ -1,7 +1,6 @@
 package be.kdg.quarto.view.WinScreen;
 
 import be.kdg.quarto.helpers.CreateHelper;
-import be.kdg.quarto.helpers.FontHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

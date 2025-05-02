@@ -1,5 +1,6 @@
 package be.kdg.quarto.helpers.Auth;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.Human;
 
@@ -54,15 +55,15 @@ public class AuthHelper {
                     loggedInPlayer = human;
                     return human;
                 } else {
-                    throw new AuthException("Invalid password");
+                    throw new AuthException("User not found");
+
                 }
             } else {
                 throw new AuthException("User not found");
             }
         } catch (SQLException | NullPointerException e) {
-            //throw new AuthException("Database error during login: " + e.getMessage());
+            throw new AuthException("Database error during login");
         }
-        return null;
     }
 
     public static void logout() {
@@ -102,10 +103,10 @@ public class AuthHelper {
                 loggedInPlayer = newHuman;
                 return newHuman;
             } else {
-                throw new AuthException("Failed to retrieve player ID after registration");
+                throw new AuthException("Database error during login");
             }
         } catch (SQLException | NullPointerException e) {
-            throw new AuthException("Something went wrong");
+            throw new AuthException("Database error during login");
         }
     }
 }

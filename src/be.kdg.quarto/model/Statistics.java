@@ -59,7 +59,7 @@ public class Statistics {
         return player2;
     }
 
-    public String loadPartialStatistics() {
+    public String loadPartialStatistics() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPartialStatistics())) {
             ps.setInt(1, playerIdTemp);
             ps.setInt(2, gameSessionId);
@@ -70,7 +70,7 @@ public class Statistics {
                 this.averageMoveDuration = rs.getFloat(4);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("failed to load Statistics");
         }
 
         return (playerIdTemp == winnerId ? "Wow, congrats. Well played!" : "Better luck next time!") +
@@ -79,7 +79,7 @@ public class Statistics {
                 "\nAverage move duration: " + averageMoveDuration + " m";
     }
 
-    public ArrayList<Move> loadStatistics() {
+    public ArrayList<Move> loadStatistics() throws SQLException {
         ArrayList<Move> moves = new ArrayList<>();
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getStatistics())) {
             ps.setInt(1, gameSessionId);
@@ -88,15 +88,14 @@ public class Statistics {
             while (rs.next()) {
                 moves.add(new Move(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
             }
-//            System.out.println(moves);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new SQLException("Failed to load Statistics");
         }
 
         return moves;
     }
 
-    public ArrayList<Move> getOutliers() {
+    public ArrayList<Move> getOutliers() throws SQLException {
         ArrayList<Move> moves = loadStatistics();
         if (moves.size() < 4) return new ArrayList<>(); // Not enough data for IQR
 

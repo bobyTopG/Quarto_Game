@@ -9,6 +9,8 @@ import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
 import javafx.scene.control.Alert;
 
+import static be.kdg.quarto.helpers.CreateHelper.showAlert;
+
 public class RegisterPresenter {
 
     private RegisterView view;
@@ -42,22 +44,22 @@ public class RegisterPresenter {
 
         // Validate input fields
         if (username == null || username.trim().isEmpty()) {
-            showAlert("Registration Error", "Username cannot be empty.");
+            showAlert("Registration Error", "Username cannot be empty.", true);
             return;
         }
 
         if (password == null || password.isEmpty()) {
-            showAlert("Registration Error", "Password cannot be empty.");
+            showAlert("Registration Error", "Password cannot be empty.", true);
             return;
         }
 
         if (password.length() < 4) {
-            showAlert("Registration Error", "Password must be at least 4 characters.");
+            showAlert("Registration Error", "Password must be at least 4 characters.", true);
             return;
         }
 
         if (!password.equals(confirmPassword)) {
-            showAlert("Registration Error", "Passwords do not match.");
+            showAlert("Registration Error", "Passwords do not match.", true);
             return;
         }
 
@@ -65,24 +67,29 @@ public class RegisterPresenter {
         try {
             Human registeredUser = AuthHelper.register(username, password);
 
-            // If successful, proceed to Choose AI View
-            showAlert("Registration Successful", "Welcome, " + registeredUser.getName() + "!");
+            // If successful, proceed to Start View
+            showAlert("Registration Successful", "Welcome, " + registeredUser.getName() + "!", false);
 
             StartView startView = new StartView();
             view.getScene().setRoot(startView);
             new StartPresenter(startView);
 
         } catch (AuthException e) {
-            showAlert("Registration Error", e.getMessage());
+            // Check specific error messages from the AuthHelper.register method
+            if (e.getMessage().equals("Username already exists")) {
+                showAlert("Registration Error", "This username is already taken. Please choose a different username.", true);
+            } else if (e.getMessage().contains("Database error")) {
+                showAlert("Registration Error", "A system error occurred. Please try again later.", true);
+            } else {
+                // For other AuthExceptions, display the message directly
+                showAlert("Registration Error", e.getMessage(), true);
+            }
+        } catch (Exception e) {
+            // Catch any unexpected exceptions
+            showAlert("Registration Error", "An unexpected error occurred: ", true);
         }
     }
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     private void updateView() {
         view.getScene().getRoot().setStyle("-fx-background-color: #fff4d5;");

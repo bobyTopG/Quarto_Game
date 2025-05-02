@@ -1,12 +1,9 @@
 package be.kdg.quarto.view.auth.RegisterView;
 
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.helpers.CreateHelper;
-import javafx.stage.Stage;
 
 public class RegisterView extends BorderPane {
 
@@ -28,7 +25,6 @@ public class RegisterView extends BorderPane {
 
     private void initialiseNodes() {
         registerLabel = CreateHelper.createLabel("Register", "main-title");
-        registerLabel.setFont(FontHelper.getLargeFont());
 
         usernameTextField = new TextField();
         usernameTextField.setPromptText("Username");

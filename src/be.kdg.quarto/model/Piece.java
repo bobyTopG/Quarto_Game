@@ -1,5 +1,6 @@
 package be.kdg.quarto.model;
 
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.DbConnection;
 import be.kdg.quarto.model.enums.Color;
 import be.kdg.quarto.model.enums.Fill;
@@ -38,15 +39,16 @@ public class Piece {
         this.size = size;
         this.fill = fill;
         this.shape = shape;
-
-        try {
-            loadIdFromDb();
-        } catch (Exception e) {
-
-        }
+    }
+    public Piece(Color color, Size size, Fill fill, Shape shape, int pieceId) {
+        this.color = color;
+        this.size = size;
+        this.fill = fill;
+        this.shape = shape;
+        this.pieceId = pieceId;
     }
 
-    public void loadIdFromDb() {
+    public void loadIdFromDb() throws SQLException {
         // loads the id of a piece from the database
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getPieceId())) {
             ps.setString(1, fill.toString().toUpperCase());
@@ -60,7 +62,7 @@ public class Piece {
             }
 
         } catch (SQLException | NullPointerException e) {
-            //e.printStackTrace();
+            throw new SQLException("Failed to load Piece_type");
         }
     }
 

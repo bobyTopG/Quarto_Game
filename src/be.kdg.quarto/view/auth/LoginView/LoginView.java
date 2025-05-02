@@ -7,9 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import be.kdg.quarto.helpers.FontHelper;
 import be.kdg.quarto.helpers.CreateHelper;
-import javafx.stage.Stage;
 
 public class LoginView extends BorderPane {
 
@@ -18,8 +16,6 @@ public class LoginView extends BorderPane {
     private PasswordField passwordTextField;
     private Button loginButton;
     private Button backButton;
-
-    private HBox mainHBox;
 
 
     public LoginView() {
@@ -54,7 +50,7 @@ public class LoginView extends BorderPane {
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(10);
 
-        mainHBox = CreateHelper.createHBox("login-main-hbox");
+        HBox mainHBox = CreateHelper.createHBox("login-main-hbox");
         mainHBox.getChildren().addAll(vbox);
         mainHBox.setAlignment(Pos.CENTER);
         this.setCenter(mainHBox);

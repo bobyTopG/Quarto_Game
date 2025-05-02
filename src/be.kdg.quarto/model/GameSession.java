@@ -31,10 +31,7 @@ public class GameSession {
     public boolean isOnline;
 
 
-    //we use this to check if the last move is loaded, if yes we need to update it instead of saving a new one
-    private boolean isLoaded = false;
-
-    public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) {
+    public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) throws SQLException {
         this.game = new Game();
         this.opponent = opponent;
         this.player = player;
@@ -48,6 +45,7 @@ public class GameSession {
 
         if (isOnline) {
             saveGameSessionToDb();
+            loadPieceTypesFromDb();
         }
         if (this.opponent instanceof Ai aiOpponent) {
             aiOpponent.getStrategy().fillNecessaryData(this);
@@ -59,19 +57,23 @@ public class GameSession {
 
     }
 
-    public GameSession(int gameSessionId) {
+    public GameSession(int gameSessionId) throws Exception {
         this.gameSessionId = gameSessionId;
         this.player = AuthHelper.getLoggedInPlayer();
-        loadSessionFromDb();
-
         this.game = new Game();
+        loadPieceTypesFromDb();
+
+
+        loadSessionFromDb();
         loadMovesFromDb();
         placePiecesOnBoard();
+
+
         currentPlayer = game.getMoves().getLast().getPlayer();
         this.gameTimer = new GameTimer(game,startTime);
         game.setCurrentMove(game.getMoves().getLast());
 
-    if(game.getCurrentMove().getPiece() == null && game.getMoves().size() != 1) {
+        if(game.getCurrentMove().getPiece() == null && game.getMoves().size() != 1) {
         Piece piece = game.getMoves().get(game.getMoves().size() - 2).getSelectedPiece();
         game.setSelectedPiece(piece);
         game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
@@ -85,7 +87,7 @@ public class GameSession {
 
     }
 
-    private void eraseCurrentMoveFromDb(int moveId) {
+    private void eraseCurrentMoveFromDb(int moveId) throws SQLException {
         try(PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.deleteMoveWithCascade())){
             ps.setInt(1,moveId);
             ps.setInt(2,moveId);
@@ -93,25 +95,29 @@ public class GameSession {
 
             ps.executeUpdate();
         }catch (Exception e){
-            e.printStackTrace();
+            throw new SQLException("Failed to delete current Move");
         }
     }
 
 
-    private void loadSessionFromDb() {
+    private void loadSessionFromDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGameSession())) {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.opponent = new Characters().getCharacters().get(rs.getInt("opponent_id") - 1);
+                this.opponent = new Characters().getCharacter(rs.getInt("opponent_id") - 1);
                 this.startTime = rs.getTimestamp("start_time");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Failed to load GameSession");
         }
     }
-
-    private void loadMovesFromDb() {
+    private void loadPieceTypesFromDb() throws SQLException {
+        for(Tile tile : game.getPiecesToSelect().getTiles()){
+            tile.getPiece().loadIdFromDb();
+        }
+    }
+    private void loadMovesFromDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadMoves())) {
             ps.setInt(1, this.gameSessionId);
             ResultSet rs = ps.executeQuery();
@@ -123,26 +129,28 @@ public class GameSession {
                     player = this.opponent;
                 }
                 Piece piece = null;
-                // Check if the column is NULL before getting its value
                 rs.getInt("placed_piece_id");
                 if(!rs.wasNull()) {
                     piece = new Piece(
-                            rs.getString("placed_piece_color") != null ? Color.valueOf(rs.getString("placed_piece_color").toUpperCase()) : null,
-                            rs.getString("placed_piece_size") != null ? Size.valueOf(rs.getString("placed_piece_size").toUpperCase()) : null,
-                            rs.getString("placed_piece_fill") != null ? Fill.valueOf(rs.getString("placed_piece_fill").toUpperCase()) : null,
-                            rs.getString("placed_piece_shape") != null ? Shape.valueOf(rs.getString("placed_piece_shape").toUpperCase()) : null
+                            Color.valueOf(rs.getString("placed_piece_color").toUpperCase()),
+                            Size.valueOf(rs.getString("placed_piece_size").toUpperCase()),
+                            Fill.valueOf(rs.getString("placed_piece_fill").toUpperCase()),
+                            Shape.valueOf(rs.getString("placed_piece_shape").toUpperCase()),
+                            rs.getInt("placed_piece_id")
+
                     );
                 }
 
                 Piece selectedPiece = null;
-                // First get the value, then check if it was NULL
                 rs.getInt("selected_piece_id");
                 if(!rs.wasNull()) {
-                    selectedPiece = new Piece(
-                            rs.getString("selected_piece_color") != null ? Color.valueOf(rs.getString("selected_piece_color").toUpperCase()) : null,
-                            rs.getString("selected_piece_size") != null ? Size.valueOf(rs.getString("selected_piece_size").toUpperCase()) : null,
-                            rs.getString("selected_piece_fill") != null ? Fill.valueOf(rs.getString("selected_piece_fill").toUpperCase()) : null,
-                            rs.getString("selected_piece_shape") != null ? Shape.valueOf(rs.getString("selected_piece_shape").toUpperCase()) : null
+                    selectedPiece =  new Piece(
+                            Color.valueOf(rs.getString("selected_piece_color").toUpperCase()),
+                            Size.valueOf(rs.getString("selected_piece_size").toUpperCase()),
+                            Fill.valueOf(rs.getString("selected_piece_fill").toUpperCase()),
+                            Shape.valueOf(rs.getString("selected_piece_shape").toUpperCase()),
+                            rs.getInt("selected_piece_id")
+
                     );
                 }
 
@@ -156,13 +164,10 @@ public class GameSession {
 
                 game.getMoves().add(move);
             }
-        } catch (SQLException e) {
-            System.out.println("1");
-            e.printStackTrace();
         }
     }
 
-    private List<PausePeriod> loadPausePeriodsForMove(int moveId) {
+    private List<PausePeriod> loadPausePeriodsForMove(int moveId) throws SQLException {
         List<PausePeriod> pausePeriods = new ArrayList<>();
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadPausePeriods())) {
                 ps.setInt(1, moveId);
@@ -177,11 +182,9 @@ public class GameSession {
                     }
                     pausePeriods.add(pausePeriod);
                 }
-            } catch (Exception e) {
-                System.out.println("2");
-                System.out.println(e.getMessage());
+            } catch (SQLException e) {
+                throw new SQLException("Failed to load pause periods for move");
             }
-
             return  pausePeriods;
         }
 
@@ -197,7 +200,7 @@ public class GameSession {
     }
 
 
-    public void callQuarto() {
+    public void callQuarto() throws SQLException {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
             //if move is not complete at the end of the game, complete it
@@ -209,7 +212,7 @@ public class GameSession {
         }
     }
 
-    public void endGameSession(boolean isTie) {
+    public void endGameSession(boolean isTie) throws SQLException {
         if(isCompleted) return;
         isCompleted = true;
         if (isOnline) {
@@ -229,7 +232,7 @@ public class GameSession {
         return currentPlayer;
     }
 
-    public void placePieceAi() {
+    public void placePieceAi() throws Exception {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
         if (game.getSelectedPiece() != null) {
@@ -244,21 +247,18 @@ public class GameSession {
         }
     }
 
-    public void pickPieceAi() {
+    public void pickPieceAi() throws SQLException {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
 
         if (game.getSelectedPiece() == null) {
             // Picking
-            try {
-                pickPiece(ai.getStrategy().selectPiece());
-            } catch (NullPointerException ignored) {
+            pickPiece(ai.getStrategy().selectPiece());
 
-            }
         }
     }
 
-    public void pickPiece(Piece piece) {
+    public void pickPiece(Piece piece) throws SQLException {
         if (piece != null) {
             game.setSelectedPiece(piece);
             game.getPiecesToSelect().getTiles().stream().filter(tile -> piece.equals(tile.getPiece())).findFirst().ifPresent(tile -> tile.setPiece(null));
@@ -278,7 +278,7 @@ public class GameSession {
 
     }
 
-    public void saveMoveToDb(Move move) {
+    public void saveMoveToDb(Move move) throws SQLException {
         int moveIdTemp = -1;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
                 Statement.RETURN_GENERATED_KEYS)) {
@@ -294,19 +294,16 @@ public class GameSession {
             if (rs.next()) {
                 moveIdTemp = rs.getInt(1);
             }
-            savePausePeriodsFromMoveToDb(move, moveIdTemp);
 
-
-        } catch (SQLException e) {
-//            e.printStackTrace();
         }
 
+        savePausePeriodsFromMoveToDb(move, moveIdTemp);
 
         savePieceToDb(moveIdTemp, move.getSelectedPiece(), move.getPiece(), move.getPosition());
 
     }
 
-    public void savePausePeriodsFromMoveToDb(Move move, int moveId) {
+    public void savePausePeriodsFromMoveToDb(Move move, int moveId) throws SQLException {
         for (PausePeriod pausePeriod : move.getPausePeriods()) {
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPausePeriod())) {
                 ps.setInt(1, moveId);
@@ -315,21 +312,15 @@ public class GameSession {
 
                 ps.executeUpdate();
 
-            } catch (Exception e) {
-                if (e.getMessage().contains("unique_timestamps") ||
-                        e.getMessage().contains("pk_piece_move_id")) {
-                    System.out.println("Expected error");
-                } else {
-                    // Log other unexpected errors
-                    System.err.println("Unexpected SQL error: " + e.getMessage());
-                }
+            } catch (SQLException e) {
+                throw new SQLException("failed to save pause periods for move");
             }
         }
     }
 
 
     //considering that the move can be non-completed
-    private void savePieceToDb(int moveId, Piece selectedPiece, Piece placedPiece, int position) {
+    private void savePieceToDb(int moveId, Piece selectedPiece, Piece placedPiece, int position) throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
             ps.setInt(3, moveId);
 
@@ -351,11 +342,11 @@ public class GameSession {
 
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new SQLException("Failed to Save piece");
         }
     }
 
-    public void saveGameSessionToDb() {
+    public void saveGameSessionToDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
             ps.setInt(2, this.opponent.getId());
@@ -369,13 +360,11 @@ public class GameSession {
                 this.gameSessionId = rs.getInt(1);
             }
 
-        } catch (SQLException | NullPointerException e) {
-//            e.printStackTrace();
         }
     }
 
     // saves a finished game session to db
-    public void updateGameSession(boolean isTie) {
+    public void updateGameSession(boolean isTie) throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
             if (!isTie) {
                 ps.setInt(1, currentPlayer.getId());
@@ -389,11 +378,11 @@ public class GameSession {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Consider proper error handling
+            throw new SQLException("Failed to save the finished game");
         }
     }
 
-    public void handlePendingWin() {
+    public void handlePendingWin() throws SQLException {
         if (this.isCallingQuarto) callQuarto();
     }
 

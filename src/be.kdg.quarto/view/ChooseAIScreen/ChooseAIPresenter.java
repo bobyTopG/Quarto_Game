@@ -1,6 +1,7 @@
 package be.kdg.quarto.view.ChooseAIScreen;
 
 import be.kdg.quarto.helpers.Auth.AuthHelper;
+import be.kdg.quarto.helpers.CreateHelper;
 import be.kdg.quarto.helpers.ImageHelper;
 import be.kdg.quarto.model.GameSession;
 import be.kdg.quarto.model.Player;
@@ -12,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import be.kdg.quarto.helpers.Characters;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class ChooseAIPresenter {
             characterButton.setOnMouseClicked(event -> {
                 view.setSelectedCharacter(id);
                 view.getSelectButton().setDisable(false);
-                opponentSelected = characters.getCharacters().get(id);
+                opponentSelected = characters.getCharacter(id);
             });
             count++;
         }
@@ -79,16 +81,21 @@ public class ChooseAIPresenter {
 
         view.getSelectButton().setOnMouseClicked(event -> {
             if (opponentSelected != null) {
-                GameView gameView = new GameView(ImageHelper.getPlayerImage(),ImageHelper.getOpponentImage(opponentSelected), opponentSelected.getName());
+                GameView gameView = new GameView(ImageHelper.getPlayerImage(), getOpponentImage(opponentSelected), opponentSelected.getName());
                 GameSession model;
                 //if offline play as guest
+                try {
                     model = new GameSession(
                             (AuthHelper.isLoggedIn() && isOnline) ? AuthHelper.getLoggedInPlayer() : AuthHelper.getGuestPlayer(),
                             opponentSelected, view.getTurnButton().isSelected()? null : opponentSelected, isOnline
                     );
+                    view.getScene().setRoot(gameView);
+                    new GamePresenter(model, gameView);
+                } catch (SQLException e) {
+                    CreateHelper.showAlert("Database Error", e.getMessage(),true);
+                }
 
-                view.getScene().setRoot(gameView);
-                new GamePresenter(model, gameView);
+
             }
         });
     }

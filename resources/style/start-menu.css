@@ -5,8 +5,8 @@
     -fx-padding: 10px 0 20px 70px;
 }
 .main-title{
-    -fx-font-size: 64px;
     -fx-font-family: "Berlin Sans FB Demi Bold";
+    -fx-font-size: 64px;
 }
 
 .root-hbox{
