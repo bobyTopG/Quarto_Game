@@ -50,10 +50,18 @@ public class GameSession {
     private int gameSessionId;
 
 
+
     private boolean isCompleted;
     public boolean isOnline;
 
-
+    /**
+     * Constructor for starting a new game
+     * @param player the current logged in player/guest player if not logged in
+     * @param opponent the selected opponent
+     * @param currentPlayer specifies who starts first
+     * @param online specifies if the saving is activated or not
+     * @throws SQLException
+     */
     public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) throws SQLException {
         this.game = new Game();
         this.opponent = opponent;
@@ -76,6 +84,10 @@ public class GameSession {
 
     }
 
+    /**
+     * constructor for loading the game session
+     * @param gameSessionId specifies which game session to load
+     */
     public GameSession(int gameSessionId) throws Exception {
         this.gameSessionId = gameSessionId;
         this.player = AuthHelper.getLoggedInPlayer();
@@ -106,19 +118,35 @@ public class GameSession {
 
     }
 
-    private void eraseCurrentMoveFromDb(int moveId) throws SQLException {
-        try(PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.deleteMoveWithCascade())){
+    /**
+     * Cascade deletes the specified move from the DB
+     *
+     */
+    private void deleteMoveFromDb(int moveId) throws SQLException {
+        try(PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.deleteMove())){
             ps.setInt(1,moveId);
-            ps.setInt(2,moveId);
-            ps.setInt(3,moveId);
-
             ps.executeUpdate();
         }catch (Exception e){
             throw new SQLException("Failed to delete current Move");
         }
     }
 
+    /**
+     * Deletes the current GameSession from the DB (only used while Restarting or Deleting the Game, or it will break the saving system)
+     */
+    public void deleteCurrentGameSessionFromDb() throws SQLException {
+        try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.deleteGameSession())) {
+            ps.setInt(1,this.gameSessionId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            throw new SQLException("Failed to delete current gameSession");
+        }
+    }
 
+
+    /**
+     * Loads The GameSession from The DB
+     */
     private void loadSessionFromDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.getGameSession())) {
             ps.setInt(1, this.gameSessionId);
@@ -136,6 +164,10 @@ public class GameSession {
             tile.getPiece().loadIdFromDb();
         }
     }
+
+    /**
+     * Loads all the moves from the DB
+     */
     private void loadMovesFromDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadMoves())) {
             ps.setInt(1, this.gameSessionId);
@@ -178,7 +210,7 @@ public class GameSession {
                 move.getPausePeriods().addAll(loadPausePeriodsForMove(moveId));
                 rs.getTimestamp("end_time");
                 if(rs.wasNull()) {
-                    eraseCurrentMoveFromDb(moveId);
+                    deleteMoveFromDb(moveId);
                 }
 
                 game.getMoves().add(move);
@@ -186,6 +218,9 @@ public class GameSession {
         }
     }
 
+    /**
+     * Loads all the Pause periods for the specific turn
+     */
     private List<PausePeriod> loadPausePeriodsForMove(int moveId) throws SQLException {
         List<PausePeriod> pausePeriods = new ArrayList<>();
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadPausePeriods())) {
@@ -207,6 +242,9 @@ public class GameSession {
             return  pausePeriods;
         }
 
+    /**
+     * places the pieces on the board after loading them
+     */
     private void placePiecesOnBoard() {
         if (!game.getMoves().isEmpty()) {
             for (Move move : game.getMoves()) {
@@ -218,7 +256,9 @@ public class GameSession {
         }
     }
 
-
+    /**
+     * check for win, if yes ends Game
+     */
     public void callQuarto() throws SQLException {
         if (game.getGameRules().checkWin()) {
             endTime = new Date();
@@ -232,6 +272,11 @@ public class GameSession {
         }
     }
 
+
+    /**
+     * Ends the gameSession
+     * @param isTie  variable to check if it is a tie
+     */
     public void endGameSession(boolean isTie) throws SQLException {
         if(isCompleted) return;
         isCompleted = true;
@@ -252,6 +297,10 @@ public class GameSession {
         return currentPlayer;
     }
 
+    /**
+     * places the piece for the AI, the location is gotten from the strategy.
+     * Additional: calls quarto if the strategy function isCallingQuarto() returns true
+     */
     public void placePieceAi() throws Exception {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
@@ -267,6 +316,9 @@ public class GameSession {
         }
     }
 
+    /**
+     *     picks the piece for the AI, the piece is gotten from the strategy.
+     */
     public void pickPieceAi() throws SQLException {
         Ai ai = getAiPlayer();
         if (ai == null || currentPlayer != ai) return; // Not AI’s turn
@@ -278,6 +330,10 @@ public class GameSession {
         }
     }
 
+    /**
+     * Picks the piece and Saves move to db
+     * @param piece - the picked piece
+     */
     public void pickPiece(Piece piece) throws SQLException {
         if (piece != null) {
             game.setSelectedPiece(piece);
@@ -291,13 +347,20 @@ public class GameSession {
         if(!isCompleted)
             switchTurns();
     }
-
+    /**
+     * places the piece
+     * @param selectedTile - the picked tile to place the piece
+     */
     public void placePiece(Tile selectedTile) {
         selectedTile.setPiece(game.getSelectedPiece());
         game.placePieceIntoMove(selectedTile);
 
     }
 
+    /**
+     * Saves the specified move to DB
+     *
+     */
     public void saveMoveToDb(Move move) throws SQLException {
         int moveIdTemp = -1;
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setMove(),
@@ -323,6 +386,11 @@ public class GameSession {
 
     }
 
+    /**
+     * Saves the pause periods for the specified move
+     * @param move variable given to loop through all the pause periods
+     * @param moveId saves the pause periods with this moveid
+     */
     public void savePausePeriodsFromMoveToDb(Move move, int moveId) throws SQLException {
         for (PausePeriod pausePeriod : move.getPausePeriods()) {
             try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPausePeriod())) {
@@ -339,7 +407,13 @@ public class GameSession {
     }
 
 
-    //considering that the move can be non-completed
+    /**
+     * Saves the Information for what piece was placed and then what piece was selected
+     * @param moveId the move row the piece row is going to be connected to
+     * @param selectedPiece the piece that was selected for the opponent
+     * @param placedPiece the piece that was placed on the "position" index
+     * @param position the position of the selected tile
+     */
     private void savePieceToDb(int moveId, Piece selectedPiece, Piece placedPiece, int position) throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setPiece())) {
             ps.setInt(3, moveId);
@@ -366,6 +440,9 @@ public class GameSession {
         }
     }
 
+    /**
+     * Saves the current gameSession to DB
+     */
     public void saveGameSessionToDb() throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.setGameSession(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, this.player.getId());
@@ -383,7 +460,10 @@ public class GameSession {
         }
     }
 
-    // saves a finished game session to db
+    /**
+     * saves a Finished game session to db
+     * @param isTie specifies whether it is a tie or not
+     */
     public void updateGameSession(boolean isTie) throws SQLException {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.updateGameSession())) {
             if (!isTie) {

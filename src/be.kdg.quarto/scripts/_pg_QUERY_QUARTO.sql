@@ -57,6 +57,10 @@ HAVING count(distinct gs.game_session_id) > 0
    and is_ai = false
    and upper(name) NOT IN ('GUEST', 'FRIEND');
 
+
+
+
+
 select end_time
 from moves;
 

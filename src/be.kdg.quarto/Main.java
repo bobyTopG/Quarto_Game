@@ -32,6 +32,11 @@ public class Main extends Application {
         javafx.application.Application.launch(args);
     }
 
+
+    /**
+     * Loads all the styles & Fonts for all the pages, It will remain even after changing presenters
+     * @param scene The scene where all the files are added
+     */
     private void loadStyleSheetsAndFonts(Scene scene) {
 
         Font.loadFont(getClass().getResourceAsStream("/fonts/berlinBold.ttf"), 12);

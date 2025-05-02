@@ -14,7 +14,7 @@ public class EndMovePlayer extends Rule{
 
     @Override
     public boolean actionRule(FactsHandler facts, Game game, Move move) {
-        move.setWarningMessage("You can win \uD83D\uDD25");
+        move.setWarningMessage("You can win!");
         return true;
     }
 }

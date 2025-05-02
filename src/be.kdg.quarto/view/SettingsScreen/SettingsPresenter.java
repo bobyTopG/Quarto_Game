@@ -41,8 +41,13 @@ public class SettingsPresenter {
 
         view.getExitButton().setOnAction(event -> exitToMainMenu());
     }
-
+    /**
+     *
+     *  Deletes the old Game, starts a new Game
+     */
     private void restartGame() throws SQLException {
+        if(model.isOnline)
+            model.deleteCurrentGameSessionFromDb();
         // Create a new Game instance with the same players from the current game
         GameSession newGameSession = new GameSession(
                 model.getPlayer(),
@@ -70,6 +75,10 @@ public class SettingsPresenter {
         gamePresenter.resumeTimer();
     }
 
+
+    /**
+     * Redirects to StartView, also saves the last pausePeriod and move if it is online
+     */
     private void exitToMainMenu() {
         if (model.isOnline) {
             model.getGame().getCurrentMove().getPausePeriods().add(

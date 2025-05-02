@@ -33,7 +33,9 @@ public class Move {
 
     }
 
-    // Pause functionality
+    /**
+     * pauses the move, used only for the current move
+     */
     public void pause() {
         if (currentPauseStart == null) {
             // Only set pause start if we're not already paused
@@ -41,6 +43,9 @@ public class Move {
         }
     }
 
+    /**
+     *  resumes the moves, adds pausePeriod to move, used only for the current move
+     */
     public void resume() {
         if (currentPauseStart != null) {
             // Add the completed pause period to our list
@@ -49,7 +54,9 @@ public class Move {
         }
     }
 
-    // Calculate total paused time in milliseconds
+    /**
+     * Calculates total paused time in milliseconds
+     */
     private long getTotalPausedTimeInMillis() {
         long totalPausedTime = 0;
 
@@ -66,33 +73,12 @@ public class Move {
         return totalPausedTime;
     }
 
-    //placing the piece
-    public void placedPiece(Piece piece, int position, Date startTime) {
-        this.piece = piece;
-        this.position = position;
-        this.startTime = startTime;
-    }
 
-    public void placedPiece(Piece piece, int position, Date startTime, Date endTime) {
-        this.placedPiece(piece, position, startTime);
-        this.endTime = endTime;
-    }
-
-
+    /**
+     * message that gives hints for this move
+     */
     public String getWarningMessage() {
         return warningMessage;
-    }
-
-    //picking the piece
-    public void pickedPiece(Piece piece) {
-        this.selectedPiece = piece;
-        this.endTime = new Date();
-    }
-
-    //if first move we also set the startTime
-    public void pickedPiece(Piece piece, Date startTime) {
-        this.startTime = startTime;
-        this.pickedPiece(piece);
     }
 
     public void setWarningMessage(String warningMessage) {
@@ -155,6 +141,10 @@ public class Move {
         this.endTime = endTime;
     }
 
+    /**
+     * gets the duration of the move
+     * @return
+     */
     public float getDuration() {
         if (startTime == null) return 0f;
 

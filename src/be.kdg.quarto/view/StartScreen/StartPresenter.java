@@ -9,8 +9,8 @@ import be.kdg.quarto.view.ContinueScreen.ContinuePresenter;
 import be.kdg.quarto.view.ContinueScreen.ContinueView;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardPresenter;
 import be.kdg.quarto.view.LeaderboardScreen.LeaderboardView;
-import be.kdg.quarto.view.ChooseAIScreen.ChooseAIPresenter;
-import be.kdg.quarto.view.ChooseAIScreen.ChooseAIView;
+import be.kdg.quarto.view.ChooseAIScreen.ChoosePresenter;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseView;
 import be.kdg.quarto.view.auth.LoginView.LoginPresenter;
 import be.kdg.quarto.view.auth.LoginView.LoginView;
 import be.kdg.quarto.view.auth.RegisterView.RegisterPresenter;
@@ -160,9 +160,9 @@ public class StartPresenter {
 
     }
     private void goToChooseAIScreen(boolean online) {
-        ChooseAIView chooseAIView = new ChooseAIView();
-        view.getScene().setRoot(chooseAIView);
-        new ChooseAIPresenter(chooseAIView, online);
+        ChooseView chooseView = new ChooseView();
+        view.getScene().setRoot(chooseView);
+        new ChoosePresenter(chooseView, online);
     }
     private void checkConnectionInBackground(boolean isConnected) {
 

@@ -9,6 +9,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * View that should appear after "Game Over" when Offline
+ */
 public class WinView extends StackPane {
 
     private Button exitButton;
@@ -60,6 +63,12 @@ public class WinView extends StackPane {
     public Button getRestartButton() {
         return restartButton;
     }
+
+    /**
+     *  Sets the text and color for the WinLabel
+     * @param name name of the winner, if it is null it means it is a draw
+     * @param isOpponent checks whether the opponent or player won
+     */
     public void setWinner(String name, boolean isOpponent) {
         if(name != null){
             if (!isOpponent) winLabel.setStyle("-fx-background-color: #29ABE2");

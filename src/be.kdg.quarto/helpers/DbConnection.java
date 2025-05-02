@@ -288,11 +288,15 @@ public class DbConnection {
                 INSERT INTO pieces (selected_piece_type_id, placed_piece_type_id, move_id, pos)
                 VALUES (?, ?, ?, ?);""";
     }
-    public static String deleteMoveWithCascade() {
+    public static String deleteMove() {
         return """
-                DELETE FROM pause_periods WHERE move_id = ?;
-                DELETE FROM pieces WHERE move_id = ?;
                 DELETE FROM moves WHERE move_id = ?;""";
+    }
+
+    public static String deleteGameSession() {
+        return """
+                DELETE FROM game_sessions WHERE game_session_id = ?;
+                """;
     }
     public static String getPieceId() {
         return """

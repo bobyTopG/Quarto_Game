@@ -7,6 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
+/**
+ * Cell is a class made to connect logic with UI and make updating the visuals easier
+ */
 public class Cell {
     protected static final double SMALL_PIECE_SIZE = 23.0;
     protected static final double REGULAR_PIECE_SIZE = 30.0;
@@ -18,6 +21,12 @@ public class Cell {
     protected int row;
     protected int column;
 
+    /**
+     *  Creates the Cell with its visual
+     * @param row position y
+     * @param column position x
+     *
+     */
     public Cell(int row, int column) {
         this.row = row;
         this.column = column;
@@ -26,6 +35,10 @@ public class Cell {
 
     }
 
+    /**
+     * Finds the piece image and sets it to the Cell
+     *
+     */
     public void setPiece(Piece piece) {
         cell.getChildren().removeIf(node -> node instanceof ImageView);
         this.piece = piece;

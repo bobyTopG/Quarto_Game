@@ -2,6 +2,9 @@ package be.kdg.quarto.view.GameScreen.Cells;
 
 
 import javafx.scene.paint.Color;
+/**
+ *  Cell made specifically for the pieces to select
+ */
 
 public class SelectCell extends Cell {
     String color;
@@ -40,6 +43,10 @@ public class SelectCell extends Cell {
         isHovered = false;
         this.cell.setStyle("-fx-background-color: " + this.color + ";");
     }
+
+    /**
+     * darkens the specified color and returns it
+     */
     private String getDarkerVersion(String hexColor) {
         try {
             Color color = Color.web(hexColor);

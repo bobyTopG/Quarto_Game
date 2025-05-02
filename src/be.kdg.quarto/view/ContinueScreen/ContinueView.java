@@ -45,6 +45,12 @@ public class ContinueView extends BorderPane {
         setMargin(scrollPane, new Insets(10));
     }
 
+    /**
+     * adds one gameSession Row to the table
+     * @param index the row count
+     * @param difficulty difficulty of the game
+     * @param time duration of the game
+     */
     public void addGameRow(int index, String difficulty, String time) {
         Label indexLabel = CreateHelper.createLabel(Integer.toString(index), "info");
         Label difficultyLabel = CreateHelper.createLabel("Difficulty: " + difficulty, "info");
@@ -78,6 +84,9 @@ public class ContinueView extends BorderPane {
         continueButtons.add(continueButton);
     }
 
+    /**
+     * shows label if there are no loaded games
+     */
     public void noIncompleteGames() {
         Label noGamesLabel = CreateHelper.createLabel("All games completed. Ready to start a new one?", "info");
         noGamesLabel.setAlignment(Pos.CENTER);

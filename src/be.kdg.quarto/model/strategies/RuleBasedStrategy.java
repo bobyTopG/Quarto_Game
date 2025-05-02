@@ -90,7 +90,7 @@ public class RuleBasedStrategy implements PlayingStrategy {
     }
 
     /**
-     * Loads the current GameSession data required for decision making.
+     * Loads the current GameSession data required for decision-making.
      *
      * @param gameSession the current game session
      */

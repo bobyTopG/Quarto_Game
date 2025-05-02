@@ -10,6 +10,9 @@ import be.kdg.quarto.view.StartScreen.StartView;
 
 import java.sql.SQLException;
 
+/**
+ * Presenter for View that should appear after "Game Over" when Offline
+ */
 public class WinPresenter {
     private final WinView view;
     private final GameSession model;
@@ -36,7 +39,16 @@ public class WinPresenter {
         });
     }
 
+
+    /**
+     *
+     *  Deletes the old Game, starts a new Game
+     */
     private void restartGame() throws SQLException {
+
+        if(model.isOnline)
+            model.deleteCurrentGameSessionFromDb();
+
         // Create a new Game instance with the same players from the current game
         GameSession newGameSession = new GameSession(
                 model.getPlayer(),
@@ -58,6 +70,9 @@ public class WinPresenter {
         new GamePresenter(newGameSession, newGameView);
     }
 
+    /**
+     * Redirects to startView
+     */
     private void exitToMainMenu() {
         StartView startView = new StartView();
         view.getScene().setRoot(startView);

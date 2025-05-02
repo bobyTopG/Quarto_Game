@@ -5,9 +5,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ *  Cell made specifically for the board
+ */
  public class BoardCell extends Cell {
 
      private final Circle circle;
+
+    /**
+     *
+     * @param row position y
+     * @param col position x
+     * @param radius - the size of the visual circle
+     */
      public BoardCell(int row, int col, int radius) {
          super(row,col);
          StackPane cell = new StackPane();
@@ -25,6 +35,10 @@ import javafx.scene.shape.Circle;
 
 
     }
+
+    /**
+     * Selects the cell and changes it's color
+     */
     public void select(){
          isSelected = true;
          this.circle.setFill(new Color(1.0,1.0,1.0,0.7));

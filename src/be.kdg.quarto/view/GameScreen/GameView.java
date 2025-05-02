@@ -240,6 +240,10 @@ public class GameView extends StackPane {
         enableOverlay();
         overlayContainer.getChildren().add(statisticsView);
     }
+
+    /**
+     * creates the piece holder which will hold the current Piece
+     */
     private void createSelectedPieceHolder() {
 
         Label label = CreateHelper.createLabel("Selected \nPiece :", "choose-piece-label");
@@ -259,6 +263,10 @@ public class GameView extends StackPane {
         selectedPieceContainer.getChildren().addAll(pieceHolder,label);
         selectedPieceContainer.setSpacing(10);
     }
+
+    /**
+     * switches the VBox on the left for the player to choose a piece from the Grid
+     */
     void createChoosePieceView(){
 
          choosePieceConfirmation = CreateHelper.createButton("Choose Piece", new String[]{"default-button", "green-button"});
@@ -294,6 +302,9 @@ public class GameView extends StackPane {
         root.setLeft(leftBox);
     }
 
+    /**
+     * creates the visuals for the setting button
+     */
     private void createSettingsButton(){
         Image image = new Image("images/buttons/Settings.png");
         ImageView imageView = new ImageView(image);
@@ -317,6 +328,10 @@ public class GameView extends StackPane {
         settingsButton.setOnMouseExited(e -> settingsButton.setGraphic(imageView));
 
     }
+
+    /**
+     * creates the visuals for the main Board
+     */
     private void createBoard(){
         Rectangle background = new Rectangle(300, 300);
         background.setArcWidth(100);

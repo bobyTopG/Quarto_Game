@@ -13,7 +13,7 @@ public class RuleWinningPositionAi extends Rule {
 
     @Override
     public boolean actionRule(FactsHandler facts, Game game, Move move) {
-        move.setWarningMessage("Watch out! Risky piece!\uD83D\uDEA8");
+        move.setWarningMessage("Watch out! Risky piece!");
         return true;
     }
 }

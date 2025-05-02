@@ -46,6 +46,10 @@ public class ContinuePresenter {
 
     }
 
+
+    /**
+     * loads and displays a list of unfinished game session based on the logged in player
+     */
     private void loadGameSessions() {
         try (PreparedStatement ps = DbConnection.connection.prepareStatement(DbConnection.loadUnfinishedSessions())) {
             ps.setInt(1, AuthHelper.getLoggedInPlayer().getId());
@@ -86,6 +90,9 @@ public class ContinuePresenter {
         });
     }
 
+    /**
+     * loads the selected game, redirects to gameView with the loaded game session
+     */
     private void onGameSelected(int sessionId) {
         try {
             GameSession model = new GameSession(sessionId);

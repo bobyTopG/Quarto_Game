@@ -31,6 +31,13 @@ public class AuthHelper {
         return new Human("Guest", null);
     }
 
+
+    /**
+     * Searches for user in DB
+     * @param username username of the user
+     * @param password password of the user
+     * @return return the Human User, AuthException if not found
+     */
     public static Human login(String username, String password) throws AuthException {
         try (PreparedStatement stmt = DbConnection.connection.prepareStatement("SELECT player_id, name, password FROM players WHERE name = ?")) {
             stmt.setString(1, username);

@@ -3,11 +3,10 @@ package be.kdg.quarto.view.auth.RegisterView;
 import be.kdg.quarto.helpers.Auth.AuthException;
 import be.kdg.quarto.helpers.Auth.AuthHelper;
 import be.kdg.quarto.model.Human;
-import be.kdg.quarto.view.ChooseAIScreen.ChooseAIPresenter;
-import be.kdg.quarto.view.ChooseAIScreen.ChooseAIView;
+import be.kdg.quarto.view.ChooseAIScreen.ChoosePresenter;
+import be.kdg.quarto.view.ChooseAIScreen.ChooseView;
 import be.kdg.quarto.view.StartScreen.StartPresenter;
 import be.kdg.quarto.view.StartScreen.StartView;
-import javafx.scene.control.Alert;
 
 import static be.kdg.quarto.helpers.CreateHelper.showAlert;
 
@@ -29,14 +28,17 @@ public class RegisterPresenter {
         });
 
         view.getContinueAsGuestButton().setOnAction(event -> {
-            ChooseAIView chooseAIView = new ChooseAIView();
-            view.getScene().setRoot(chooseAIView);
-            new ChooseAIPresenter(chooseAIView,false);
+            ChooseView chooseView = new ChooseView();
+            view.getScene().setRoot(chooseView);
+            new ChoosePresenter(chooseView,false);
         });
         view.getRegisterButton().setOnAction(event -> {
             registerUser();
         });
     }
+    /**
+     * Handles the user register process, creates a new user if successful
+     */
     private void registerUser() {
         String username = view.getUsernameTextField().getText();
         String password = view.getPasswordTextField().getText();

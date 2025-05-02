@@ -61,6 +61,9 @@ public class GamePresenter {
 
     }
 
+    /**
+     * creates an empty board with Board Cells
+     */
     private void createBoard() {
         board = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
@@ -72,6 +75,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * creates an empty Board with selectCells
+     */
     private void createSelectPieces() {
         piecesToSelect = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
@@ -85,6 +91,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * sets up and starts the timer
+     */
     private void setUpTimer() {
         updateTimerDisplay();
         Timeline uiUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimerDisplay()));
@@ -92,6 +101,9 @@ public class GamePresenter {
         uiUpdateTimer.play();
     }
 
+    /**
+     * updates the timers visuals
+     */
     private void updateTimerDisplay() {
         view.setTimer(model.getGameTimer().getGameDurationInSeconds());
     }
@@ -101,7 +113,7 @@ public class GamePresenter {
         view.getHelpButton().selectedProperty().addListener((obs, oldVal, newVal) -> updateMassage());
 
 
-        //board
+        //board , adds events for each cell
         for (int index = 0; index < board.size(); index++) {
             BoardCell boardCell = board.get(index);
             int finalIndex = index;
@@ -109,7 +121,7 @@ public class GamePresenter {
             boardCell.getCellVisual().setOnMouseExited(event -> boardCell.unhover());
             boardCell.getCellVisual().setOnMouseClicked(event -> onBoardCellClicked(finalIndex, boardCell));
         }
-        //select
+        //select, adds events for each cell
         for (SelectCell selectCell : piecesToSelect) {
             selectCell.getCellVisual().setOnMouseClicked(event -> {
                 try {
@@ -131,7 +143,7 @@ public class GamePresenter {
             inferenceEngine.determineFacts(model);
             inferenceEngine.applyRules(model.getGame(), move);
 
-            //force call Quarto on last Move
+            //forces call Quarto on last Move
             if(model.getGame().getPiecesToSelect().isEmpty()){
                 try {
                     handleQuarto();
@@ -176,7 +188,11 @@ public class GamePresenter {
 
 
     }
-
+    /**
+     * handles the response for BoardCell Clicked
+     * @param boardCell specifies which cell was clicked
+     * @param index the position on the board of the boardCell
+     */
     private void onBoardCellClicked(int index, BoardCell boardCell) {
         if (model.getGame().getBoard().findTile(index).getPiece() == null && (model.getPlayer() == model.getCurrentPlayer() || model.getOpponent().getName().equals("Friend"))) {
             if (selectedTile != null) {
@@ -194,6 +210,10 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * handles the response for SelectCell Clicked
+     * @param selectCell specifies which cell was clicked
+     */
     private void onSelectCellClicked(SelectCell selectCell) throws Exception {
         if(selectCell.getPiece() != null){
             //double click
@@ -211,8 +231,9 @@ public class GamePresenter {
         }
     }
 
-
-
+    /**
+     * handles placePiece, updates the visuals and model, also resets the SelectedPiece
+     */
     private void placePiece() {
         if (selectedTile == null) return;
         Tile tile = model.getGame().getBoard().findTile(selectedTile.getRow() * 4 + selectedTile.getColumn());
@@ -235,6 +256,10 @@ public class GamePresenter {
         updateView();
     }
 
+    /**
+     * checks if the game is over, which happens after all the pieces are placed.
+     * If the game is over and there is a winning position, assign the win to the current Player
+     */
     private void checkForGameEnd() throws SQLException {
         if(model.getGame().getPiecesToSelect().isEmpty()){
             boolean isWon = model.getGame().getGameRules().checkWin();
@@ -243,6 +268,10 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * picks the piece and updates the visuals and model with the chosen piece.
+     * The piece is picked only if a piece from the Selected Cells is chosen,
+     */
     private void confirmPieceSelection() throws Exception {
         if (selectedPiece == null) {
             throw new Exception("Selected Piece is null!");
@@ -263,6 +292,10 @@ public class GamePresenter {
     }
     PauseTransition placePieceDelay;
     PauseTransition pickPieceDelay;
+
+    /**
+     * function to showEndScreen if callQuarto successful
+     */
     private void handleQuarto() throws SQLException {
         model.callQuarto();
         if (model.getGame().getGameRules().checkWin()) {
@@ -271,6 +304,10 @@ public class GamePresenter {
 
     }
 
+    /**
+     * shows the end screen, two scenarios: winScreen if offline, statistics if online
+     * @param isTie specifies if it was a tie
+     */
     private void showEndScreen(boolean isTie) throws SQLException {
         view.getTurnStack().getChildren().clear();
         if (model.isOnline) {
@@ -296,6 +333,9 @@ public class GamePresenter {
         updateTurnInfo();
     }
 
+    /**
+     * If Help enabled, updates the help message calculated with the rule system
+     */
     private void updateMassage() {
         if (model.getGame().getGameRules().checkWin() && view.getHelpButton().isSelected() && model.getCurrentPlayer() == model.getPlayer()) {
             view.getQuartoText().setText("Press the button \uD83D\uDD3D to win\uD83C\uDFC6");
@@ -308,6 +348,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * updates the selected piece in the model and visual
+     */
     private void updateSelectedPiece() {
         Piece selected = model.getGame().getSelectedPiece();
         if (selected != null) {
@@ -321,6 +364,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * loads the statistics screen at the game end
+     */
     private void loadStatisticsView() throws SQLException {
         view.showStatisticsScreen();
         view.getStatisticsView().getCloseBtn().setOnMouseClicked(event -> {
@@ -332,6 +378,9 @@ public class GamePresenter {
 
     }
 
+    /**
+     * updates the board visuals based on the model
+     */
     private void updateBoard() {
         for (int i = 0; i < model.getGame().getBoard().getTiles().size(); i++) {
             Piece piece = model.getGame().getBoard().getTiles().get(i).getPiece();
@@ -340,6 +389,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * updates the pieces to select Grid based on the model
+     */
     private void updateSelectGrid() {
         for (int i = 0; i < model.getGame().getPiecesToSelect().getTiles().size(); i++) {
             Piece piece = model.getGame().getPiecesToSelect().getTiles().get(i).getPiece();
@@ -347,6 +399,9 @@ public class GamePresenter {
         }
     }
 
+    /**
+     * updates the turn StackPane based on the current player
+     */
     private void updateTurnInfo() {
         boolean isHumanTurn = model.getCurrentPlayer().equals(model.getPlayer());
         boolean pieceSelected = model.getGame().getSelectedPiece() != null;
@@ -394,7 +449,9 @@ public class GamePresenter {
     private double remainingLoadingDuration = 0;
     private double loadingProgressBeforePause = 0;
 
-
+    /**
+     * Handles the AI turn, sets a delay for both actions and animates a loading bar
+     */
     private void handleAiFullTurn() {
 
         Random rand = new Random();
@@ -433,6 +490,9 @@ public class GamePresenter {
         placePieceDelay.play();
     }
 
+    /**
+     * handles the AI turn on the first move
+     */
     private void handleAiStartTurn(){
         Random rand = new Random();
         float pickDuration = rand.nextFloat(1f) + 1;
@@ -441,6 +501,10 @@ public class GamePresenter {
         pickPieceWithDelay(pickDuration);
     }
 
+    /**
+     * places the piece after a delay
+     * @param pickDuration the delay in seconds
+     */
     private void pickPieceWithDelay(float pickDuration) {
         pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
         pickPieceDelay.setOnFinished(e -> {
@@ -458,7 +522,10 @@ public class GamePresenter {
         pickPieceDelay.play();
     }
 
-
+    /**
+     * starts the animation of the loading bar
+     * @param durationInSeconds the duration of the animation
+     */
     private void animateLoadingBar(double durationInSeconds) {
         remainingLoadingDuration = durationInSeconds;
         loadingProgressBeforePause = 0;
@@ -467,6 +534,10 @@ public class GamePresenter {
         createAndStartLoadingAnimation(durationInSeconds);
     }
 
+    /**
+     * creates a timeline and the frames for the animation and plays it
+     * @param duration duration of the timeline
+     */
     private void createAndStartLoadingAnimation(double duration) {
 
         loadingBarTimer = new Timeline();
@@ -490,6 +561,10 @@ public class GamePresenter {
     public GameView getView() {
         return view;
     }
+
+    /**
+     * resumes the timer and restarts the loading bar if it is active
+     */
     public void resumeTimer() {
         if (remainingLoadingDuration > 0) {
             createAndStartLoadingAnimation(remainingLoadingDuration);
@@ -502,6 +577,10 @@ public class GamePresenter {
             pickPieceDelay.play();
         }
     }
+
+    /**
+     * pauses the loading bar and AI move, if AI move was in progress
+     */
     public void pauseAnimations() {
         if (loadingBarTimer != null) {
             // Save the current progress before pausing

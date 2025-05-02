@@ -10,6 +10,11 @@ import java.util.Base64;
 public class LocalEncrypter {
     private static final SecureRandom RANDOM = new SecureRandom();
 
+
+    /**
+     * encrypts the password
+     * @param password  unencrypted password
+     */
     public static String hashPassword(String password) {
         try {
             // Generate a random salt
@@ -26,6 +31,10 @@ public class LocalEncrypter {
             throw new RuntimeException("Error hashing password", e);
         }
     }
+
+    /**
+     * checks if the passwords match
+     */
     public static boolean checkPassword(String password, String storedHash) {
         try {
             // Split the stored value to get salt and hash
@@ -49,6 +58,10 @@ public class LocalEncrypter {
             return false;
         }
     }
+
+    /**
+     * Encrypts the password with salt
+     */
     private static String hashWithSalt(String password, byte[] salt) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(salt);

@@ -36,7 +36,8 @@ CREATE TABLE moves
     move_id         INTEGER GENERATED ALWAYS AS IDENTITY
         CONSTRAINT pk_move_id PRIMARY KEY,
     game_session_id INTEGER NOT NULL
-        CONSTRAINT fk_game_session_id REFERENCES game_sessions (game_session_id),
+        CONSTRAINT fk_game_session_id REFERENCES game_sessions (game_session_id)
+            ON DELETE CASCADE,
     player_id       INTEGER NOT NULL
         CONSTRAINT fk_player_id REFERENCES players (player_id),
     start_time      timestamp,
@@ -46,13 +47,15 @@ CREATE TABLE moves
 
     CONSTRAINT unique_game_move UNIQUE (game_session_id, move_nr)
 
+
 );
 
 CREATE TABLE pause_periods
 (
     pause_period_id INTEGER GENERATED ALWAYS AS IDENTITY,
     move_id         INTEGER NOT NULL
-        CONSTRAINT fk_move_id REFERENCES moves (move_id),
+        CONSTRAINT fk_move_id REFERENCES moves (move_id)
+            ON DELETE CASCADE,
     start_time      timestamp,
     end_time        timestamp,
 --     to prevent for the same pause_period being recorded (will trigger constraint error if triggered, for debugging purposes)
@@ -76,7 +79,8 @@ CREATE TABLE pieces
     /*we make piece_types not null for the incomplete move when the player exits with an unfinished game*/
     move_id                INTEGER NOT NULL
         CONSTRAINT pk_piece_move_id PRIMARY KEY
-        CONSTRAINT fk_move_id REFERENCES moves (move_id),
+        CONSTRAINT fk_move_id REFERENCES moves (move_id)
+            ON DELETE CASCADE,
     selected_piece_type_id INTEGER,
     placed_piece_type_id   INTEGER,
     pos                    INTEGER,

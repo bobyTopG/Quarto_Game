@@ -21,7 +21,7 @@ public class RuleGoodMove extends Rule {
 
     @Override
     public boolean actionRule(FactsHandler facts, Game game, Move move) {
-        move.setWarningMessage("Better place in the corners \uD83E\uDDE0");
+        move.setWarningMessage("Better place in the corners");
         List<Integer> availableCorners = new ArrayList<>();
         for (int corner : CORNER_INDEXES) {
             Tile tile = game.getBoard().getTile(corner);
