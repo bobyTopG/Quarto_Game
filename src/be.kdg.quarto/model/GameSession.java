@@ -60,7 +60,6 @@ public class GameSession {
      * @param opponent the selected opponent
      * @param currentPlayer specifies who starts first
      * @param online specifies if the saving is activated or not
-     * @throws SQLException
      */
     public GameSession(Player player, Player opponent, Player currentPlayer, boolean online) throws SQLException {
         this.game = new Game();

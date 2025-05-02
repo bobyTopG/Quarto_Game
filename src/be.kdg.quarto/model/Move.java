@@ -143,7 +143,6 @@ public class Move {
 
     /**
      * gets the duration of the move
-     * @return
      */
     public float getDuration() {
         if (startTime == null) return 0f;

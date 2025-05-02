@@ -12,7 +12,7 @@ import static be.kdg.quarto.helpers.CreateHelper.showAlert;
 
 public class RegisterPresenter {
 
-    private RegisterView view;
+    private final RegisterView view;
 
     public RegisterPresenter(RegisterView view) {
         this.view = view;
@@ -32,9 +32,7 @@ public class RegisterPresenter {
             view.getScene().setRoot(chooseView);
             new ChoosePresenter(chooseView,false);
         });
-        view.getRegisterButton().setOnAction(event -> {
-            registerUser();
-        });
+        view.getRegisterButton().setOnAction(event -> registerUser());
     }
     /**
      * Handles the user register process, creates a new user if successful
