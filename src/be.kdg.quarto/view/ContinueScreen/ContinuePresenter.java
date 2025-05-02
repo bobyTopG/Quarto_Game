@@ -34,10 +34,14 @@ public class ContinuePresenter {
 
         loadGameSessions();
 
-        int count = 1;
-        for (Map.Entry<Integer, String[]> entry : sessions.entrySet()) {
-            view.addGameRow(count, entry.getValue()[0], entry.getValue()[1]);
-            count++;
+        if (!sessions.isEmpty()) {
+            int count = 1;
+            for (Map.Entry<Integer, String[]> entry : sessions.entrySet()) {
+                view.addGameRow(count, entry.getValue()[0], entry.getValue()[1]);
+                count++;
+            }
+        } else {
+            view.noIncompleteGames();
         }
 
     }
@@ -53,10 +57,11 @@ public class ContinuePresenter {
                         ? AiLevel.values()[level].toString()
                         : "FRIENDLY";
 
-                //if gameSession does not have any pause periods with null end_time
+                // if gameSession does not have any pause periods with null end_time
                 // that means that the game was suddenly closed and not saved properly
-                if(rs.getBoolean("is_corrupted"))
+                if (rs.getBoolean("is_corrupted")) {
                     sessions.put(sessionId, new String[]{difficulty, rs.getString("formatted_duration")});
+                }
             }
         } catch (SQLException e) {
             ErrorHelper.showDBError(e);
@@ -81,15 +86,12 @@ public class ContinuePresenter {
     }
 
     private void onGameSelected(int sessionId) {
-        GameSession model = null;
         try {
-            model = new GameSession(sessionId);
+            GameSession model = new GameSession(sessionId);
+            GameView gameView = new GameView(ImageHelper.getPlayerImage(), ImageHelper.getOpponentImage(model.getOpponent()), model.getOpponent().getName());
 
-        GameView gameView = new GameView(ImageHelper.getPlayerImage(), ImageHelper.getOpponentImage(model.getOpponent()), model.getOpponent().getName());
-
-
-        view.getScene().setRoot(gameView);
-        new GamePresenter(model, gameView);
+            view.getScene().setRoot(gameView);
+            new GamePresenter(model, gameView);
         } catch (SQLException e) {
             CreateHelper.showAlert("Database Error", e.getMessage(), true);
         } catch (Exception e) {

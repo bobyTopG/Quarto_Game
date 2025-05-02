@@ -6,9 +6,11 @@
     -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 24px;
     -fx-text-fill: white;
-    -fx-background-color: #29ABE2;
-    -fx-border-radius: 25px;
-    -fx-background-radius: 25px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-pref-width: 330px;
+    -fx-border-color: black;
+    -fx-border-width: 4px;
     -fx-padding: 15px;
 }
 .settings-button{
@@ -41,11 +43,11 @@
 
 }
 .toggle-button.turn-button:selected{
-    -fx-background-color: #34d1ba;
+    -fx-background-color: #29ABE2;
 
 }
 .toggle-button.turn-button:selected:hover{
-    -fx-background-color: #2d958c;
+    -fx-background-color: #2672cc;
 
 }
 
@@ -133,10 +135,10 @@
 
 /* Custom styles for the progress bar */
 .custom-progress-bar {
-    -fx-border-color: #2e2e2e;
+
     -fx-pref-height: 60px;
-    -fx-pref-width: 300px;
-    -fx-border-radius: 2px;
+    -fx-pref-width: 330px;
+    -fx-border-radius: 8px;
 
 }
 
@@ -144,21 +146,20 @@
 .custom-progress-bar > .track {
     -fx-background-color: #ddc1a5;
     -fx-background-insets: 0;
-    -fx-background-radius: 2px;
+    -fx-background-radius: 8px;
 }
 
 /* Style for bar - the filled part */
 .custom-progress-bar > .bar {
     -fx-background-color:  #c6252a;
     -fx-background-insets: 0;
-    -fx-background-radius: 2px;
+    -fx-background-radius: 8px;
 
 }
 
 /* Style for the overlay label */
 .overlay-label {
     -fx-text-fill: #232323;
-    -fx-font-weight: bold;
 }
 
 /* When the loading is in progress, we can change the style if needed */
