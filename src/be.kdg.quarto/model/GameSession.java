@@ -209,6 +209,7 @@ public class GameSession {
                 if (isOnline) { saveMoveToDb(game.getCurrentMove()); }
             }
             endGameSession(false);
+            gameTimer.pauseGame();
         }
     }
 

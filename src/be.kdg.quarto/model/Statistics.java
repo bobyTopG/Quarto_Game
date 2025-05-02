@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Statistics {
-    private int gameSessionId;
+    private final int gameSessionId;
 
     private int totalMoves;
     private int totalDuration;
@@ -70,6 +70,10 @@ public class Statistics {
                 this.averageMoveDuration = rs.getFloat(4);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+            // Log the specific SQL error message
+            System.err.println("SQL Error: " + e.getMessage());
+
             throw new SQLException("failed to load Statistics");
         }
 
@@ -131,7 +135,7 @@ public class Statistics {
         return sortedList.get(Math.min(Math.max(index, 0), sortedList.size() - 1));
     }
 
-    public class Move {
+    public static class Move {
         int playerId;
         int moveNumber;
         int time;

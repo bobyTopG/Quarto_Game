@@ -453,7 +453,8 @@ public class GamePresenter {
                 pickPieceDelay = new PauseTransition(Duration.seconds(pickDuration));
                 pickPieceDelay.setOnFinished(e -> {
                     try {
-                        model.pickPieceAi();
+                        if(!model.isGameOver())
+                            model.pickPieceAi();
                     } catch (SQLException ex) {
                         ErrorHelper.showDBError(ex);
                     }

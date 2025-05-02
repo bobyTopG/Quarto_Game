@@ -94,24 +94,64 @@ public class DbConnection {
 
     public static String getPartialStatistics() {
         return """
-                SELECT p.player_id,
-                       count(*)                                                                                as total_moves,
-                       sum(extract(epoch from age(m.end_time, m.start_time))::numeric)                             as total_duration,
-                       round(sum(extract(epoch from age(m.end_time, m.start_time)))::numeric / 60.0 / count(*), 2) as avg
-                FROM moves m
-                         INNER JOIN game_sessions gs on (gs.game_session_id = m.game_session_id)
-                         INNER JOIN players p on (p.player_id = m.player_id)
-                WHERE p.player_id = ? and gs.game_session_id = ?
-                GROUP BY p.player_id, name;""";
-    }
-
-    public static String getStatistics() {
+            SELECT
+                p.player_id,
+                count(*) as total_moves,
+                sum(
+                    extract(epoch from age(m.end_time, m.start_time)) -
+                    COALESCE(
+                        (
+                            SELECT SUM(EXTRACT(EPOCH FROM (pp.end_time - pp.start_time)))
+                            FROM pause_periods pp
+                            WHERE pp.move_id = m.move_id
+                        ),
+                        0
+                    )
+                )::numeric as total_duration,
+                round(
+                    (
+                        sum(
+                            extract(epoch from age(m.end_time, m.start_time)) -
+                            COALESCE(
+                                (
+                                    SELECT SUM(EXTRACT(EPOCH FROM (pp.end_time - pp.start_time)))
+                                    FROM pause_periods pp
+                                    WHERE pp.move_id = m.move_id
+                                ),
+                                0
+                            )
+                        ) / 60.0 / count(*)
+                    )::numeric,
+                    2
+                ) as avg
+            FROM moves m
+            INNER JOIN game_sessions gs on (gs.game_session_id = m.game_session_id)
+            INNER JOIN players p on (p.player_id = m.player_id)
+            WHERE p.player_id = ? and gs.game_session_id = ?
+            GROUP BY p.player_id;
+            """;
+    }    public static String getStatistics() {
         return """
-                SELECT player_id,
-                       (move_nr + 1) / 2                                                as move_nr,
-                       round(extract(epoch from age(end_time, start_time))::numeric, 2) as duration
-                FROM moves
-                WHERE game_session_id = ?;""";
+            SELECT
+                m.player_id,
+                ((m.move_nr + 1) / 2)::integer as move_nr,
+                round(
+                    (
+                        EXTRACT(EPOCH FROM (m.end_time - m.start_time)) -
+                        COALESCE(
+                            (
+                                SELECT SUM(EXTRACT(EPOCH FROM (pp.end_time - pp.start_time)))
+                                FROM pause_periods pp
+                                WHERE pp.move_id = m.move_id
+                            ),
+                            0
+                        )
+                    )::numeric,
+                    2
+                ) as duration
+            FROM moves m
+            WHERE m.game_session_id = ?;
+            """;
     }
 
     public static String getLeaderboard() {
