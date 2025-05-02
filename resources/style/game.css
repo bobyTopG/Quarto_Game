@@ -6,12 +6,11 @@
     -fx-font-family: "Berlin Sans FB Demi Bold";
     -fx-font-size: 24px;
     -fx-text-fill: white;
-    -fx-background-color: #29ABE2;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-pref-width: 330px;
     -fx-border-color: black;
-    -fx-border-width: 2px;
+    -fx-border-width: 4px;
     -fx-padding: 15px;
 }
 .settings-button{
@@ -161,7 +160,6 @@
 /* Style for the overlay label */
 .overlay-label {
     -fx-text-fill: #232323;
-    -fx-font-weight: bold;
 }
 
 /* When the loading is in progress, we can change the style if needed */
