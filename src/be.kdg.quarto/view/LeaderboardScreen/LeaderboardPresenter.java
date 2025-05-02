@@ -39,9 +39,9 @@ public class LeaderboardPresenter {
                 createIntegerColumn("Total Games", 140, p -> p.totalGamesProperty().get()),
                 createIntegerColumn("Wins", 85, p -> p.winsProperty().get()),
                 createIntegerColumn("Losses", 85, p -> p.lossesProperty().get()),
-                createFloatColumn("Wins Percent", 140, p -> p.winPercentageProperty().get()),
+                createFloatColumn("Win rate (%)", 120, p -> p.winPercentageProperty().get()),
                 createFloatColumn("Moves", 85, p -> p.avgMovesProperty().get()),
-                createFloatColumn("Move Duration", 140, p -> p.avgMoveDurationProperty().get())
+                createFloatColumn("Avg. move (min)", 160, p -> p.avgMoveDurationProperty().get())
         );
 
         for (TableColumn<Leaderboard.Player, ?> column : table.getColumns()) {
