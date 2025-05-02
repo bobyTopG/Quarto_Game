@@ -20,8 +20,8 @@ import java.util.*;
 
 public class ContinuePresenter {
 
-    private ContinueView view;
-    private Map<Integer, String[]> sessions = new LinkedHashMap<>();
+    private final ContinueView view;
+    private final Map<Integer, String[]> sessions = new LinkedHashMap<>();
 
     public ContinuePresenter(ContinueView view) {
         this.view = view;
@@ -64,6 +64,7 @@ public class ContinuePresenter {
                 }
             }
         } catch (SQLException e) {
+
             ErrorHelper.showDBError(e);
         }
     }

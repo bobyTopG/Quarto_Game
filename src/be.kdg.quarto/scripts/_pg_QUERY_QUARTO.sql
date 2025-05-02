@@ -32,18 +32,22 @@ WHERE player_id = 1
 
 -- 3.
 SELECT name,
-       count(distinct gs.game_session_id)                                               as played,
+       count(distinct gs.game_session_id) as played,
        count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) as wins,
        count(distinct gs.game_session_id) -
        count(distinct case
                           when gs.winner_id = p.player_id or
-                               gs.winner_id IS NULL then gs.game_session_id end)        as losses,
+                               gs.winner_id IS NULL then gs.game_session_id end) as losses,
        round(count(distinct case when gs.winner_id = p.player_id then gs.game_session_id end) * 100.0
-                 / count(distinct gs.game_session_id), 2)                               as wins_p,
+                 / nullif(count(distinct gs.game_session_id), 0)::numeric, 2) as wins_p,
        round(count(m.move_id) * 1.0
-                 / count(distinct gs.game_session_id), 2)                               as avg_moves,
-       round(sum(extract(epoch from age(m.end_time, m.start_time))::numeric / 60)
-                 / count(m.move_id), 2)                                                 as avg_duration_per_move
+                 / nullif(count(distinct gs.game_session_id), 0)::numeric, 2) as avg_moves,
+       round((sum(
+                      extract(epoch from (m.end_time - m.start_time))::numeric -
+                      COALESCE((SELECT SUM(EXTRACT(EPOCH FROM (pp.end_time - pp.start_time)))
+                                FROM pause_periods pp
+                                WHERE pp.move_id = m.move_id), 0)::numeric
+              ) / 60.0 / nullif(count(m.move_id), 0))::numeric, 2) as avg_duration_per_move
 FROM players p
          LEFT JOIN game_sessions gs on p.player_id in (gs.player_id1, gs.player_id2)
          LEFT JOIN moves m on gs.game_session_id = m.game_session_id and p.player_id = m.player_id
