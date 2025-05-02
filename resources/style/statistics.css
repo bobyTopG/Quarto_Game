@@ -71,7 +71,7 @@
 
 .table-row-cell:hover {
     -fx-background-color: #F7931E;
-    -fx-cursor: crosshair;
+
 }
 
 .table-cell {
@@ -103,7 +103,7 @@
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-pref-width: 160px;
+    -fx-pref-width: 200px;
     -fx-alignment: center;
     -fx-padding: 5px;
     -fx-hgap: 15px;

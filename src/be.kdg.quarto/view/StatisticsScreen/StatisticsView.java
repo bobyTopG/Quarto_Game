@@ -25,6 +25,7 @@ public class StatisticsView extends BorderPane {
     private LineChart<Number, Number> lineChart;
     private XYChart.Series<Number, Number> series1;
     private XYChart.Series<Number, Number> series2;
+    private XYChart.Series<Number, Number> outlierSeries;
 
     // Constructor
     public StatisticsView() {
@@ -46,6 +47,8 @@ public class StatisticsView extends BorderPane {
         lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         series1 = new XYChart.Series<>();
         series2 = new XYChart.Series<>();
+        outlierSeries = new XYChart.Series<>();
+        outlierSeries.setName("Outlier");
 
         closeBtn = CreateHelper.createButton("Back to Menu", new String[]{"default-button", "red-button"});
         backBtn = CreateHelper.createButton("Back", new String[]{"default-button", "orange-button"});
@@ -104,6 +107,10 @@ public class StatisticsView extends BorderPane {
 
     XYChart.Series<Number, Number> getSeries2() {
         return series2;
+    }
+
+    XYChart.Series<Number, Number> getOutlierSeries() {
+        return outlierSeries;
     }
 
     Button getPlayerBtn() {
