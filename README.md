@@ -26,6 +26,7 @@ Players take turns choosing a piece for their opponent to place. The goal is to 
 - Local multiplayer support
 - Two AI strategies:
   - **Rule-Based AI** using facts and logical inference
+  - **Random AI**
 - Real-time win detection
 - Clean code structure and modular design
 - Debug-friendly with clear logs and structure
