@@ -1,4 +1,10 @@
 # Quarto Game (Java)
+<img width="893" alt="Screenshot 2025-05-10 at 2 58 46 PM" src="https://github.com/user-attachments/assets/25206c88-113d-4c91-bb13-2469d65e9de1" />
+
+<img width="893" alt="Screenshot 2025-05-10 at 2 58 04 PM" src="https://github.com/user-attachments/assets/236e8c01-3198-40cc-805a-c62e92ecfb43" />
+
+<img width="893" alt="Screenshot 2025-05-10 at 2 58 24 PM" src="https://github.com/user-attachments/assets/a6e69588-6052-41c2-a9a5-bb9adcddac3a" />
+
 
 This is a Java-based implementation of **Quarto**, the abstract strategy board game. It supports local multiplayer and AI opponents using Rule-Based logic. The project uses JavaFX for the graphical interface and is designed with modular architecture for easy expansion and testing.
 
